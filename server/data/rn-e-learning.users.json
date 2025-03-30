@@ -1,0 +1,8 @@
+[{
+  "_id": {
+    "$oid": "67e9559ef5b10feb0246715a"
+  },
+  "fullname": "Phạm Hùng Phong",
+  "email": "hungphong.canhan@gmail.com",
+  "password": "123"
+}]
