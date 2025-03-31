@@ -5,73 +5,72 @@ import {
     KeyboardTypeOptions,
     TextInputProps,
 } from "react-native";
-import React from "react";
+import React, { forwardRef } from "react";
 import { Colors } from "@/constants";
 
-interface Props {
+interface Props extends TextInputProps {
     value: string;
     onChangeText: (newValue: string) => void;
-    placeHolder?: string;
+    placeholder?: string;
     styles?: StyleProp<TextStyle>;
     backgroundColor?: string;
     color?: string;
     fontFamily?: string;
     fontSize?: number;
     editable?: boolean;
-    keyboardType?: KeyboardTypeOptions;
-    returnKeyType?: TextInputProps["returnKeyType"];
-    secureTextEntry?: boolean;
-    onSubmitEditing?: () => void;
-    inputRef?: React.RefObject<TextInput>;
 }
 
-const InputTextComponent: React.FC<Props> = ({
-    value,
-    onChangeText,
-    placeHolder,
-    styles,
-    backgroundColor = "#fff",
-    color = "#000",
-    fontFamily,
-    fontSize = 14,
-    editable = true,
-    keyboardType,
-    returnKeyType,
-    secureTextEntry,
-    onSubmitEditing,
-    inputRef,
-    ...restProps
-}) => {
-    return (
-        <TextInput
-            ref={inputRef}
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={placeHolder}
-            style={[
-                {
-                    backgroundColor,
-                    color,
-                    fontSize,
-                    fontFamily,
-                    borderRadius: 8,
-                    padding: 10,
-                    borderWidth: 1,
-                    borderColor: Colors.LightGray1,
-                    flex: 1, // Giúp component mở rộng nếu cần
-                },
-                styles,
-            ]}
-            editable={editable}
-            autoCapitalize='none'
-            autoCorrect={false}
-            keyboardType={keyboardType}
-            returnKeyType={returnKeyType}
-            secureTextEntry={secureTextEntry}
-            onSubmitEditing={onSubmitEditing}
-            {...restProps}
-        />
-    );
-};
+const InputTextComponent = forwardRef<TextInput, Props>(
+    (
+        {
+            value,
+            onChangeText,
+            placeholder,
+            styles,
+            backgroundColor = "#fff",
+            color = "#000",
+            fontFamily,
+            fontSize = 14,
+            editable = true,
+            keyboardType,
+            returnKeyType,
+            secureTextEntry,
+            onSubmitEditing,
+            ...restProps
+        },
+        ref
+    ) => {
+        return (
+            <TextInput
+                ref={ref} // ✅ Dùng `forwardRef` để hỗ trợ ref
+                value={value}
+                onChangeText={onChangeText}
+                placeholder={placeholder}
+                style={[
+                    {
+                        backgroundColor,
+                        color,
+                        fontSize,
+                        fontFamily,
+                        borderRadius: 8,
+                        padding: 10,
+                        borderWidth: 1,
+                        borderColor: Colors.LightGray1,
+                        flex: 1, // Giúp component mở rộng nếu cần
+                    },
+                    styles,
+                ]}
+                editable={editable}
+                autoCapitalize='none'
+                autoCorrect={false}
+                keyboardType={keyboardType}
+                returnKeyType={returnKeyType}
+                secureTextEntry={secureTextEntry}
+                onSubmitEditing={onSubmitEditing}
+                {...restProps}
+            />
+        );
+    }
+);
 
 export default InputTextComponent;

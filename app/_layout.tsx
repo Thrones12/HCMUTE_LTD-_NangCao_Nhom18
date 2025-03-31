@@ -1,8 +1,9 @@
 import { View, Text, StatusBar } from "react-native";
-import { AuthNavigator, MainNavigator, RootNavigator } from "@/navigators";
+import RootNavigator from "@/navigators/RootNavigator";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
+import Toast from "react-native-toast-message";
 
 export default function App() {
     const [token, setToken] = useState("");
@@ -24,6 +25,7 @@ export default function App() {
                 backgroundColor={"transparent"}
             />
             <RootNavigator />
+            <Toast />
         </AuthProvider>
     );
 }

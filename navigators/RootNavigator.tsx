@@ -1,12 +1,10 @@
-import { StatusBar } from "react-native";
-import { AuthNavigator, MainNavigator } from "@/navigators";
-import { AuthProvider, AuthContext } from "@/contexts/AuthContext";
+import AuthNavigator from "@/navigators/AuthNavigator";
+import MainNavigator from "@/navigators/MainNavigator";
+import { AuthContext } from "@/contexts/AuthContext";
 import { useContext } from "react";
 
 const RootNavigator = () => {
-    const { user, loading } = useContext(AuthContext);
-
-    if (loading) return null; // Chờ kiểm tra đăng nhập tránh lỗi
+    const { user } = useContext(AuthContext);
 
     return user ? <MainNavigator /> : <AuthNavigator />;
 };

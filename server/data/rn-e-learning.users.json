@@ -1,8 +1,12 @@
-[{
-  "_id": {
-    "$oid": "67e9559ef5b10feb0246715a"
-  },
-  "fullname": "Phạm Hùng Phong",
-  "email": "hungphong.canhan@gmail.com",
-  "password": "123"
-}]
+[
+    {
+        "_id": {
+            "$oid": "67e9559ef5b10feb0246715a"
+        },
+        "fullname": "Phạm Hùng Phong",
+        "email": "ad",
+        "password": "$2b$10$qRog3JfYxpibV4ghd1xM2OaogebxfdqC.R00vNxZ7cVid4VLvO8eS",
+        "status": "active",
+        "otp": "5162"
+    }
+]

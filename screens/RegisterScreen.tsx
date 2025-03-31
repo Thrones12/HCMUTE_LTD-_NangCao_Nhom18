@@ -7,14 +7,18 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     Platform,
+    ActivityIndicator,
+    Alert,
 } from "react-native";
 import React, { useState, useRef, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
 import { ButtonComponent, InputTextComponent } from "@/components";
+import Notification from "@/services/Notification";
 
 const RegisterScreen = ({ navigation }: any) => {
     const { register } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -23,8 +27,34 @@ const RegisterScreen = ({ navigation }: any) => {
     const passwordInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
 
-    const handleRegister = () => {
-        register(fullname, email, password);
+    const handleRegister = async () => {
+        setLoading(true);
+        const res = await register(fullname, email, password);
+        setLoading(false);
+        if (res === true) navigation.navigate("Vertify", { email });
+        else if (res === "notVertify") {
+            Alert.alert(
+                "Thông báo",
+                "Email đã được đăng ký nhưng chưa xác thực. Bạn có muốn xác thực không?",
+                [
+                    {
+                        text: "Hủy",
+                        onPress: () => console.log("Hủy"),
+                        style: "cancel",
+                    },
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            Notification.info("OTP đã được gửi qua email");
+                            navigation.navigate("Vertify", {
+                                email,
+                                type: "forget",
+                            });
+                        },
+                    },
+                ]
+            );
+        }
     };
     return (
         <KeyboardAvoidingView
@@ -32,6 +62,12 @@ const RegisterScreen = ({ navigation }: any) => {
             style={GStyles.container}
         >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                {/* Loading */}
+                {loading ? (
+                    <View style={styles.indicator}>
+                        <ActivityIndicator size='large' color='#0000ff' />
+                    </View>
+                ) : null}
                 {/* Back ground title */}
                 <View style={styles.backgroundView}>
                     <Image
@@ -66,7 +102,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     <InputTextComponent
                         value={fullname}
                         onChangeText={setFullname}
-                        placeHolder='Họ và tên'
+                        placeholder='Họ và tên'
                         returnKeyType='next'
                         onSubmitEditing={() => emailInputRef.current?.focus()} // Chuyển focus
                         styles={styles.inputText}
@@ -74,9 +110,9 @@ const RegisterScreen = ({ navigation }: any) => {
                     <InputTextComponent
                         value={email}
                         onChangeText={setEmail}
-                        placeHolder='Email'
+                        placeholder='Email'
                         returnKeyType='next'
-                        inputRef={emailInputRef}
+                        ref={emailInputRef}
                         onSubmitEditing={() =>
                             passwordInputRef.current?.focus()
                         } // Chuyển focus
@@ -85,10 +121,10 @@ const RegisterScreen = ({ navigation }: any) => {
                     <InputTextComponent
                         value={password}
                         onChangeText={setPassword}
-                        placeHolder='Password'
+                        placeholder='Password'
                         secureTextEntry
                         returnKeyType='done'
-                        inputRef={passwordInputRef}
+                        ref={passwordInputRef}
                         onSubmitEditing={handleRegister} // Gọi hàm đăng nhập
                         styles={styles.inputText}
                     />
@@ -120,6 +156,13 @@ const RegisterScreen = ({ navigation }: any) => {
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
+    indicator: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: [{ translateX: -25 }, { translateY: -25 }],
+        zIndex: 999,
+    },
     inputView: {
         display: "flex",
         gap: 10,

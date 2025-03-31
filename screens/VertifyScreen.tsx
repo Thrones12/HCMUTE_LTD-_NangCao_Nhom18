@@ -10,6 +10,7 @@ import {
     ActivityIndicator,
 } from "react-native";
 import React, { useState, useRef, useContext, useEffect } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
 import {
     ButtonComponent,
@@ -17,18 +18,60 @@ import {
     InputTextComponent,
 } from "@/components";
 import axios from "axios";
-import { AuthContext } from "@/contexts/AuthContext";
 
-const ForgetPasswordScreen = ({ navigation }: any) => {
-    const { lockForRegeneratePassword } = useContext(AuthContext);
+const VertifyScreen = ({ navigation, route }: any) => {
+    const API = "http://192.168.1.3:8080/api/";
+    const { vertify, regeneratePassword } = useContext(AuthContext);
+    const { email, type } = route.params || {};
     const [loading, setLoading] = useState(false);
-    const [email, setEmail] = useState("");
+    const [vertifyOtp, setVertifyOtp] = useState();
+
+    const [otp, setOTP] = useState(["", "", "", ""]);
+    const input1 = useRef<TextInput>(null);
+    const input2 = useRef<TextInput>(null);
+    const input3 = useRef<TextInput>(null);
+    const input4 = useRef<TextInput>(null);
+
+    useEffect(() => {
+        if (!email) navigation.navigate("Login");
+    }, [email]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await axios.get(`${API}user/get-otp?email=${email}`);
+            setVertifyOtp(res.data);
+        };
+        fetchData();
+    }, []);
+
+    const handleChangeOTP = (index: number, value: string) => {
+        // Chỉ cho phép nhập số
+        if (!/^\d?$/.test(value)) return;
+
+        const newOTP = [...otp];
+        newOTP[index] = value;
+        setOTP(newOTP);
+
+        // Chuyển focus sang ô tiếp theo (nếu có)
+        if (value && index === 0) {
+            input2.current?.focus();
+        }
+        if (value && index === 1) {
+            input3.current?.focus();
+        }
+        if (value && index === 2) {
+            input4.current?.focus();
+        }
+    };
 
     const handleSubmit = async () => {
         setLoading(true);
-        const res = await lockForRegeneratePassword(email);
+        const inputOTP = otp.join("");
+        const res = await vertify(vertifyOtp, inputOTP, email, type);
+        if (res) {
+            navigation.navigate("Login");
+        }
         setLoading(false);
-        if (res) navigation.navigate("Vertify", { email, type: "forget" });
     };
 
     return (
@@ -70,18 +113,36 @@ const ForgetPasswordScreen = ({ navigation }: any) => {
                             transform: "scale(0.6)",
                         }}
                     />
-                    <Text style={styles.titleText}>Quên mật khẩu</Text>
+                    <Text style={styles.titleText}>Xác thực</Text>
                 </View>
                 {/* Input view */}
                 <View style={styles.inputView}>
-                    <InputTextComponent
-                        value={email}
-                        onChangeText={setEmail}
-                        placeholder='Email'
-                        returnKeyType='next'
-                        onSubmitEditing={handleSubmit}
-                        styles={styles.inputText}
-                    />
+                    <View style={styles.VertifyView}>
+                        <InputTextComponent
+                            value={otp[0]}
+                            onChangeText={(text) => handleChangeOTP(0, text)}
+                            styles={styles.inputText}
+                            ref={input1}
+                        />
+                        <InputTextComponent
+                            value={otp[1]}
+                            onChangeText={(text) => handleChangeOTP(1, text)}
+                            styles={styles.inputText}
+                            ref={input2}
+                        />
+                        <InputTextComponent
+                            value={otp[2]}
+                            onChangeText={(text) => handleChangeOTP(2, text)}
+                            styles={styles.inputText}
+                            ref={input3}
+                        />
+                        <InputTextComponent
+                            value={otp[3]}
+                            onChangeText={(text) => handleChangeOTP(3, text)}
+                            styles={styles.inputText}
+                            ref={input4}
+                        />
+                    </View>
                     <ButtonComponent
                         type='primary'
                         text='Xác nhận'
@@ -89,7 +150,7 @@ const ForgetPasswordScreen = ({ navigation }: any) => {
                         styles={styles.buttonLogin}
                         bgColor={Colors.Sky}
                         bgColorPress={Colors.SkyPress}
-                        onPress={handleSubmit}
+                        onPress={() => handleSubmit()}
                     />
                     {/* Register link */}
                     <View style={styles.loginLinkView}>
@@ -107,7 +168,7 @@ const ForgetPasswordScreen = ({ navigation }: any) => {
     );
 };
 
-export default ForgetPasswordScreen;
+export default VertifyScreen;
 
 const styles = StyleSheet.create({
     indicator: {

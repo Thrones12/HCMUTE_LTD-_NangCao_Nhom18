@@ -7,6 +7,7 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     Platform,
+    ActivityIndicator,
 } from "react-native";
 import React, { useState, useRef, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -19,6 +20,7 @@ import {
 
 const LoginScreen = ({ navigation }: any) => {
     const { login } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isRemember, setIsRemember] = useState(false);
@@ -27,11 +29,9 @@ const LoginScreen = ({ navigation }: any) => {
     const passwordInputRef = useRef<TextInput>(null);
 
     const handleLogin = async () => {
-        try {
-            login(email, password);
-        } catch (err) {
-            console.log("Lỗi đăng nhập: ", err);
-        }
+        setLoading(true);
+        await login(email, password);
+        setLoading(false);
     };
     return (
         <KeyboardAvoidingView
@@ -39,6 +39,12 @@ const LoginScreen = ({ navigation }: any) => {
             style={GStyles.container}
         >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                {/* Loading */}
+                {loading === true ? (
+                    <View style={styles.indicator}>
+                        <ActivityIndicator size='large' color='#0000ff' />
+                    </View>
+                ) : null}
                 {/* Back ground title */}
                 <View style={styles.backgroundView}>
                     <Image
@@ -73,7 +79,7 @@ const LoginScreen = ({ navigation }: any) => {
                     <InputTextComponent
                         value={email}
                         onChangeText={setEmail}
-                        placeHolder='Email'
+                        placeholder='Email'
                         returnKeyType='next'
                         onSubmitEditing={() =>
                             passwordInputRef.current?.focus()
@@ -83,10 +89,10 @@ const LoginScreen = ({ navigation }: any) => {
                     <InputTextComponent
                         value={password}
                         onChangeText={setPassword}
-                        placeHolder='Password'
+                        placeholder='Password'
                         secureTextEntry
                         returnKeyType='done'
-                        inputRef={passwordInputRef}
+                        ref={passwordInputRef}
                         onSubmitEditing={handleLogin} // Gọi hàm đăng nhập
                         styles={styles.inputText}
                     />
@@ -106,6 +112,9 @@ const LoginScreen = ({ navigation }: any) => {
                         <ButtonComponent
                             text='Quên mật khẩu?'
                             textStyles={styles.textForget}
+                            onPress={() =>
+                                navigation.navigate("ForgetPassword")
+                            }
                         />
                     </View>
                     <ButtonComponent
@@ -136,6 +145,13 @@ const LoginScreen = ({ navigation }: any) => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
+    indicator: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: [{ translateX: -25 }, { translateY: -25 }],
+        zIndex: 999,
+    },
     inputView: {
         display: "flex",
         gap: 10,

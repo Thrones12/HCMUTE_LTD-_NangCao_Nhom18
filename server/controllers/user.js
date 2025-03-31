@@ -48,15 +48,13 @@ const Login = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user)
-            return res
-                .status(400)
-                .json({ message: "Người dùng không tồn tại" });
+            return res.status(404).json({ message: "Tài khoản không tồn tại" });
 
         const isMatch = await bcrypt.compare(password, user.password);
 
-        if (!isMatch) return res.status(400).json({ message: "Sai mật khẩu" });
+        if (!isMatch) return res.status(401).json({ message: "Sai mật khẩu" });
         if (user.status !== "active")
-            return res.status(400).json({ message: "Tài khoản bị khóa" });
+            return res.status(423).json({ message: "Tài khoản bị khóa" });
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: "30d",
@@ -72,32 +70,6 @@ const Login = async (req, res) => {
 };
 
 const Register = async (req, res) => {
-    try {
-        const { fullname, email, password } = req.body;
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser)
-            return res.status(400).json({ message: "Email đã được sử dụng" });
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        const newUser = new User({
-            fullname,
-            email,
-            password: hashedPassword,
-            otp,
-        });
-        await newUser.save();
-
-        res.status(201).json({ message: "Đăng ký thành công" });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi server" });
-    }
-};
-
-const SendOTP = async (req, res) => {
-    const { email } = req.body;
-
     // Cấu hình Nodemailer
     const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -107,26 +79,162 @@ const SendOTP = async (req, res) => {
         },
     });
 
-    const user = await User.findOne({ email });
-    // Nội dung email
-    const mailOptions = {
-        from: "nguyenduy7003@gmail.com",
-        to: email, // Email nhận
-        subject: "Mã xác nhận của bạn",
-        text: `Mã xác nhận của bạn là: ${user.otp}`,
-    };
-
     try {
-        // Gửi email
-        await transporter.sendMail(mailOptions);
-        console.log("Email sent successfully");
-        res.status(200).json("Email sent successfully");
-    } catch (error) {
-        console.log("Lỗi Send otp" + error);
-        res.status(500).json({
-            message: "Lỗi Server",
-            details: "Lỗi Send otp" + error,
+        const { fullname, email, password } = req.body;
+
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            if (existingUser.status === "locked" && existingUser.otp !== "") {
+                return res.status(401).json("Tài khoản chưa được xác thực");
+            } else {
+                return res.status(400).json("Email đã được sử dụng");
+            }
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const otp = Math.floor(1000 + Math.random() * 9000);
+
+        // Nội dung email
+        const mailOptions = {
+            from: "nguyenduy7003@gmail.com",
+            to: email, // Email nhận
+            subject: "Mã xác nhận của bạn",
+            text: `Mã xác nhận của bạn là: ${otp}`,
+        };
+        try {
+            // Gửi email
+            await transporter.sendMail(mailOptions);
+            console.log("Email sent successfully");
+        } catch (error) {
+            console.log("Lỗi Send otp" + error);
+            return res.status(502).json({
+                message: "Lỗi Server",
+                details: "Lỗi Send otp" + error,
+            });
+        }
+
+        const newUser = new User({
+            fullname,
+            email,
+            password: hashedPassword,
+            otp,
         });
+        await newUser.save();
+
+        res.status(200).json(newUser);
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi server" });
+    }
+};
+
+// Trả về otp của user
+const GetOTP = async (req, res) => {
+    const { email } = req.query;
+
+    const data = await User.findOne({ email });
+
+    // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
+    if (!data) return res.status(404).json({ message: "User not found" });
+
+    console.log("Get otp: \n" + data.otp);
+    res.json(data.otp);
+};
+
+// Khóa tài khoản
+const Lock = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const data = await User.findOne({ email });
+        console.log(email);
+
+        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
+        if (!data) return res.status(404).json({ message: "User not found" });
+
+        data.status = "locked";
+        data.otp = Math.floor(1000 + Math.random() * 9000);
+        data.save();
+
+        console.log("Mở khóa: ", data.email);
+
+        res.status(200).json("Mở khóa thành công");
+    } catch (err) {
+        res.status(500).json("Lỗi server");
+    }
+};
+
+// Mở khóa tài khoản
+const Unlock = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const data = await User.findOne({ email });
+
+        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
+        if (!data) return res.status(404).json({ message: "User not found" });
+
+        data.status = "active";
+        data.otp = ""; // Mỗi lần unlock thì xóa otp để kiểm soát lần vertify kế tiếp
+        data.save();
+
+        console.log("Mở khóa: ", data.email);
+
+        res.status(200).json("Mở khóa thành công");
+    } catch (err) {
+        res.status(500).json("Lỗi mở khóa tài khoản");
+    }
+};
+
+// Quên mật khẩu
+const RegeneratePassword = async (req, res) => {
+    // Cấu hình Nodemailer
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: "nguyenduy7003@gmail.com", // Thay bằng email của bạn
+            pass: "tesf daab xvbr fyqo", // Thay bằng mật khẩu email của bạn
+        },
+    });
+    try {
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+
+        if (!user)
+            return res.status(404).json({ message: "Tài khoản không tồn tại" });
+
+        const newPassword = generateRandomPassword();
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+
+        // Nội dung email
+        const mailOptions = {
+            from: "nguyenduy7003@gmail.com",
+            to: email, // Email nhận
+            subject: "Mật khẩu mới",
+            text: `Mật khẩu mới của bạn là: ${newPassword}`,
+        };
+        try {
+            // Gửi email
+            await transporter.sendMail(mailOptions);
+            console.log("Email sent successfully");
+        } catch (error) {
+            console.log("Lỗi Send otp" + error);
+            return res.status(502).json({
+                message: "Lỗi Server",
+                details: "Lỗi Send otp" + error,
+            });
+        }
+
+        user.save();
+
+        console.log(`Password mới của tài khoản ${email}: ${newPassword}`);
+
+        return res.status(200).json("Cập nhập thành công");
+    } catch (err) {
+        console.log("Lỗi regenerate password", err);
     }
 };
 
@@ -161,4 +269,13 @@ function generateRandomPassword() {
 
     return passwordArray.join("");
 }
-module.exports = { GetAll, GetOne, Login, Register, SendOTP };
+module.exports = {
+    GetAll,
+    GetOne,
+    Login,
+    Register,
+    GetOTP,
+    Lock,
+    Unlock,
+    RegeneratePassword,
+};

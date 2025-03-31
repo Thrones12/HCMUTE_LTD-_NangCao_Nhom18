@@ -6,21 +6,24 @@ import {
     LoginScreen,
     RegisterScreen,
     ForgetPasswordScreen,
+    VertifyScreen,
 } from "@/screens";
-import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
 
 const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName='Login'
+        >
             <Stack.Screen name='Register' component={RegisterScreen} />
+            <Stack.Screen name='Login' component={LoginScreen} />
             <Stack.Screen
                 name='ForgetPassword'
                 component={ForgetPasswordScreen}
             />
+            <Stack.Screen name='Vertify' component={VertifyScreen} />
         </Stack.Navigator>
     );
 };
