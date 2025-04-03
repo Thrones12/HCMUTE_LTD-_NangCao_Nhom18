@@ -6,6 +6,7 @@ import {
     LoginScreen,
     RegisterScreen,
     ForgetPasswordScreen,
+    ProfileScreen,
 } from "@/screens";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -14,8 +15,12 @@ const Stack = createNativeStackNavigator();
 
 const MainNavigator = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName='Profile'
+        >
             <Stack.Screen name='Home' component={HomeScreen} />
+            <Stack.Screen name='Profile' component={ProfileScreen} />
         </Stack.Navigator>
     );
 };
