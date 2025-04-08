@@ -10,7 +10,6 @@ import {
     CameraScreen,
 } from "@/screens";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { Colors } from "@/constants";
 
 const Tab = createBottomTabNavigator();
 

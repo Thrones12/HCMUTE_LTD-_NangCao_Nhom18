@@ -3,7 +3,9 @@ import ButtonComponent from "./ButtonComponent";
 import CheckBoxComponent from "./CheckBoxComponent";
 import InputTextComponent from "./InputTextComponent";
 import CategoryItemComponent from "./CategoryItemComponent";
-import SliderTopView from "./SliderTopView";
+import SlideShow from "./SlideShow";
+import TopViewLesson from "./TopViewLesson";
+import PracticeList from "./PracticeList";
 
 export {
     TextComponent,
@@ -11,5 +13,7 @@ export {
     CheckBoxComponent,
     InputTextComponent,
     CategoryItemComponent,
-    SliderTopView,
+    SlideShow,
+    TopViewLesson,
+    PracticeList,
 };
