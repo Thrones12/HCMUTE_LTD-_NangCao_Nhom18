@@ -7,6 +7,7 @@ import ProfileScreen from "./ProfileScreen";
 import CourseListScreen from "./CourseListScreen";
 import PracticeScreen from "./PracticeScreen";
 import CameraScreen from "./CameraScreen";
+import SubjectListScreen from "./SubjectListScreen";
 
 export {
     // Authentication
@@ -20,4 +21,5 @@ export {
     PracticeScreen,
     ProfileScreen,
     CameraScreen,
+    SubjectListScreen,
 };

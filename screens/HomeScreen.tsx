@@ -18,12 +18,12 @@ import {
 } from "@/components";
 
 let categories = [
-    { name: "Frontend", icon: "home-outline" },
-    { name: "Backend", icon: "home-outline" },
-    { name: "DevOps", icon: "home-outline" },
-    { name: "FullStack", icon: "home-outline" },
-    { name: "Android", icon: "home-outline" },
-    { name: "DataAnalyst", icon: "home-outline" },
+    { _id: "1", name: "Frontend", icon: "home-outline" },
+    { _id: "2", name: "Backend", icon: "home-outline" },
+    { _id: "3", name: "DevOps", icon: "home-outline" },
+    { _id: "4", name: "FullStack", icon: "home-outline" },
+    { _id: "5", name: "Android", icon: "home-outline" },
+    { _id: "6", name: "DataAnalyst", icon: "home-outline" },
 ];
 const mockPracticeData = Array.from({ length: 50 }, (_, i) => ({
     id: i + 1,
@@ -67,13 +67,13 @@ const HomeScreen = ({ navigation }: any) => {
         </View>
     );
     return (
-        <View style={[GStyles.container]}>
+        <View style={GStyles.container}>
             <FlatList
                 data={data}
                 renderItem={renderPracticeItem}
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={
-                    <View style={[GStyles.container, styles.wrapper]}>
+                    <View>
                         {/* Slide show */}
                         <View style={{ marginVertical: 20 }}>
                             <SlideShow />
@@ -86,8 +86,7 @@ const HomeScreen = ({ navigation }: any) => {
                                 {categories.map((cate, index) => (
                                     <CategoryItemComponent
                                         key={index}
-                                        name={cate.name}
-                                        icon={cate.icon}
+                                        category={cate}
                                         navigation={navigation}
                                     />
                                 ))}
@@ -137,9 +136,6 @@ const styles = StyleSheet.create({
     course: {
         fontSize: 14,
         color: "#666",
-    },
-    wrapper: {
-        padding: 10,
     },
     cateView: {
         display: "flex",

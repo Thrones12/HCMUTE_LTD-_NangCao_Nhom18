@@ -3,16 +3,20 @@ import React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Colors } from "@/constants";
 
-const CategoryItemComponent = ({ name, icon, navigation }: any) => {
+const CategoryItemComponent = ({ category, navigation }: any) => {
     return (
         <Pressable
             onPress={() =>
-                navigation.navigate("LessonList", { courseName: name })
+                navigation.navigate("SubjectList", { _id: category._id })
             }
             style={styles.cateItem}
         >
-            <Ionicons name={icon} style={styles.icon} size={25}></Ionicons>
-            <Text style={styles.text}>{name}</Text>
+            <Ionicons
+                name={category.icon}
+                style={styles.icon}
+                size={25}
+            ></Ionicons>
+            <Text style={styles.text}>{category.name}</Text>
         </Pressable>
     );
 };

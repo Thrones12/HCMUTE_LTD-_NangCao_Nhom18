@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeScreen } from "@/screens";
 import TabNavigator from "./TabNavigator";
 import LessonListScreen from "@/screens/LessonListScreen";
+import { SubjectListScreen } from "@/screens";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const MainNavigator = () => {
         >
             <Stack.Screen name='Main' component={TabNavigator} />
             <Stack.Screen name='LessonList' component={LessonListScreen} />
+            <Stack.Screen name='SubjectList' component={SubjectListScreen} />
         </Stack.Navigator>
     );
 };
