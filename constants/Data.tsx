@@ -84,4 +84,44 @@ export const Data = {
             createdAt: "2025-04-08T10:00:00Z",
         },
     ],
+    notifications: [
+        {
+            id: "1",
+            message: "Nguyễn Văn A đã thích bài viết của bạn",
+            time: "2025-04-08T09:00:00Z",
+        },
+        {
+            id: "2",
+            message: "Trần Thị B đã bình luận về bài học của bạn",
+            time: "2025-04-08T10:15:00Z",
+        },
+        {
+            id: "3",
+            message: "Lê Minh C đã bắt đầu theo dõi bạn",
+            time: "2025-04-07T22:30:00Z",
+        },
+    ],
+    activities: [
+        {
+            id: "1",
+            time: "09:00",
+            date: "08/04",
+            type: "comment",
+            content: "Bạn đã bình luận vào bài học Vật lý 10.",
+        },
+        {
+            id: "2",
+            time: "08:45",
+            date: "08/04",
+            type: "test",
+            content: "Bạn đã hoàn thành bài kiểm tra Sinh học.",
+        },
+        {
+            id: "3",
+            time: "08:30",
+            date: "08/04",
+            type: "favorite",
+            content: "Bạn đã yêu thích bài học Toán học 11.",
+        },
+    ],
 };

@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: "#fff",
         marginTop: 30,
+        flex: 1,
     },
     commentItem: {
         flexDirection: "row",

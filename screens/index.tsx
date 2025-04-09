@@ -12,6 +12,9 @@ import LessonListScreen from "./LessonListScreen";
 import LessonScreen from "./LessonScreen";
 import CommentScreen from "./CommentScreen";
 import ExerciseScreen from "./ExerciseScreen";
+import StorageExamScreen from "./StorageExamScreen";
+import NotificationScreen from "./NotificationScreen";
+import HistoryScreen from "./HistoryScreen";
 
 export {
     // Authentication
@@ -30,4 +33,7 @@ export {
     LessonScreen,
     CommentScreen,
     ExerciseScreen,
+    StorageExamScreen,
+    NotificationScreen,
+    HistoryScreen,
 };

@@ -12,15 +12,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
 import { CategoryItemComponent, SlideShow, TopViewLesson } from "@/components";
-
-let categories = [
-    { _id: "1", name: "Frontend", icon: "home-outline" },
-    { _id: "2", name: "Backend", icon: "home-outline" },
-    { _id: "3", name: "DevOps", icon: "home-outline" },
-    { _id: "4", name: "FullStack", icon: "home-outline" },
-    { _id: "5", name: "Android", icon: "home-outline" },
-    { _id: "6", name: "DataAnalyst", icon: "home-outline" },
-];
 const mockPracticeData = Array.from({ length: 50 }, (_, i) => ({
     _id: i + 1,
     title: `Môn học ${i + 1}`,
@@ -28,7 +19,7 @@ const mockPracticeData = Array.from({ length: 50 }, (_, i) => ({
 }));
 
 const PAGE_SIZE = 10;
-const HomeScreen = ({ navigation }: any) => {
+const StorageExamScreen = ({ navigation }: any) => {
     const [data, setData] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -56,7 +47,6 @@ const HomeScreen = ({ navigation }: any) => {
     useEffect(() => {
         loadData();
     }, []);
-
     const renderItem = ({ item }: any) => (
         <Pressable
             onPress={() => navigation.navigate("LessonTab", { _id: item._id })}
@@ -72,44 +62,10 @@ const HomeScreen = ({ navigation }: any) => {
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id.toString()}
-                ListHeaderComponent={
-                    <View>
-                        {/* Slide show */}
-                        <View style={{ marginVertical: 20 }}>
-                            <SlideShow />
-                        </View>
-
-                        {/* Category */}
-                        <View>
-                            <Text style={styles.title}>Khóa học</Text>
-                            <View style={styles.cateView}>
-                                {categories.map((cate, index) => (
-                                    <CategoryItemComponent
-                                        key={index}
-                                        category={cate}
-                                        navigation={navigation}
-                                    />
-                                ))}
-                            </View>
-                        </View>
-
-                        {/* Top view */}
-                        <View style={{ marginTop: 20 }}>
-                            <Text style={styles.title}>Xem nhiều</Text>
-                            <TopViewLesson navigation={navigation} />
-                        </View>
-
-                        {/* Practice Title */}
-                        <View style={{ marginTop: 20 }}>
-                            <Text style={styles.title}>Luyện tập</Text>
-                        </View>
-                    </View>
-                }
                 contentContainerStyle={{
                     backgroundColor: "#fff",
                     paddingBottom: 40,
                 }}
-                showsVerticalScrollIndicator={false}
                 onEndReached={loadData}
                 onEndReachedThreshold={0.5}
                 ListFooterComponent={
@@ -123,13 +79,7 @@ const HomeScreen = ({ navigation }: any) => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
-    cateView: {
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap",
-    },
     item: {
         backgroundColor: "#fff",
         padding: 16,
@@ -148,4 +98,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default StorageExamScreen;
