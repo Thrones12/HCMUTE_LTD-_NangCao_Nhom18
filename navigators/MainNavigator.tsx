@@ -3,8 +3,8 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeScreen } from "@/screens";
 import TabNavigator from "./TabNavigator";
-import LessonListScreen from "@/screens/LessonListScreen";
-import { SubjectListScreen } from "@/screens";
+import { SubjectListScreen, LessonScreen, LessonListScreen } from "@/screens";
+import LessonTabNavigator from "./LessonTabNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,8 +15,9 @@ const MainNavigator = () => {
             initialRouteName='Main'
         >
             <Stack.Screen name='Main' component={TabNavigator} />
-            <Stack.Screen name='LessonList' component={LessonListScreen} />
             <Stack.Screen name='SubjectList' component={SubjectListScreen} />
+            <Stack.Screen name='LessonList' component={LessonListScreen} />
+            <Stack.Screen name='LessonTab' component={LessonTabNavigator} />
         </Stack.Navigator>
     );
 };

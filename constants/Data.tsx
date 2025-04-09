@@ -37,4 +37,51 @@ export const Data = {
             ],
         },
     ],
+    comments: [
+        {
+            _id: "1",
+            user: {
+                name: "Nguyễn Văn A",
+                avatar: "https://i.pravatar.cc/150?img=1",
+            },
+            content: "Bài học rất hay!",
+            createdAt: "2025-04-08T08:00:00Z",
+        },
+        {
+            _id: "2",
+            user: {
+                name: "Trần Thị B",
+                avatar: "https://i.pravatar.cc/150?img=2",
+            },
+            content: "Mình không hiểu phần công thức lắm 😢",
+            createdAt: "2025-04-08T10:00:00Z",
+        },
+        {
+            _id: "3",
+            user: {
+                name: "Trần Thị B",
+                avatar: "https://i.pravatar.cc/150?img=2",
+            },
+            content: "Mình không hiểu phần công thức lắm 😢",
+            createdAt: "2025-04-08T10:00:00Z",
+        },
+        {
+            _id: "4",
+            user: {
+                name: "Trần Thị B",
+                avatar: "https://i.pravatar.cc/150?img=2",
+            },
+            content: "Mình không hiểu phần công thức lắm 😢",
+            createdAt: "2025-04-08T10:00:00Z",
+        },
+        {
+            _id: "5",
+            user: {
+                name: "Trần Thị B",
+                avatar: "https://i.pravatar.cc/150?img=2",
+            },
+            content: "Mình không hiểu phần công thức lắm 😢",
+            createdAt: "2025-04-08T10:00:00Z",
+        },
+    ],
 };

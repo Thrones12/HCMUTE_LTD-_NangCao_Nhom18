@@ -8,6 +8,10 @@ import CourseListScreen from "./CourseListScreen";
 import PracticeScreen from "./PracticeScreen";
 import CameraScreen from "./CameraScreen";
 import SubjectListScreen from "./SubjectListScreen";
+import LessonListScreen from "./LessonListScreen";
+import LessonScreen from "./LessonScreen";
+import CommentScreen from "./CommentScreen";
+import ExerciseScreen from "./ExerciseScreen";
 
 export {
     // Authentication
@@ -22,4 +26,8 @@ export {
     ProfileScreen,
     CameraScreen,
     SubjectListScreen,
+    LessonListScreen,
+    LessonScreen,
+    CommentScreen,
+    ExerciseScreen,
 };

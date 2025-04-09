@@ -6,17 +6,12 @@ import {
     StyleSheet,
     FlatList,
     ActivityIndicator,
+    Pressable,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
-import {
-    CategoryItemComponent,
-    SlideShow,
-    TopViewLesson,
-    PracticeList,
-    LessonItem,
-} from "@/components";
+import { CategoryItemComponent, SlideShow, TopViewLesson } from "@/components";
 
 let categories = [
     { _id: "1", name: "Frontend", icon: "home-outline" },
@@ -27,7 +22,7 @@ let categories = [
     { _id: "6", name: "DataAnalyst", icon: "home-outline" },
 ];
 const mockPracticeData = Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
+    _id: i + 1,
     title: `Môn học ${i + 1}`,
     course: "Lớp 12",
 }));
@@ -61,12 +56,22 @@ const HomeScreen = ({ navigation }: any) => {
     useEffect(() => {
         loadData();
     }, []);
+
+    const renderItem = ({ item }: any) => (
+        <Pressable
+            onPress={() => navigation.navigate("LessonTab", { _id: item._id })}
+            style={styles.item}
+        >
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.course}>{item.course}</Text>
+        </Pressable>
+    );
     return (
         <View style={GStyles.container}>
             <FlatList
                 data={data}
-                renderItem={({ item }) => <LessonItem item={item} />}
-                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderItem}
+                keyExtractor={(item) => item._id.toString()}
                 ListHeaderComponent={
                     <View>
                         {/* Slide show */}

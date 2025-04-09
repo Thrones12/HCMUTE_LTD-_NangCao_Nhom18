@@ -2,6 +2,8 @@ import TextComponent from "./TextComponent";
 import ButtonComponent from "./ButtonComponent";
 import CheckBoxComponent from "./CheckBoxComponent";
 import InputTextComponent from "./InputTextComponent";
+import VideoComponent from "./VideoComponent";
+import DocumentComponent from "./DocumentComponent";
 import CategoryItemComponent from "./CategoryItemComponent";
 import SlideShow from "./SlideShow";
 import TopViewLesson from "./TopViewLesson";
@@ -13,6 +15,8 @@ export {
     ButtonComponent,
     CheckBoxComponent,
     InputTextComponent,
+    VideoComponent,
+    DocumentComponent,
     CategoryItemComponent,
     SlideShow,
     TopViewLesson,
