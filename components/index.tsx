@@ -6,6 +6,7 @@ import CategoryItemComponent from "./CategoryItemComponent";
 import SlideShow from "./SlideShow";
 import TopViewLesson from "./TopViewLesson";
 import PracticeList from "./PracticeList";
+import LessonItem from "./LessonItem";
 
 export {
     TextComponent,
@@ -16,4 +17,5 @@ export {
     SlideShow,
     TopViewLesson,
     PracticeList,
+    LessonItem,
 };

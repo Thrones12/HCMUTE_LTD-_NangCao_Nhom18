@@ -1,31 +1,41 @@
 // Hiển thị 10 môn học xem nhiều nhất trong trang home
 import { Colors } from "@/constants";
 import React from "react";
-import { View, Text, FlatList, StyleSheet, Dimensions } from "react-native";
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    Dimensions,
+    Pressable,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const products = [
-    { id: "1", name: "Vật lý", course: "Lớp 12" },
-    { id: "2", name: "Hóa học", course: "Lớp 12" },
-    { id: "3", name: "Sinh học", course: "Lớp 12" },
-    { id: "4", name: "Toán học", course: "Lớp 12" },
-    { id: "5", name: "Địa lí", course: "Lớp 12" },
-    { id: "6", name: "Lịch sử", course: "Lớp 12" },
-    { id: "7", name: "Ngữ văn", course: "Lớp 12" },
-    { id: "8", name: "Tiếng anh", course: "Lớp 12" },
-    { id: "9", name: "GDCD", course: "Lớp 12" },
-    { id: "10", name: "Công nghệ", course: "Lớp 12" },
+    { _id: "1", name: "Vật lý", course: "Lớp 12" },
+    { _id: "2", name: "Hóa học", course: "Lớp 12" },
+    { _id: "3", name: "Sinh học", course: "Lớp 12" },
+    { _id: "4", name: "Toán học", course: "Lớp 12" },
+    { _id: "5", name: "Địa lí", course: "Lớp 12" },
+    { _id: "6", name: "Lịch sử", course: "Lớp 12" },
+    { _id: "7", name: "Ngữ văn", course: "Lớp 12" },
+    { _id: "8", name: "Tiếng anh", course: "Lớp 12" },
+    { _id: "9", name: "GDCD", course: "Lớp 12" },
+    { _id: "10", name: "Công nghệ", course: "Lớp 12" },
 ];
 
 const CARD_WIDTH = screenWidth / 2 - 30; // width of 1 card
 const GAP = 20; // space between cards
 const SNAP_INTERVAL = CARD_WIDTH + GAP;
 
-const TopViewLesson = () => {
+const TopViewLesson = ({ navigation }: any) => {
     const renderItem = ({ item }: any) => (
-        <View style={styles.card}>
+        <Pressable
+            onPress={() => navigation.navigate("LessonList", { _id: item._id })}
+            style={styles.card}
+        >
             <View style={styles.info}>
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.course}>{item.course}</Text>
@@ -34,14 +44,14 @@ const TopViewLesson = () => {
                 <Text style={{ fontSize: 12, color: Colors.Gray600 }}>518</Text>
                 <Ionicons name='eye-outline' size={13} color={Colors.Gray600} />
             </View>
-        </View>
+        </Pressable>
     );
 
     return (
         <FlatList
             data={products}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
             horizontal
             showsHorizontalScrollIndicator={false}
             snapToInterval={SNAP_INTERVAL}

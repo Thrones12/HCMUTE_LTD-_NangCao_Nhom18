@@ -15,6 +15,7 @@ import {
     SlideShow,
     TopViewLesson,
     PracticeList,
+    LessonItem,
 } from "@/components";
 
 let categories = [
@@ -27,7 +28,7 @@ let categories = [
 ];
 const mockPracticeData = Array.from({ length: 50 }, (_, i) => ({
     id: i + 1,
-    name: `Môn học ${i + 1}`,
+    title: `Môn học ${i + 1}`,
     course: "Lớp 12",
 }));
 
@@ -60,17 +61,11 @@ const HomeScreen = ({ navigation }: any) => {
     useEffect(() => {
         loadData();
     }, []);
-    const renderPracticeItem = ({ item }: any) => (
-        <View style={styles.item}>
-            <Text style={styles.title}>{item.name}</Text>
-            <Text style={styles.course}>{item.course}</Text>
-        </View>
-    );
     return (
         <View style={GStyles.container}>
             <FlatList
                 data={data}
-                renderItem={renderPracticeItem}
+                renderItem={({ item }) => <LessonItem item={item} />}
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={
                     <View>
@@ -96,7 +91,7 @@ const HomeScreen = ({ navigation }: any) => {
                         {/* Top view */}
                         <View style={{ marginTop: 20 }}>
                             <Text style={styles.title}>Xem nhiều</Text>
-                            <TopViewLesson />
+                            <TopViewLesson navigation={navigation} />
                         </View>
 
                         {/* Practice Title */}

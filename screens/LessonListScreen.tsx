@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Data, GStyles } from "@/constants";
+import { LessonItem } from "@/components";
 
 const PAGE_SIZE = 10;
 const LessonListScreen = ({ route }: any) => {
@@ -70,7 +71,7 @@ const LessonListScreen = ({ route }: any) => {
         <View style={GStyles.container}>
             <FlatList
                 data={data}
-                renderItem={renderItem}
+                renderItem={({ item }) => <LessonItem item={item} />}
                 keyExtractor={(item) => item._id.toString()}
                 contentContainerStyle={{
                     backgroundColor: "#fff",
