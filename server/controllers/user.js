@@ -5,7 +5,6 @@ require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const GetAll = async (req, res) => {
-    console.log("ser");
     // Các query có thể có khi get data
     const {} = req.query;
 
@@ -31,7 +30,10 @@ const GetOne = async (req, res) => {
 
     // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
     if (id) {
-        data = await User.findById(id);
+        data = await User.findById(id)
+            .populate({ path: "histories", model: "Activity" })
+            .populate({ path: "storage", model: "Lesson" })
+            .populate({ path: "results", model: "ExamResult" });
     } else if (email) {
         data = await User.findOne({ email });
     }

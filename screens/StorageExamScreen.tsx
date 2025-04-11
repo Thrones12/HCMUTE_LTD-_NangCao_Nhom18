@@ -12,6 +12,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
 import { CategoryItemComponent, SlideShow, TopViewLesson } from "@/components";
+
 const mockPracticeData = Array.from({ length: 50 }, (_, i) => ({
     _id: i + 1,
     title: `Môn học ${i + 1}`,
@@ -47,6 +48,7 @@ const StorageExamScreen = ({ navigation }: any) => {
     useEffect(() => {
         loadData();
     }, []);
+
     const renderItem = ({ item }: any) => (
         <Pressable
             onPress={() => navigation.navigate("LessonTab", { _id: item._id })}

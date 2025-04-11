@@ -1,0 +1,24 @@
+[{
+  "_id": {
+    "$oid": "67f8f2cd6ca9de3bebc34799"
+  },
+  "date": "2025-04-10T10:30:00Z",
+  "type": "comment",
+  "message": "Bạn đã bình luận vào bài học 'Cấu trúc câu trong tiếng Anh'."
+},
+{
+  "_id": {
+    "$oid": "67f8f2cd6ca9de3bebc3479a"
+  },
+  "date": "2025-04-09T14:15:00Z",
+  "type": "like",
+  "message": "Bạn đã yêu thích bài học 'Thì hiện tại hoàn thành'."
+},
+{
+  "_id": {
+    "$oid": "67f8f2cd6ca9de3bebc3479b"
+  },
+  "date": "2025-04-08T08:45:00Z",
+  "type": "exam",
+  "message": "Bạn đã hoàn thành bài kiểm tra 'Grammar Test - Level 1'."
+}]

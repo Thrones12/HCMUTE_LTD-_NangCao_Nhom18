@@ -1,0 +1,30 @@
+[
+    {
+        "_id": {
+            "$oid": "67f918e96ca9de3bebc347bc"
+        },
+        "title": "Bài kiểm tra số 1",
+        "duration": 3600,
+        "questions": [
+            "67d33e247509cbf964605008",
+            "67d33e247509cbf964605009",
+            "67d33e247509cbf96460500a"
+        ]
+    },
+    {
+        "_id": {
+            "$oid": "67f918e96ca9de3bebc347bd"
+        },
+        "title": "Bài kiểm tra số 2",
+        "duration": 3600,
+        "questions": []
+    },
+    {
+        "_id": {
+            "$oid": "67f918e96ca9de3bebc347be"
+        },
+        "title": "Bài kiểm tra số 3",
+        "duration": 3600,
+        "questions": []
+    }
+]

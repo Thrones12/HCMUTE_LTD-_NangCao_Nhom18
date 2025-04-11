@@ -7,6 +7,12 @@
         "email": "ad",
         "password": "$2b$10$qRog3JfYxpibV4ghd1xM2OaogebxfdqC.R00vNxZ7cVid4VLvO8eS",
         "status": "active",
-        "otp": "5162"
+        "otp": "5162",
+        "histories": [
+            "67f8f2cd6ca9de3bebc34799",
+            "67f8f2cd6ca9de3bebc3479a",
+            "67f8f2cd6ca9de3bebc3479b"
+        ],
+        "examResults": []
     }
 ]

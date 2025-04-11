@@ -1,0 +1,23 @@
+[
+    {
+        "_id": {
+            "$oid": "67f8cf756ca9de3bebc34782"
+        },
+        "title": "Lớp 10",
+        "subjects": ["67f8ce556ca9de3bebc3477a"]
+    },
+    {
+        "_id": {
+            "$oid": "67f8cf756ca9de3bebc34783"
+        },
+        "title": "Lớp 11",
+        "subjects": ["67f8ce556ca9de3bebc3477b"]
+    },
+    {
+        "_id": {
+            "$oid": "67f8cf756ca9de3bebc34784"
+        },
+        "title": "Lớp 12",
+        "subjects": ["67f8ce556ca9de3bebc3477c"]
+    }
+]

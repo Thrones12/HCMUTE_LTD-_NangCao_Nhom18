@@ -1,0 +1,33 @@
+[
+    {
+        "_id": {
+            "$oid": "67f8ce556ca9de3bebc3477a"
+        },
+        "title": "Vật lý 10",
+        "lessons": [
+            "67f8eb786ca9de3bebc3478e",
+            "67f8eb786ca9de3bebc3478f",
+            "67f8eb786ca9de3bebc34790"
+        ],
+        "exams": [],
+        "views": 0
+    },
+    {
+        "_id": {
+            "$oid": "67f8ce556ca9de3bebc3477b"
+        },
+        "title": "Vật lý 11",
+        "lessons": [],
+        "exams": [],
+        "views": 0
+    },
+    {
+        "_id": {
+            "$oid": "67f8ce556ca9de3bebc3477c"
+        },
+        "title": "Vật lý 12",
+        "lessons": [],
+        "exams": [],
+        "views": 0
+    }
+]

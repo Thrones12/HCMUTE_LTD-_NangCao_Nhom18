@@ -4,13 +4,14 @@ import {
     FlatList,
     StyleSheet,
     ActivityIndicator,
+    Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Data, GStyles } from "@/constants";
 import { LessonItem } from "@/components";
 
 const PAGE_SIZE = 10;
-const LessonListScreen = ({ route }: any) => {
+const LessonListScreen = ({ navigation, route }: any) => {
     const { _id } = route.params;
     const [lessons, setLessons] = useState([
         { _id: "1", title: "Bài 1: vật lý lớp 10 bài 1" },
@@ -60,9 +61,12 @@ const LessonListScreen = ({ route }: any) => {
         }, 1000);
     };
     const renderItem = ({ item }: any) => (
-        <View style={styles.item}>
+        <Pressable
+            onPress={() => navigation.navigate("LessonTab", { _id: item._id })}
+            style={styles.item}
+        >
             <Text style={styles.title}>{item.title}</Text>
-        </View>
+        </Pressable>
     );
     useEffect(() => {
         loadData();
@@ -71,7 +75,7 @@ const LessonListScreen = ({ route }: any) => {
         <View style={GStyles.container}>
             <FlatList
                 data={data}
-                renderItem={({ item }) => <LessonItem item={item} />}
+                renderItem={renderItem}
                 keyExtractor={(item) => item._id.toString()}
                 contentContainerStyle={{
                     backgroundColor: "#fff",

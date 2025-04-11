@@ -1,0 +1,26 @@
+[{
+  "_id": {
+    "$oid": "67f912d777e383c562a09d51"
+  },
+  "user": {
+    "$oid": "67e9559ef5b10feb0246715a"
+  },
+  "content": "For the emperor!!!!",
+  "createAt": {
+    "$date": "2025-04-11T13:00:32.082Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f912e977e383c562a09d53"
+  },
+  "user": {
+    "$oid": "67e9559ef5b10feb0246715a"
+  },
+  "content": "Khorn chỉ là con chó gặp xương",
+  "createAt": {
+    "$date": "2025-04-11T13:00:32.082Z"
+  },
+  "__v": 0
+}]

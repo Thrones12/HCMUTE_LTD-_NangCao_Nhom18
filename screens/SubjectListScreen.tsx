@@ -28,6 +28,7 @@ const SubjectListScreen = ({ route, navigation }: any) => {
                                 onPress={() =>
                                     navigation.navigate("LessonList", {
                                         _id: subject._id,
+                                        navigation: navigation,
                                     })
                                 }
                             >

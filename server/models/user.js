@@ -6,6 +6,9 @@ const schema = new mongoose.Schema({
     password: { type: String },
     status: { type: String, enum: ["active", "locked"], default: "locked" },
     otp: { type: String },
+    histories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
+    storage: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
+    results: [{ type: mongoose.Schema.Types.ObjectId, ref: "ExamResult" }],
 });
 
 const User = mongoose.model("User", schema);
