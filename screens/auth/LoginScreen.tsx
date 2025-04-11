@@ -48,14 +48,14 @@ const LoginScreen = ({ navigation }: any) => {
                 {/* Back ground title */}
                 <View style={styles.backgroundView}>
                     <Image
-                        source={require("../assets/images/background.png")}
+                        source={require("../../assets/images/background.png")}
                         style={{
                             width: "100%",
                             height: "100%",
                         }}
                     />
                     <Image
-                        source={require("../assets/images/light.png")}
+                        source={require("../../assets/images/light.png")}
                         style={{
                             position: "absolute",
                             top: -12,
@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }: any) => {
                         }}
                     />
                     <Image
-                        source={require("../assets/images/light.png")}
+                        source={require("../../assets/images/light.png")}
                         style={{
                             position: "absolute",
                             top: -48,

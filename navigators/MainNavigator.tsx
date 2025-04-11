@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeScreen } from "@/screens";
-import TabNavigator from "./TabNavigator";
+import MainTabNavigator from "./MainTabNavigator";
 import {
     SubjectListScreen,
     LessonScreen,
@@ -21,13 +21,16 @@ const MainNavigator = () => {
             screenOptions={{ headerShown: false }}
             initialRouteName='Main'
         >
-            <Stack.Screen name='Main' component={TabNavigator} />
+            {/* Tab navigator */}
+            <Stack.Screen name='Main' component={MainTabNavigator} />
+            <Stack.Screen name='LessonTab' component={LessonTabNavigator} />
+            {/* Profile screen */}
+            <Stack.Screen name='StorageExam' component={StorageExamScreen} />
+            <Stack.Screen name='History' component={HistoryScreen} />
+
             <Stack.Screen name='SubjectList' component={SubjectListScreen} />
             <Stack.Screen name='LessonList' component={LessonListScreen} />
-            <Stack.Screen name='LessonTab' component={LessonTabNavigator} />
-            <Stack.Screen name='StorageExam' component={StorageExamScreen} />
             <Stack.Screen name='Notification' component={NotificationScreen} />
-            <Stack.Screen name='History' component={HistoryScreen} />
         </Stack.Navigator>
     );
 };

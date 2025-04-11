@@ -31,6 +31,39 @@ const GetAll = async (req, res) => {
     }
 };
 
+// Get top dữ liệu
+const GetTop = async (req, res) => {
+    try {
+        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+
+        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
+        {
+            data = await Lesson.find({})
+                .sort({ views: -1 }) // sắp xếp giảm dần theo views
+                .limit(10) // giới hạn 10 kết quả
+                .populate({
+                    path: "likes",
+                    model: "User",
+                })
+                .populate({
+                    path: "comments",
+                    model: "Comment",
+                });
+        }
+
+        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
+        if (!data)
+            return res
+                .status(404)
+                .json({ data: [], message: "Lesson not found" });
+
+        console.log("Get Lesson: \n" + data);
+        return res.status(200).json({ data, message: "Get all thành công" });
+    } catch (err) {
+        return res.status(500).json({ data: [], message: "Lỗi server" });
+    }
+};
+
 // Get dữ liệu bằng query, ex: http:192.168.1.3:8080/api/lesson/getOne?id=.....
 const GetOne = async (req, res) => {
     try {
@@ -151,6 +184,7 @@ const Delete = async (req, res) => {
 
 module.exports = {
     GetAll,
+    GetTop,
     GetOne,
     Create,
     Update,

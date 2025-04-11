@@ -10,7 +10,6 @@ import {
     ActivityIndicator,
 } from "react-native";
 import React, { useState, useRef, useContext, useEffect } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
 import {
     ButtonComponent,
@@ -18,60 +17,18 @@ import {
     InputTextComponent,
 } from "@/components";
 import axios from "axios";
+import { AuthContext } from "@/contexts/AuthContext";
 
-const VertifyScreen = ({ navigation, route }: any) => {
-    const API = "http://192.168.1.3:8080/api/";
-    const { vertify, regeneratePassword } = useContext(AuthContext);
-    const { email, type } = route.params || {};
+const ForgetPasswordScreen = ({ navigation }: any) => {
+    const { lockForRegeneratePassword } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
-    const [vertifyOtp, setVertifyOtp] = useState();
-
-    const [otp, setOTP] = useState(["", "", "", ""]);
-    const input1 = useRef<TextInput>(null);
-    const input2 = useRef<TextInput>(null);
-    const input3 = useRef<TextInput>(null);
-    const input4 = useRef<TextInput>(null);
-
-    useEffect(() => {
-        if (!email) navigation.navigate("Login");
-    }, [email]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await axios.get(`${API}user/get-otp?email=${email}`);
-            setVertifyOtp(res.data);
-        };
-        fetchData();
-    }, []);
-
-    const handleChangeOTP = (index: number, value: string) => {
-        // Chỉ cho phép nhập số
-        if (!/^\d?$/.test(value)) return;
-
-        const newOTP = [...otp];
-        newOTP[index] = value;
-        setOTP(newOTP);
-
-        // Chuyển focus sang ô tiếp theo (nếu có)
-        if (value && index === 0) {
-            input2.current?.focus();
-        }
-        if (value && index === 1) {
-            input3.current?.focus();
-        }
-        if (value && index === 2) {
-            input4.current?.focus();
-        }
-    };
+    const [email, setEmail] = useState("");
 
     const handleSubmit = async () => {
         setLoading(true);
-        const inputOTP = otp.join("");
-        const res = await vertify(vertifyOtp, inputOTP, email, type);
-        if (res) {
-            navigation.navigate("Login");
-        }
+        const res = await lockForRegeneratePassword(email);
         setLoading(false);
+        if (res) navigation.navigate("Vertify", { email, type: "forget" });
     };
 
     return (
@@ -89,14 +46,14 @@ const VertifyScreen = ({ navigation, route }: any) => {
                 {/* Back ground title */}
                 <View style={styles.backgroundView}>
                     <Image
-                        source={require("../assets/images/background.png")}
+                        source={require("../../assets/images/background.png")}
                         style={{
                             width: "100%",
                             height: "100%",
                         }}
                     />
                     <Image
-                        source={require("../assets/images/light.png")}
+                        source={require("../../assets/images/light.png")}
                         style={{
                             position: "absolute",
                             top: -12,
@@ -105,7 +62,7 @@ const VertifyScreen = ({ navigation, route }: any) => {
                         }}
                     />
                     <Image
-                        source={require("../assets/images/light.png")}
+                        source={require("../../assets/images/light.png")}
                         style={{
                             position: "absolute",
                             top: -48,
@@ -113,36 +70,18 @@ const VertifyScreen = ({ navigation, route }: any) => {
                             transform: "scale(0.6)",
                         }}
                     />
-                    <Text style={styles.titleText}>Xác thực</Text>
+                    <Text style={styles.titleText}>Quên mật khẩu</Text>
                 </View>
                 {/* Input view */}
                 <View style={styles.inputView}>
-                    <View style={styles.VertifyView}>
-                        <InputTextComponent
-                            value={otp[0]}
-                            onChangeText={(text) => handleChangeOTP(0, text)}
-                            styles={styles.inputText}
-                            ref={input1}
-                        />
-                        <InputTextComponent
-                            value={otp[1]}
-                            onChangeText={(text) => handleChangeOTP(1, text)}
-                            styles={styles.inputText}
-                            ref={input2}
-                        />
-                        <InputTextComponent
-                            value={otp[2]}
-                            onChangeText={(text) => handleChangeOTP(2, text)}
-                            styles={styles.inputText}
-                            ref={input3}
-                        />
-                        <InputTextComponent
-                            value={otp[3]}
-                            onChangeText={(text) => handleChangeOTP(3, text)}
-                            styles={styles.inputText}
-                            ref={input4}
-                        />
-                    </View>
+                    <InputTextComponent
+                        value={email}
+                        onChangeText={setEmail}
+                        placeholder='Email'
+                        returnKeyType='next'
+                        onSubmitEditing={handleSubmit}
+                        styles={styles.inputText}
+                    />
                     <ButtonComponent
                         type='primary'
                         text='Xác nhận'
@@ -150,7 +89,7 @@ const VertifyScreen = ({ navigation, route }: any) => {
                         styles={styles.buttonLogin}
                         bgColor={Colors.Sky}
                         bgColorPress={Colors.SkyPress}
-                        onPress={() => handleSubmit()}
+                        onPress={handleSubmit}
                     />
                     {/* Register link */}
                     <View style={styles.loginLinkView}>
@@ -168,7 +107,7 @@ const VertifyScreen = ({ navigation, route }: any) => {
     );
 };
 
-export default VertifyScreen;
+export default ForgetPasswordScreen;
 
 const styles = StyleSheet.create({
     indicator: {

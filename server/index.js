@@ -1,5 +1,6 @@
 let express = require("express");
 let cors = require("cors");
+let path = require("path");
 let mongoose = require("mongoose");
 require("dotenv").config();
 let app = express();
@@ -7,6 +8,8 @@ let app = express();
 // Cho phép FE và BE listen các port khác nhau
 app.use(cors());
 
+// Cho phép truy cập file tĩnh
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Middleware để phân tích dữ liệu form (x-www-form-urlencoded)
 app.use(express.urlencoded({ extended: true }));
 // Middleware để phân tích dữ liệu JSON

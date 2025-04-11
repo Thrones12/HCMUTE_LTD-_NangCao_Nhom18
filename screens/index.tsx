@@ -1,20 +1,20 @@
-import HomeScreen from "./HomeScreen";
-import LoginScreen from "./LoginScreen";
-import RegisterScreen from "./RegisterScreen";
-import ForgetPasswordScreen from "./ForgetPasswordScreen";
-import VertifyScreen from "./VertifyScreen";
-import ProfileScreen from "./ProfileScreen";
-import CourseListScreen from "./CourseListScreen";
-import PracticeScreen from "./PracticeScreen";
-import CameraScreen from "./CameraScreen";
+import HomeScreen from "./mainTab/HomeScreen";
+import LoginScreen from "./auth/LoginScreen";
+import RegisterScreen from "./auth/RegisterScreen";
+import ForgetPasswordScreen from "./auth/ForgetPasswordScreen";
+import VertifyScreen from "./auth/VertifyScreen";
+import ProfileScreen from "./mainTab/ProfileScreen";
+import CourseListScreen from "./mainTab/CourseListScreen";
+import PracticeScreen from "./mainTab/PracticeScreen";
+import CameraScreen from "./mainTab/CameraScreen";
 import SubjectListScreen from "./SubjectListScreen";
 import LessonListScreen from "./LessonListScreen";
-import LessonScreen from "./LessonScreen";
-import CommentScreen from "./CommentScreen";
-import ExerciseScreen from "./ExerciseScreen";
-import StorageExamScreen from "./StorageExamScreen";
+import LessonScreen from "./lessonTab/LessonScreen";
+import CommentScreen from "./lessonTab/CommentScreen";
+import ExerciseScreen from "./lessonTab/ExerciseScreen";
+import StorageExamScreen from "./profile/StorageExamScreen";
 import NotificationScreen from "./NotificationScreen";
-import HistoryScreen from "./HistoryScreen";
+import HistoryScreen from "./profile/HistoryScreen";
 
 export {
     // Authentication
@@ -22,18 +22,21 @@ export {
     RegisterScreen,
     ForgetPasswordScreen,
     VertifyScreen,
-    // Tab navigation
+    // Main tab
     HomeScreen,
     CourseListScreen,
     PracticeScreen,
     ProfileScreen,
     CameraScreen,
-    SubjectListScreen,
-    LessonListScreen,
+    // Lesson tab
     LessonScreen,
     CommentScreen,
     ExerciseScreen,
+    // Profile
     StorageExamScreen,
-    NotificationScreen,
     HistoryScreen,
+    // System
+    SubjectListScreen,
+    LessonListScreen,
+    NotificationScreen,
 };

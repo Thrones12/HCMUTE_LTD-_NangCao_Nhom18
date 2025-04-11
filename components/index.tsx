@@ -4,11 +4,12 @@ import CheckBoxComponent from "./CheckBoxComponent";
 import InputTextComponent from "./InputTextComponent";
 import VideoComponent from "./VideoComponent";
 import DocumentComponent from "./DocumentComponent";
-import CategoryItemComponent from "./CategoryItemComponent";
+import CourseComponent from "./CourseComponent";
 import SlideShow from "./SlideShow";
-import TopViewLesson from "./TopViewLesson";
+import TopExam from "./TopExam";
 import PracticeList from "./PracticeList";
 import LessonItem from "./LessonItem";
+import CardExam from "./CardExam";
 
 export {
     TextComponent,
@@ -17,9 +18,10 @@ export {
     InputTextComponent,
     VideoComponent,
     DocumentComponent,
-    CategoryItemComponent,
+    CourseComponent,
     SlideShow,
-    TopViewLesson,
+    TopExam,
     PracticeList,
     LessonItem,
+    CardExam,
 };

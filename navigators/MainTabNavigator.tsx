@@ -13,7 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
+const MainTabNavigator = () => {
     return (
         <Tab.Navigator
             backBehavior='history'
@@ -83,4 +83,4 @@ const TabNavigator = () => {
         </Tab.Navigator>
     );
 };
-export default TabNavigator;
+export default MainTabNavigator;
