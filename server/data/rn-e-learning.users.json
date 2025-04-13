@@ -1,18 +1,49 @@
-[
+[{
+  "_id": {
+    "$oid": "67e9559ef5b10feb0246715a"
+  },
+  "avatar": "http://192.168.1.3:8080/uploads/images/react-logo.png",
+  "fullname": "Phạm Hùng Phong",
+  "email": "ad",
+  "password": "$2b$10$qRog3JfYxpibV4ghd1xM2OaogebxfdqC.R00vNxZ7cVid4VLvO8eS",
+  "status": "active",
+  "otp": "5162",
+  "histories": [
     {
-        "_id": {
-            "$oid": "67e9559ef5b10feb0246715a"
-        },
-        "fullname": "Phạm Hùng Phong",
-        "email": "ad",
-        "password": "$2b$10$qRog3JfYxpibV4ghd1xM2OaogebxfdqC.R00vNxZ7cVid4VLvO8eS",
-        "status": "active",
-        "otp": "5162",
-        "histories": [
-            "67f8f2cd6ca9de3bebc34799",
-            "67f8f2cd6ca9de3bebc3479a",
-            "67f8f2cd6ca9de3bebc3479b"
-        ],
-        "examResults": []
+      "$oid": "67f8f2cd6ca9de3bebc34799"
+    },
+    {
+      "$oid": "67f8f2cd6ca9de3bebc3479a"
+    },
+    {
+      "$oid": "67f8f2cd6ca9de3bebc3479b"
+    },
+    {
+      "$oid": "67f8fc1547bf8c95ceab4fb1"
     }
-]
+  ],
+  "results": [
+    "67f91f8cbfc7c274382f0999"
+  ],
+  "storage": [
+    "67f8eb786ca9de3bebc3478e"
+  ],
+  "__v": 2,
+  "phone": "0981141044"
+},
+{
+  "_id": {
+    "$oid": "67f910456ca9de3bebc347b9"
+  },
+  "avatar": "http://192.168.1.3:8080/uploads/images/react-logo.png",
+  "fullname": "Phạm Hùng Phong",
+  "email": "ad",
+  "password": "$2b$10$qRog3JfYxpibV4ghd1xM2OaogebxfdqC.R00vNxZ7cVid4VLvO8eS",
+  "status": "active",
+  "otp": "5162",
+  "histories": [],
+  "results": [],
+  "storage": [],
+  "__v": 2,
+  "phone": "0981141044"
+}]

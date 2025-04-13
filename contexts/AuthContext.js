@@ -2,11 +2,12 @@ import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Notification from "@/services/Notification";
+import { Constant } from "@/constants/Constant";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const API = "http://192.168.1.3:8080/api/";
+    const API = Constant.API;
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
 

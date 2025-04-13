@@ -8,7 +8,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 const Tab = createBottomTabNavigator();
 
 const LessonTabNavigator = ({ route }: any) => {
-    const { _id } = route.params;
+    const { lesson } = route.params;
     return (
         <Tab.Navigator
             backBehavior='history'
@@ -66,15 +66,15 @@ const LessonTabNavigator = ({ route }: any) => {
         >
             <Tab.Screen
                 name='Lesson'
-                children={() => <LessonScreen _id={_id} />}
+                children={() => <LessonScreen lesson={lesson} />}
             />
             <Tab.Screen
                 name='Exercise'
-                children={() => <ExerciseScreen _id={_id} />}
+                children={() => <ExerciseScreen lesson={lesson} />}
             />
             <Tab.Screen
                 name='Comment'
-                children={() => <CommentScreen _id={_id} />}
+                children={() => <CommentScreen lesson={lesson} />}
             />
         </Tab.Navigator>
     );

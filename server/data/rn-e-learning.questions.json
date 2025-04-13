@@ -1,0 +1,26 @@
+[
+    {
+        "_id": {
+            "$oid": "67d33e247509cbf964605008"
+        },
+        "question": "câu 1",
+        "options": ["Toán", "Lý", "Hóa", "Sinh"],
+        "answer": "Toán"
+    },
+    {
+        "_id": {
+            "$oid": "67d33e247509cbf964605009"
+        },
+        "question": "câu 2",
+        "options": ["Sử", "Địa", "GDCD", "Văn"],
+        "answer": "Văn"
+    },
+    {
+        "_id": {
+            "$oid": "67d33e247509cbf96460500a"
+        },
+        "question": "câu 3",
+        "options": ["Tôi", "Tớ", "Bạn", "Mình"],
+        "answer": "Tớ"
+    }
+]

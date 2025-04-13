@@ -1,18 +1,18 @@
 [{
   "_id": {
-    "$oid": "67f91f10e6f32cdf7cb9b1b6"
+    "$oid": "67f91f8cbfc7c274382f0999"
   },
   "exam": {
     "$oid": "67f918e96ca9de3bebc347bc"
   },
-  "score": 6.7,
+  "score": 6.8,
   "answers": [
     {
       "questionId": "67d33e247509cbf964605008",
       "answer": "Toán",
       "result": true,
       "_id": {
-        "$oid": "67f91f6536c626e4fef52089"
+        "$oid": "67f91f8cbfc7c274382f099a"
       }
     },
     {
@@ -20,7 +20,7 @@
       "answer": "Văn",
       "result": true,
       "_id": {
-        "$oid": "67f91f6536c626e4fef5208a"
+        "$oid": "67f91f8cbfc7c274382f099b"
       }
     },
     {
@@ -28,12 +28,90 @@
       "answer": "Tôi",
       "result": false,
       "_id": {
-        "$oid": "67f91f6536c626e4fef5208b"
+        "$oid": "67f91f8cbfc7c274382f099c"
       }
     }
   ],
   "submitAt": {
-    "$date": "2025-04-11T13:54:24.925Z"
+    "$date": "2025-04-11T13:56:28.105Z"
   },
-  "__v": 1
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f91f8cbfc7c274382f099e"
+  },
+  "exam": {
+    "$oid": "67f918e96ca9de3bebc347bc"
+  },
+  "score": 6.8,
+  "answers": [
+    {
+      "questionId": "67d33e247509cbf964605008",
+      "answer": "Toán",
+      "result": true,
+      "_id": {
+        "$oid": "67f91f8cbfc7c274382f099f"
+      }
+    },
+    {
+      "questionId": "67d33e247509cbf964605009",
+      "answer": "Văn",
+      "result": true,
+      "_id": {
+        "$oid": "67f91f8cbfc7c274382f09a0"
+      }
+    },
+    {
+      "questionId": "67d33e247509cbf96460500a",
+      "answer": "Tôi",
+      "result": false,
+      "_id": {
+        "$oid": "67f91f8cbfc7c274382f09a1"
+      }
+    }
+  ],
+  "submitAt": {
+    "$date": "2025-04-11T13:56:28.801Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67f91f8dbfc7c274382f09a3"
+  },
+  "exam": {
+    "$oid": "67f918e96ca9de3bebc347bc"
+  },
+  "score": 6.8,
+  "answers": [
+    {
+      "questionId": "67d33e247509cbf964605008",
+      "answer": "Toán",
+      "result": true,
+      "_id": {
+        "$oid": "67f91f8dbfc7c274382f09a4"
+      }
+    },
+    {
+      "questionId": "67d33e247509cbf964605009",
+      "answer": "Văn",
+      "result": true,
+      "_id": {
+        "$oid": "67f91f8dbfc7c274382f09a5"
+      }
+    },
+    {
+      "questionId": "67d33e247509cbf96460500a",
+      "answer": "Tôi",
+      "result": false,
+      "_id": {
+        "$oid": "67f91f8dbfc7c274382f09a6"
+      }
+    }
+  ],
+  "submitAt": {
+    "$date": "2025-04-11T13:56:29.581Z"
+  },
+  "__v": 0
 }]

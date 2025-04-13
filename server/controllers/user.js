@@ -64,7 +64,7 @@ const Login = async (req, res) => {
 
         res.status(200).json({
             token,
-            data: { id: user._id, fullname: user.fullname, email: user.email },
+            data: { _id: user._id, fullname: user.fullname, email: user.email },
         });
     } catch (error) {
         res.status(500).json({ message: "Lỗi server" });

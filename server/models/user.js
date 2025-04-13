@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
+    avatar: { type: String },
     fullname: { type: String },
+    phone: { type: String },
     email: { type: String },
     password: { type: String },
     status: { type: String, enum: ["active", "locked"], default: "locked" },

@@ -15,39 +15,10 @@ const GetAll = async (req, res) => {
                 .populate({
                     path: "comments",
                     model: "Comment",
-                });
-        }
-
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Lesson not found" });
-
-        console.log("Get Lesson: \n" + data);
-        return res.status(200).json({ data, message: "Get all thành công" });
-    } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
-    }
-};
-
-// Get top dữ liệu
-const GetTop = async (req, res) => {
-    try {
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
-
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        {
-            data = await Lesson.find({})
-                .sort({ views: -1 }) // sắp xếp giảm dần theo views
-                .limit(10) // giới hạn 10 kết quả
-                .populate({
-                    path: "likes",
-                    model: "User",
-                })
-                .populate({
-                    path: "comments",
-                    model: "Comment",
+                    populate: {
+                        path: "user",
+                        model: "User",
+                    },
                 });
         }
 
@@ -82,6 +53,10 @@ const GetOne = async (req, res) => {
                 .populate({
                     path: "comments",
                     model: "Comment",
+                    populate: {
+                        path: "user",
+                        model: "User",
+                    },
                 });
         }
 
@@ -182,11 +157,58 @@ const Delete = async (req, res) => {
     }
 };
 
+const Like = async (req, res) => {
+    try {
+        const { lessonId, userId } = req.body;
+
+        const lesson = await Lesson.findByIdAndUpdate(
+            lessonId,
+            { $addToSet: { likes: userId.toString() } }, // Chỉ thêm nếu chưa có
+            { new: true }
+        );
+
+        if (!lesson)
+            return res
+                .status(404)
+                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+
+        return res
+            .status(200)
+            .json({ data: lesson, message: "Like thành công" });
+    } catch (err) {
+        return res.status(500).json({ data: [], message: "Lỗi server" });
+    }
+};
+
+const Unlike = async (req, res) => {
+    try {
+        const { lessonId, userId } = req.body;
+
+        const lesson = await Lesson.findByIdAndUpdate(
+            lessonId,
+            { $pull: { likes: userId.toString() } }, // Xoá userId khỏi mảng likes
+            { new: true } // Trả về lesson đã được cập nhật
+        );
+
+        if (!lesson)
+            return res
+                .status(404)
+                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+
+        return res
+            .status(200)
+            .json({ data: lesson, message: "Unlike thành công" });
+    } catch (err) {
+        return res.status(500).json({ data: [], message: "Lỗi server" });
+    }
+};
+
 module.exports = {
     GetAll,
-    GetTop,
     GetOne,
     Create,
     Update,
     Delete,
+    Like,
+    Unlike,
 };

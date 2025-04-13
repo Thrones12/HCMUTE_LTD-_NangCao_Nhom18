@@ -1,4 +1,6 @@
 const Comment = require("../models/comment");
+const Lesson = require("../models/lesson");
+const User = require("../models/user");
 
 // Get toàn bộ dữ liệu, query
 // - userId: get toàn bộ coment trong comments của user
@@ -68,13 +70,21 @@ const GetOne = async (req, res) => {
     }
 };
 
-// Create, input:  content, user
+// Create, input:  content, userId, lessonId
 const Create = async (req, res) => {
     try {
-        const { content, user } = req.body;
+        const { content, userId, lessonId } = req.body;
 
-        const newData = new Comment({ content, user: user });
+        const newData = new Comment({ content, user: userId });
         newData.save();
+
+        const lesson = await Lesson.findOne({ _id: lessonId });
+        lesson.comments.push(newData._id.toString());
+        lesson.save();
+
+        const user = await User.findOne({ _id: userId });
+
+        newData.user = user;
 
         return res
             .status(200)

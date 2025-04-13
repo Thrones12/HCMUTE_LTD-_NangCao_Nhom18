@@ -17,7 +17,7 @@ const GetAll = async (req, res) => {
                     model: "User",
                 })
                 .populate({
-                    path: "save",
+                    path: "saves",
                     model: "User",
                 });
         }
@@ -55,7 +55,7 @@ const GetOne = async (req, res) => {
                     model: "User",
                 })
                 .populate({
-                    path: "save",
+                    path: "saves",
                     model: "User",
                 });
         }
@@ -88,7 +88,7 @@ const GetTop = async (req, res) => {
                 model: "User",
             })
             .populate({
-                path: "save",
+                path: "saves",
                 model: "User",
             });
 

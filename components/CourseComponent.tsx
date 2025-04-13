@@ -13,6 +13,7 @@ const CourseComponent = ({ courses, navigation }: any) => {
             onPress={() =>
                 navigation.navigate("SubjectList", {
                     _id: item._id,
+                    courseTitle: item.title,
                 })
             }
             style={styles.cateItem}

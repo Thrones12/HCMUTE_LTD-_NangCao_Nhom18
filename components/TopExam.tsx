@@ -57,7 +57,7 @@ const TopExam = ({ exams, navigation }: any) => {
                             color={Colors.Gray600}
                         />
                         <Text style={{ fontSize: 10, color: Colors.Gray600 }}>
-                            {item.save.length}
+                            {item.saves.length}
                         </Text>
                     </View>
                 </View>

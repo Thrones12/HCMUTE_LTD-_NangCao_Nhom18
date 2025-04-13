@@ -1,39 +1,140 @@
-import { View, Text, FlatList, Image, StyleSheet } from "react-native";
-import React from "react";
-import { Data } from "@/constants";
+import {
+    View,
+    Text,
+    FlatList,
+    Image,
+    StyleSheet,
+    TextInput,
+    Pressable,
+    KeyboardAvoidingView,
+    Platform,
+} from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { Constant } from "@/constants/Constant";
+import axios from "axios";
+import Notification from "@/services/Notification";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/vi";
+import { AuthContext } from "@/contexts/AuthContext";
 
-const CommentScreen = ({ _id }: any) => {
-    // Giả lập dữ liệu
+dayjs.extend(relativeTime);
+dayjs.locale("vi");
+
+const CommentScreen = ({ lesson }: any) => {
+    const API = Constant.API;
+    const { user, logout } = useContext(AuthContext);
+    const [data, setData] = useState<any>({});
+    const [commentText, setCommentText] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    useEffect(() => {
+        const fetchLesson = async () => {
+            try {
+                const res = await axios.get(
+                    `${API}/lesson/getOne?id=${lesson._id}`
+                );
+                let data = res.data.data;
+                const sorted = sortCommentsByTime(data.comments);
+
+                setData({ ...data, comments: sorted });
+            } catch (err: any) {
+                Notification.error(err.data.message);
+            }
+        };
+        fetchLesson();
+    }, []);
+
+    const sortCommentsByTime = (comments: any[]) => {
+        return comments.sort(
+            (a, b) =>
+                new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
+        );
+    };
+
+    const handleSubmitComment = async () => {
+        if (!commentText.trim()) {
+            Notification.info("Bạn cần nhập nội dung bình luận");
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const res = await axios.post(`${API}/comment`, {
+                lessonId: lesson._id,
+                userId: user._id,
+                content: commentText,
+            });
+
+            const newComment = res.data.data;
+
+            setData((prev: any) => ({
+                ...prev,
+                comments: sortCommentsByTime([...prev.comments, newComment]),
+            }));
+
+            setCommentText("");
+            Notification.success("Bình luận thành công");
+        } catch (err: any) {
+            Notification.error("Không thể gửi bình luận");
+        } finally {
+            setSubmitting(false);
+        }
+    };
 
     const renderItem = ({ item }: any) => (
         <View style={styles.commentItem}>
             <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
             <View style={styles.commentContent}>
-                <Text style={styles.userName}>{item.user.name}</Text>
+                <Text style={styles.userName}>{item.user.fullname}</Text>
                 <Text style={styles.commentText}>{item.content}</Text>
                 <Text style={styles.time}>
-                    {new Date(item.createdAt).toLocaleString()}
+                    {dayjs(item.createAt).fromNow()}
                 </Text>
             </View>
         </View>
     );
 
     return (
-        <FlatList
-            data={Data.comments}
-            renderItem={renderItem}
-            keyExtractor={(item) => item._id}
-            contentContainerStyle={styles.container}
-        />
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+        >
+            <View style={styles.container}>
+                <FlatList
+                    data={data.comments}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item._id}
+                    contentContainerStyle={{ padding: 16, paddingBottom: 80 }}
+                />
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Nhập bình luận...'
+                        value={commentText}
+                        onChangeText={setCommentText}
+                        multiline
+                    />
+                    <Pressable
+                        style={styles.sendButton}
+                        onPress={handleSubmitComment}
+                        disabled={submitting}
+                    >
+                        <Text style={styles.sendButtonText}>
+                            {submitting ? "..." : "Gửi"}
+                        </Text>
+                    </Pressable>
+                </View>
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
-        backgroundColor: "#fff",
-        marginTop: 30,
         flex: 1,
+        backgroundColor: "#fff",
     },
     commentItem: {
         flexDirection: "row",
@@ -60,6 +161,38 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: "#888",
         marginTop: 4,
+    },
+    inputContainer: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        flexDirection: "row",
+        alignItems: "flex-end",
+        padding: 10,
+        backgroundColor: "#fff",
+        borderTopWidth: 1,
+        borderColor: "#eee",
+    },
+    input: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        padding: 10,
+        fontSize: 14,
+        maxHeight: 100,
+        marginRight: 8,
+    },
+    sendButton: {
+        backgroundColor: "#1b84ff",
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        borderRadius: 8,
+    },
+    sendButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
     },
 });
 

@@ -41,7 +41,7 @@ const CardExam = ({ item, navigation }: any) => {
                             size={16}
                             color={Colors.Gray600}
                         />
-                        <Text style={styles.infoText}>{item.save.length}</Text>
+                        <Text style={styles.infoText}>{item.saves.length}</Text>
                     </View>
                 </View>
             </View>

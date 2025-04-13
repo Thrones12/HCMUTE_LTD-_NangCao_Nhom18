@@ -1,38 +1,38 @@
-[
-    {
-        "_id": {
-            "$oid": "67f8eb786ca9de3bebc3478e"
-        },
-        "title": "Làm quen với vật lý",
-        "videoUrl": "",
-        "document": "",
-        "exercise": "",
-        "views": 0,
-        "likes": ["67e9559ef5b10feb0246715a"],
-        "comments": []
-    },
-    {
-        "_id": {
-            "$oid": "67f8eb786ca9de3bebc3478f"
-        },
-        "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
-        "videoUrl": "",
-        "document": "",
-        "exercise": "",
-        "views": 0,
-        "likes": [],
-        "comments": []
-    },
-    {
-        "_id": {
-            "$oid": "67f8eb786ca9de3bebc34790"
-        },
-        "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
-        "videoUrl": "",
-        "document": "",
-        "exercise": "",
-        "views": 0,
-        "likes": [],
-        "comments": []
-    }
-]
+[{
+  "_id": {
+    "$oid": "67f8eb786ca9de3bebc3478e"
+  },
+  "title": "Làm quen với vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [
+    "67e9559ef5b10feb0246715a"
+  ],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67f8eb786ca9de3bebc3478f"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67f8eb786ca9de3bebc34790"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+}]

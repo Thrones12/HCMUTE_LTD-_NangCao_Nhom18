@@ -7,7 +7,7 @@ const schema = new mongoose.Schema({
     questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
     views: { type: Number, default: 0 },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    save: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    saves: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 const Exam = mongoose.model("Exam", schema);
