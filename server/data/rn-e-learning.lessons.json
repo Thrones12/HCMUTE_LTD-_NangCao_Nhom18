@@ -3,14 +3,60 @@
     "$oid": "67f8eb786ca9de3bebc3478e"
   },
   "title": "Làm quen với vật lý",
-  "videoUrl": "",
-  "document": "",
-  "exercise": "",
+  "videoUrl": "https://www.youtube.com/embed/HuIehxdo0hs?si=d2EHAL-dtQDCkNED",
+  "document": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"UTF-8\">\n    <script src=\"https://polyfill.io/v3/polyfill.min.js?features=es6\"></script>\n    <script type=\"text/javascript\" id=\"MathJax-script\" async\n      src=\"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js\">\n    </script>\n    <style>\n      body { font-size: 36px; padding: 16px; }\n      p { margin-bottom: 12px; }\n    </style>\n  </head>\n  <body>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n  </body>\n</html>",
+  "exercise": "<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"UTF-8\">\n    <script src=\"https://polyfill.io/v3/polyfill.min.js?features=es6\"></script>\n    <script type=\"text/javascript\" id=\"MathJax-script\" async\n      src=\"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js\">\n    </script>\n    <style>\n      body { font-size: 36px; padding: 16px; }\n      p { margin-bottom: 12px; }\n    </style>\n  </head>\n  <body>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n    <p><strong>1. Định nghĩa:</strong></p>\n    <p style=\"text-indent: 20px;\">Đây là đoạn văn bản được thụt đầu dòng.</p>\n    <p><strong>2. Công thức toán học:</strong></p>\n    <p>Ta có công thức: \\\\( a^2 + b^2 = c^2 \\\\)</p>\n  </body>\n</html>",
   "views": 0,
   "likes": [
-    "67e9559ef5b10feb0246715a"
+    {
+      "$oid": "67e9559ef5b10feb0246715a"
+    }
   ],
-  "comments": []
+  "comments": [
+    {
+      "$oid": "67f912d777e383c562a09d51"
+    },
+    {
+      "$oid": "67f912e977e383c562a09d53"
+    },
+    {
+      "$oid": "67f9130818aa0de05f28cf3f"
+    },
+    {
+      "$oid": "67fba76b215675d839e54d76"
+    },
+    {
+      "$oid": "67fba81c40f7dd0728437fdb"
+    },
+    {
+      "$oid": "67fbabcf40f7dd0728438040"
+    },
+    {
+      "$oid": "67fbabd540f7dd0728438045"
+    },
+    {
+      "$oid": "67fbac3340f7dd0728438052"
+    },
+    {
+      "$oid": "67fbac8600acae2eb7c61338"
+    },
+    {
+      "$oid": "67fbac8e00acae2eb7c6133d"
+    },
+    {
+      "$oid": "67fbbac7324a25e8b23800e7"
+    },
+    {
+      "$oid": "67e9559ef5b10feb0246715a"
+    },
+    {
+      "$oid": "67e9559ef5b10feb0246715a"
+    },
+    {
+      "$oid": "67e9559ef5b10feb0246715a"
+    }
+  ],
+  "__v": 8
 },
 {
   "_id": {
@@ -29,6 +75,234 @@
     "$oid": "67f8eb786ca9de3bebc34790"
   },
   "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba7915cf6da5e06669a4"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba7a15cf6da5e06669a5"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba7c15cf6da5e06669a6"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba7f15cf6da5e06669a7"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8015cf6da5e06669a8"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8215cf6da5e06669a9"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8315cf6da5e06669aa"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8515cf6da5e06669ab"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8715cf6da5e06669ac"
+  },
+  "title": "Thực hành tính sai số trong phép đo. Ghi kết quả đo",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8a15cf6da5e06669ad"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8c15cf6da5e06669ae"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba8e15cf6da5e06669af"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9015cf6da5e06669b0"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9215cf6da5e06669b1"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9315cf6da5e06669b2"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9415cf6da5e06669b3"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9615cf6da5e06669b4"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9715cf6da5e06669b5"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
+  "videoUrl": "",
+  "document": "",
+  "exercise": "",
+  "views": 0,
+  "likes": [],
+  "comments": []
+},
+{
+  "_id": {
+    "$oid": "67faba9915cf6da5e06669b6"
+  },
+  "title": "Các quy tắt an toàn trong phòng thực hành vật lý",
   "videoUrl": "",
   "document": "",
   "exercise": "",
