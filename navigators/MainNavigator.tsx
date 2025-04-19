@@ -3,6 +3,11 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeScreen } from "@/screens";
 import MainTabNavigator from "./MainTabNavigator";
+
+import { NavigationContainer } from "@react-navigation/native";
+import ProfileScreen from "@/screens/mainTab/ProfileScreen";
+import EditProfileScreen from "@/screens/profile/EditProfileScreen";
+
 import {
     SubjectListScreen,
     LessonScreen,
@@ -31,6 +36,9 @@ const MainNavigator = () => {
             <Stack.Screen name='SubjectList' component={SubjectListScreen} />
             <Stack.Screen name='LessonList' component={LessonListScreen} />
             <Stack.Screen name='Notification' component={NotificationScreen} />
+
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         </Stack.Navigator>
     );
 };
