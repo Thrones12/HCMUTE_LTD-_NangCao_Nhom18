@@ -12,16 +12,13 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const { width: screenWidth } = Dimensions.get("window");
-
-const CARD_WIDTH = screenWidth / 2 - 30; // width of 1 card
-const GAP = 20; // space between cards
-const SNAP_INTERVAL = CARD_WIDTH + GAP;
+const GAP = 10; // space between cards
+const SNAP_INTERVAL = 240 + GAP;
 
 const TopExam = ({ exams, navigation }: any) => {
     const renderItem = ({ item }: any) => (
         <Pressable
-            onPress={() => navigation.navigate("LessonList", { _id: item._id })}
+            onPress={() => navigation.navigate("Exam", { _id: item._id })}
             style={styles.item}
         >
             <Image source={{ uri: item.image }} style={styles.image} />

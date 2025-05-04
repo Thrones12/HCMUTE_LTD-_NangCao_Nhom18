@@ -47,10 +47,10 @@ const PracticeScreen = ({ navigation }: any) => {
     const renderItem = ({ item }: any) => (
         <View style={styles.itemWrapper}>
             <Pressable
-                onPress={() => navigation.navigate("Exam", { exam: item })}
+                onPress={() => navigation.navigate("Exam", { _id: item._id })}
                 style={styles.item}
             >
-                <CardExam item={item} />
+                <CardExam item={item} navigation={navigation} />
             </Pressable>
         </View>
     );

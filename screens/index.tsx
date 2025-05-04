@@ -12,6 +12,7 @@ import LessonListScreen from "./LessonListScreen";
 import LessonScreen from "./lessonTab/LessonScreen";
 import CommentScreen from "./lessonTab/CommentScreen";
 import ExerciseScreen from "./lessonTab/ExerciseScreen";
+import ExamScreen from "./ExamScreen";
 import StorageExamScreen from "./profile/StorageExamScreen";
 import NotificationScreen from "./NotificationScreen";
 import HistoryScreen from "./profile/HistoryScreen";
@@ -39,4 +40,5 @@ export {
     SubjectListScreen,
     LessonListScreen,
     NotificationScreen,
+    ExamScreen,
 };

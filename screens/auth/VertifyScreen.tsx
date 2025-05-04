@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
-import { Colors, GStyles } from "@/constants";
+import { Colors, GStyles, Constant } from "@/constants";
 import {
     ButtonComponent,
     CheckBoxComponent,
@@ -20,9 +20,9 @@ import {
 import axios from "axios";
 
 const VertifyScreen = ({ navigation, route }: any) => {
-    const API = "http://192.168.1.3:8080/api/";
+    const API = Constant.API;
     const { vertify, regeneratePassword } = useContext(AuthContext);
-    const { email, type } = route.params || {};
+    const { email, type, data } = route.params || {};
     const [loading, setLoading] = useState(false);
     const [vertifyOtp, setVertifyOtp] = useState();
 
@@ -38,8 +38,8 @@ const VertifyScreen = ({ navigation, route }: any) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get(`${API}user/get-otp?email=${email}`);
-            setVertifyOtp(res.data);
+            const res = await axios.get(`${API}/user/get-otp?email=${email}`);
+            setVertifyOtp(res.data.data);
         };
         fetchData();
     }, []);
@@ -65,13 +65,46 @@ const VertifyScreen = ({ navigation, route }: any) => {
     };
 
     const handleSubmit = async () => {
-        setLoading(true);
-        const inputOTP = otp.join("");
-        const res = await vertify(vertifyOtp, inputOTP, email, type);
-        if (res) {
-            navigation.navigate("Login");
+        try {
+            setLoading(true);
+            const inputOTP = otp.join("");
+            console.log(type);
+            const res = await vertify(vertifyOtp, inputOTP, email, type);
+
+            if (res) {
+                if (type === "profile") {
+                    const formData = new FormData();
+                    formData.append("_id", data._id);
+                    formData.append("fullname", data.fullname);
+                    formData.append("phone", data.phone);
+                    formData.append("email", data.email);
+                    formData.append("password", data.password);
+
+                    if (data.avatar && !data.avatar.includes("cloudinary")) {
+                        formData.append("image", {
+                            uri: data.avatar,
+                            type: "image/jpeg",
+                            name: "avatar.jpg",
+                        } as any);
+                    }
+                    const res = await axios.put(`${API}/user`, formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    });
+
+                    navigation.navigate("Main", {
+                        screen: "Profile",
+                    });
+                } else {
+                    navigation.navigate("Login");
+                }
+            }
+            setLoading(false);
+        } catch (err) {
+            setLoading(false);
+            console.log("Lỗi vertify");
         }
-        setLoading(false);
     };
 
     return (

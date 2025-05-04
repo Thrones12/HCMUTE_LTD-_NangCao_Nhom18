@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const nodemailer = require("nodemailer");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
 
 const GetAll = async (req, res) => {
     // Các query có thể có khi get data
@@ -23,32 +25,92 @@ const GetAll = async (req, res) => {
 };
 
 const GetOne = async (req, res) => {
-    // Các query có thể có khi get data
-    const { id, email } = req.query;
+    try {
+        // Các query có thể có khi get data
+        const { id } = req.query;
 
-    let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        let data; // Biến lưu trữ dữ liệu ban đầu khi get
 
-    // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-    if (id) {
-        data = await User.findById(id)
-            .populate({ path: "histories", model: "Activity" })
-            .populate({ path: "storage", model: "Lesson" })
-            .populate({ path: "results", model: "ExamResult" });
-    } else if (email) {
-        data = await User.findOne({ email });
+        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
+        if (id) {
+            data = await User.findById(id)
+                .populate({ path: "histories", model: "Activity" })
+                .populate({ path: "storage", model: "Lesson" })
+                .populate({ path: "results", model: "ExamResult" });
+        }
+
+        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
+        if (!data)
+            return res
+                .status(404)
+                .json({ data: [], message: "User not found" });
+
+        // console.log("Get User: \n" + data);
+        return res.status(200).json({ data, message: "Get one thành công" });
+    } catch (err) {
+        return res.status(500).json({ data: [], message: "Lỗi server" });
     }
+};
 
-    // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-    if (!data) return res.status(404).json({ message: "User not found" });
+const Update = async (req, res) => {
+    try {
+        const { _id, fullname, phone, email, password } = req.body;
+        const file = req.file;
 
-    console.log("Get user: \n" + data);
-    res.json(data);
+        const existingData = await User.findById(_id);
+
+        if (!existingData)
+            return res
+                .status(404)
+                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+
+        if (fullname) existingData.fullname = fullname;
+        if (phone) existingData.phone = phone;
+        if (email) existingData.email = email;
+        if (password && existingData.password !== password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            existingData.password = hashedPassword;
+        }
+
+        if (file) {
+            try {
+                const uploadResult = await streamUpload(file.buffer);
+                existingData.avatar = uploadResult.secure_url;
+            } catch (err) {
+                return res.status(500).json({ message: "Lỗi upload ảnh" });
+            }
+        }
+
+        await existingData.save();
+        return res.status(200).json({
+            data: existingData,
+            message: "Update thành công",
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ data: [], message: "Lỗi server" });
+    }
+};
+
+const streamUpload = (fileBuffer) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { resource_type: "image", folder: "users" },
+            (error, result) => {
+                if (error) reject(error);
+                else resolve(result);
+            }
+        );
+
+        streamifier.createReadStream(fileBuffer).pipe(stream);
+    });
 };
 
 const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+
         if (!user)
             return res.status(404).json({ message: "Tài khoản không tồn tại" });
 
@@ -116,6 +178,8 @@ const Register = async (req, res) => {
         }
 
         const newUser = new User({
+            avatar: "",
+            phone: "",
             fullname,
             email,
             password: hashedPassword,
@@ -138,8 +202,48 @@ const GetOTP = async (req, res) => {
     // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
     if (!data) return res.status(404).json({ message: "User not found" });
 
-    console.log("Get otp: \n" + data.otp);
-    res.json(data.otp);
+    return res
+        .status(200)
+        .json({ data: data.otp, message: "Get OTP thành công" });
+};
+
+const SetOTP = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const data = await User.findOne({ email });
+
+        if (!data) return res.status(404).json({ message: "User not found" });
+
+        data.otp = Math.floor(1000 + Math.random() * 9000);
+        await data.save(); // ✅ CHỈNH chỗ này để chờ lưu xong rồi mới tiếp tục
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "nguyenduy7003@gmail.com",
+                pass: "tesf daab xvbr fyqo",
+            },
+        });
+
+        const mailOptions = {
+            from: "nguyenduy7003@gmail.com",
+            to: email,
+            subject: "Xác thực OTP",
+            text: `OTP của bạn là: ${data.otp}`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent successfully");
+
+        return res.status(200).json({
+            data: data.otp,
+            message: "Set OTP thành công",
+        });
+    } catch (err) {
+        console.log("Lỗi gửi email hoặc lưu OTP:", err);
+        return res.status(500).json({ message: "Lỗi server" });
+    }
 };
 
 // Khóa tài khoản
@@ -155,11 +259,11 @@ const Lock = async (req, res) => {
 
         data.status = "locked";
         data.otp = Math.floor(1000 + Math.random() * 9000);
-        data.save();
+        await data.save();
 
         console.log("Mở khóa: ", data.email);
 
-        res.status(200).json("Mở khóa thành công");
+        res.status(200).json({ data: "", message: "Khóa thành công" });
     } catch (err) {
         res.status(500).json("Lỗi server");
     }
@@ -171,13 +275,12 @@ const Unlock = async (req, res) => {
         const { email } = req.body;
 
         const data = await User.findOne({ email });
-
         // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
         if (!data) return res.status(404).json({ message: "User not found" });
 
         data.status = "active";
         data.otp = ""; // Mỗi lần unlock thì xóa otp để kiểm soát lần vertify kế tiếp
-        data.save();
+        await data.save();
 
         console.log("Mở khóa: ", data.email);
 
@@ -277,6 +380,8 @@ module.exports = {
     Login,
     Register,
     GetOTP,
+    SetOTP,
+    Update,
     Lock,
     Unlock,
     RegeneratePassword,

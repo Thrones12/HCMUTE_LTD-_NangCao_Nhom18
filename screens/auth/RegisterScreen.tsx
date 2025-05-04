@@ -59,7 +59,6 @@ const RegisterScreen = ({ navigation }: any) => {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={GStyles.container}
         >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* Loading */}

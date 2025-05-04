@@ -7,7 +7,7 @@ const CardExam = ({ item, navigation }: any) => {
     return (
         <Pressable
             onPress={() =>
-                navigation.navigate("LessonTab", {
+                navigation.navigate("Exam", {
                     _id: item._id,
                 })
             }

@@ -1,15 +1,14 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { HomeScreen } from "@/screens";
 import MainTabNavigator from "./MainTabNavigator";
 import {
     SubjectListScreen,
-    LessonScreen,
     LessonListScreen,
     StorageExamScreen,
     NotificationScreen,
     HistoryScreen,
+    ExamScreen,
+    VertifyScreen,
 } from "@/screens";
 import LessonTabNavigator from "./LessonTabNavigator";
 
@@ -31,6 +30,9 @@ const MainNavigator = () => {
             <Stack.Screen name='SubjectList' component={SubjectListScreen} />
             <Stack.Screen name='LessonList' component={LessonListScreen} />
             <Stack.Screen name='Notification' component={NotificationScreen} />
+            <Stack.Screen name='Exam' component={ExamScreen} />
+
+            <Stack.Screen name='Vertify' component={VertifyScreen} />
         </Stack.Navigator>
     );
 };

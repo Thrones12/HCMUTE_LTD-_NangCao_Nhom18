@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         try {
-            const res = await axios.post(`${API}user/login`, {
+            const res = await axios.post(`${API}/user/login`, {
                 email,
                 password,
             });
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         try {
-            await axios.post(`${API}user/register`, {
+            await axios.post(`${API}/user/register`, {
                 fullname,
                 email,
                 password,
@@ -98,7 +98,9 @@ export const AuthProvider = ({ children }) => {
     const vertify = async (otp, input, email, type) => {
         try {
             if (otp === input) {
-                const res = await axios.put(`${API}user/unlock`, { email });
+                console.log(input);
+
+                const res = await axios.put(`${API}/user/unlock`, { email });
                 if (res.status === 200) {
                     if (type === "forget") {
                         await regeneratePassword(email);
@@ -126,7 +128,7 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         try {
-            await axios.put(`${API}user/lock`, { email });
+            await axios.put(`${API}/user/lock`, { email });
             Notification.success("OTP đã được gửi qua email");
             return true;
         } catch (err) {
@@ -141,7 +143,7 @@ export const AuthProvider = ({ children }) => {
 
     const regeneratePassword = async (email) => {
         try {
-            await axios.put(`${API}user/regenerate-password`, {
+            await axios.put(`${API}/user/regenerate-password`, {
                 email,
             });
             Notification.success("Mật khẩu tài khoản đã được gửi qua email");

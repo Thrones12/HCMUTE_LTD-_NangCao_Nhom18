@@ -88,6 +88,7 @@ const HomeScreen = ({ navigation }: any) => {
             try {
                 const res = await axios.get(`${API}/exam`);
                 let data = res.data.data;
+                data = data.sort((a: any, b: any) => b.views - a.views);
                 setExams(data);
             } catch (err: any) {
                 if (err.status === 404) Notification.error(err.data.message);
@@ -126,7 +127,7 @@ const HomeScreen = ({ navigation }: any) => {
 
                         {/* Top view */}
                         <View style={[styles.container]}>
-                            <Text style={styles.title}>Xem nhiều</Text>
+                            <Text style={styles.title}>Nổi bật</Text>
                             <TopExam exams={topExams} navigation={navigation} />
                         </View>
 
@@ -135,7 +136,11 @@ const HomeScreen = ({ navigation }: any) => {
                             <Text style={styles.title}>Luyện tập</Text>
                             <View style={{ gap: 10 }}>
                                 {data.map((item, index) => (
-                                    <CardExam key={index} item={item} />
+                                    <CardExam
+                                        key={index}
+                                        item={item}
+                                        navigation={navigation}
+                                    />
                                 ))}
                             </View>
                         </View>
