@@ -7,7 +7,7 @@ import { Constant } from "@/constants/Constant";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const API = Constant.API;
+    const API = "http://192.168.56.1:8080/api/";
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
 
@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
             return;
         }
         try {
+            /*
             const res = await axios.post(`${API}user/login`, {
                 email,
                 password,
@@ -41,7 +42,12 @@ export const AuthProvider = ({ children }) => {
             await AsyncStorage.setItem("user", JSON.stringify(res.data.data));
 
             setToken(res.data.token);
-            setUser(res.data.data);
+            setUser(res.data.data);*/
+            await AsyncStorage.setItem("token", 1);
+            await AsyncStorage.setItem("user", JSON.stringify(1));
+
+            setToken(1);
+            setUser(1);
 
             Notification.success("Đăng nhập thành công");
         } catch (err) {

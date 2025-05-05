@@ -17,32 +17,24 @@ import {
     HistoryScreen,
 } from "@/screens";
 import LessonTabNavigator from "./LessonTabNavigator";
+import AccountScreen from "@/screens/admin/AccountScreen";
+import CourseScreen from "@/screens/admin/CourseScreen";
 
 const Stack = createNativeStackNavigator();
 
-const MainNavigator = () => {
+const AdminNavigator = () => {
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName='Main'
-        
+            initialRouteName='Course'
         >
             {/* Tab navigator */}
-            <Stack.Screen name='Main' component={MainTabNavigator} />
-            <Stack.Screen name='LessonTab' component={LessonTabNavigator} />
-            {/* Profile screen */}
-            <Stack.Screen name='StorageExam' component={StorageExamScreen} />
-            <Stack.Screen name='History' component={HistoryScreen} />
-            {/* <Stack.Screen name="EditProfile" component={EditProfileScreen} /> */}
-            
-            <Stack.Screen name='SubjectList' component={SubjectListScreen} />
-            <Stack.Screen name='LessonList' component={LessonListScreen} />
-            <Stack.Screen name='Notification' component={NotificationScreen} />
+            <Stack.Screen name='Account' component={AccountScreen} />
+            <Stack.Screen name='Course' component={CourseScreen} />
 
-            <Stack.Screen name="Profile" component={ProfileScreen} />
             
         </Stack.Navigator>
     );
 };
 
-export default MainNavigator;
+export default AdminNavigator;

@@ -18,8 +18,11 @@ import {
     InputTextComponent,
 } from "@/components";
 
+
+
 const LoginScreen = ({ navigation }: any) => {
-    const { login } = useContext(AuthContext);
+    const { login, setUser } = useContext(AuthContext);
+    //const { login } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -30,8 +33,13 @@ const LoginScreen = ({ navigation }: any) => {
 
     const handleLogin = async () => {
         setLoading(true);
+
+        
         await login(email, password);
+
         setLoading(false);
+
+
     };
     return (
         <KeyboardAvoidingView
