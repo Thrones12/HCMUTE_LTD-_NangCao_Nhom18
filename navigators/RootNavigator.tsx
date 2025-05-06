@@ -4,9 +4,9 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { useContext } from "react";
 
 const RootNavigator = () => {
-    const { user } = useContext(AuthContext);
+    const { userId } = useContext(AuthContext);
 
-    return user ? <MainNavigator /> : <AuthNavigator />;
+    return userId ? <MainNavigator /> : <AuthNavigator />;
 };
 
 export default RootNavigator;

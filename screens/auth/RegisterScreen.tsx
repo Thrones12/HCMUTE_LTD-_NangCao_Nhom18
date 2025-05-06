@@ -14,10 +14,16 @@ import React, { useState, useRef, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, GStyles } from "@/constants";
 import { ButtonComponent, InputTextComponent } from "@/components";
-import Notification from "@/services/Notification";
+import Noti from "@/utils/Noti";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/constants/Types";
 
-const RegisterScreen = ({ navigation }: any) => {
-    const { register } = useContext(AuthContext);
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
+
+const RegisterScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
+    const { Register } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
@@ -27,12 +33,13 @@ const RegisterScreen = ({ navigation }: any) => {
     const passwordInputRef = useRef<TextInput>(null);
     const emailInputRef = useRef<TextInput>(null);
 
+    // Xử lí đăng ký
     const handleRegister = async () => {
         setLoading(true);
-        const res = await register(fullname, email, password);
-        setLoading(false);
-        if (res === true) navigation.navigate("Vertify", { email });
-        else if (res === "notVertify") {
+        const res = await Register(fullname, email, password);
+        if (res === 0) {
+            navigation.navigate("Verify", { email, type: "Activate" });
+        } else if (res === 2) {
             Alert.alert(
                 "Thông báo",
                 "Email đã được đăng ký nhưng chưa xác thực. Bạn có muốn xác thực không?",
@@ -43,18 +50,18 @@ const RegisterScreen = ({ navigation }: any) => {
                         style: "cancel",
                     },
                     {
-                        text: "OK",
+                        text: "Xác thực",
                         onPress: () => {
-                            Notification.info("OTP đã được gửi qua email");
-                            navigation.navigate("Vertify", {
+                            navigation.navigate("Verify", {
                                 email,
-                                type: "forget",
+                                type: "Activate",
                             });
                         },
                     },
                 ]
             );
         }
+        setLoading(false);
     };
     return (
         <KeyboardAvoidingView

@@ -6,15 +6,13 @@ let controller = require("../controllers/User");
 // GET
 router.get("/", controller.GetAll);
 router.get("/get-one", controller.GetOne);
-router.get("/get-otp", controller.GetOTP);
 // POST
 router.post("/login", controller.Login);
 router.post("/register", controller.Register);
-router.post("/set-otp", controller.SetOTP);
+router.post("/send-otp", controller.SendOTP);
+router.post("/send-password", controller.SendPassword);
 // PUT
-router.put("/lock", controller.Lock);
-router.put("/unlock", controller.Unlock);
-router.put("/regenerate-password", controller.RegeneratePassword);
+router.put("/activate", controller.Activate);
 router.put("/", upload.single("image"), controller.Update);
 // DELETE
 router.delete("/", controller.GetAll);

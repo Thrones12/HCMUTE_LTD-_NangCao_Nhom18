@@ -17,40 +17,48 @@ import {
     CheckBoxComponent,
     InputTextComponent,
 } from "@/components";
-import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/constants/Types";
+import Noti from "@/utils/Noti";
 
-const VertifyScreen = ({ navigation, route }: any) => {
-    const API = Constant.API;
-    const { vertify, regeneratePassword } = useContext(AuthContext);
-    const { email, type, data } = route.params || {};
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
+
+const VertifyScreen = ({ route }: any) => {
+    const navigation = useNavigation<NavigationProp>();
+    const { SendOtp, ActivateAccount, SendPassword } = useContext(AuthContext);
+    const { email, type } = route.params || {};
+    // State
     const [loading, setLoading] = useState(false);
-    const [vertifyOtp, setVertifyOtp] = useState();
-
-    const [otp, setOTP] = useState(["", "", "", ""]);
+    const [OTP, setOTP] = useState<any>();
+    const [input, setInput] = useState(["", "", "", ""]);
+    // Ref
     const input1 = useRef<TextInput>(null);
     const input2 = useRef<TextInput>(null);
     const input3 = useRef<TextInput>(null);
     const input4 = useRef<TextInput>(null);
-
+    // Kiểm tra email
     useEffect(() => {
-        if (!email) navigation.navigate("Login");
-    }, [email]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await axios.get(`${API}/user/get-otp?email=${email}`);
-            setVertifyOtp(res.data.data);
+        const sendOTP = async (email: any) => {
+            const res = await SendOtp(email);
+            setOTP(res.toString());
+            Noti.success("OTP đã được gửi về mail");
         };
-        fetchData();
-    }, []);
-
-    const handleChangeOTP = (index: number, value: string) => {
+        // Không có email thì quay về login
+        if (!email) navigation.navigate("Login");
+        // Có email thì gửi otp về mail
+        else {
+            sendOTP(email);
+        }
+    }, [email]);
+    // Xử lí nhập OTP
+    const handleChangeInput = (index: number, value: string) => {
         // Chỉ cho phép nhập số
         if (!/^\d?$/.test(value)) return;
 
-        const newOTP = [...otp];
-        newOTP[index] = value;
-        setOTP(newOTP);
+        const newInput = [...input];
+        newInput[index] = value;
+        setInput(newInput);
 
         // Chuyển focus sang ô tiếp theo (nếu có)
         if (value && index === 0) {
@@ -63,54 +71,29 @@ const VertifyScreen = ({ navigation, route }: any) => {
             input4.current?.focus();
         }
     };
-
+    // Xử lí xác thực
     const handleSubmit = async () => {
-        try {
-            setLoading(true);
-            const inputOTP = otp.join("");
-            console.log(type);
-            const res = await vertify(vertifyOtp, inputOTP, email, type);
-
-            if (res) {
-                if (type === "profile") {
-                    const formData = new FormData();
-                    formData.append("_id", data._id);
-                    formData.append("fullname", data.fullname);
-                    formData.append("phone", data.phone);
-                    formData.append("email", data.email);
-                    formData.append("password", data.password);
-
-                    if (data.avatar && !data.avatar.includes("cloudinary")) {
-                        formData.append("image", {
-                            uri: data.avatar,
-                            type: "image/jpeg",
-                            name: "avatar.jpg",
-                        } as any);
-                    }
-                    const res = await axios.put(`${API}/user`, formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    });
-
-                    navigation.navigate("Main", {
-                        screen: "Profile",
-                    });
-                } else {
-                    navigation.navigate("Login");
-                }
+        setLoading(true);
+        if (OTP === input.join("")) {
+            if (type === "Activate") {
+                Noti.success("Xác thực thành công");
+                ActivateAccount(email);
+            } else if (type === "Forget") {
+                Noti.success("Mật khẩu mới đã được gửi về mail");
+                SendPassword(email);
+            } else if (type === "Update") {
+                Noti.success("Cập nhập thành công");
+                //SendPassword(email);
             }
-            setLoading(false);
-        } catch (err) {
-            setLoading(false);
-            console.log("Lỗi vertify");
+            navigation.navigate("Login");
+        } else {
+            Noti.info("OTP không đúng");
         }
+        setLoading(false);
     };
-
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={GStyles.container}
         >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 {/* Loading */}
@@ -152,26 +135,26 @@ const VertifyScreen = ({ navigation, route }: any) => {
                 <View style={styles.inputView}>
                     <View style={styles.VertifyView}>
                         <InputTextComponent
-                            value={otp[0]}
-                            onChangeText={(text) => handleChangeOTP(0, text)}
+                            value={input[0]}
+                            onChangeText={(text) => handleChangeInput(0, text)}
                             styles={styles.inputText}
                             ref={input1}
                         />
                         <InputTextComponent
-                            value={otp[1]}
-                            onChangeText={(text) => handleChangeOTP(1, text)}
+                            value={input[1]}
+                            onChangeText={(text) => handleChangeInput(1, text)}
                             styles={styles.inputText}
                             ref={input2}
                         />
                         <InputTextComponent
-                            value={otp[2]}
-                            onChangeText={(text) => handleChangeOTP(2, text)}
+                            value={input[2]}
+                            onChangeText={(text) => handleChangeInput(2, text)}
                             styles={styles.inputText}
                             ref={input3}
                         />
                         <InputTextComponent
-                            value={otp[3]}
-                            onChangeText={(text) => handleChangeOTP(3, text)}
+                            value={input[3]}
+                            onChangeText={(text) => handleChangeInput(3, text)}
                             styles={styles.inputText}
                             ref={input4}
                         />

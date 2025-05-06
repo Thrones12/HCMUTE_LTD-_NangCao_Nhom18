@@ -4,10 +4,10 @@ import { ButtonComponent } from "@/components";
 import { AuthContext } from "@/contexts/AuthContext";
 
 const CourseListScreen = () => {
-    const { logout } = useContext(AuthContext);
+    const { Logout } = useContext(AuthContext);
     return (
         <View style={{ marginTop: 50 }}>
-            <ButtonComponent text='Logout' onPress={logout} type='primary' />
+            <ButtonComponent text='Logout' onPress={Logout} type='primary' />
         </View>
     );
 };

@@ -8,6 +8,7 @@ import {
     ScrollView,
     Platform,
     ActivityIndicator,
+    Alert,
 } from "react-native";
 import React, { useState, useRef, useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -17,9 +18,15 @@ import {
     CheckBoxComponent,
     InputTextComponent,
 } from "@/components";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/constants/Types";
 
-const LoginScreen = ({ navigation }: any) => {
-    const { login } = useContext(AuthContext);
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
+
+const LoginScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
+    const { Login } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,9 +35,32 @@ const LoginScreen = ({ navigation }: any) => {
     // Tạo ref cho input password
     const passwordInputRef = useRef<TextInput>(null);
 
+    // Xử lí đăng nhập
     const handleLogin = async () => {
         setLoading(true);
-        await login(email, password);
+        const res = await Login(email, password);
+        if (res === 2) {
+            Alert.alert(
+                "Thông báo",
+                "Email đã được đăng ký nhưng chưa xác thực. Bạn có muốn xác thực không?",
+                [
+                    {
+                        text: "Hủy",
+                        onPress: () => console.log("Hủy"),
+                        style: "cancel",
+                    },
+                    {
+                        text: "Xác thực",
+                        onPress: () => {
+                            navigation.navigate("Verify", {
+                                email,
+                                type: "Activate",
+                            });
+                        },
+                    },
+                ]
+            );
+        }
         setLoading(false);
     };
     return (
@@ -88,7 +118,7 @@ const LoginScreen = ({ navigation }: any) => {
                     <InputTextComponent
                         value={password}
                         onChangeText={setPassword}
-                        placeholder='Password'
+                        placeholder='Mật khẩu'
                         secureTextEntry
                         returnKeyType='done'
                         ref={passwordInputRef}

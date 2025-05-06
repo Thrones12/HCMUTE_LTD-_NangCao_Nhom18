@@ -1,175 +1,174 @@
 import React, { createContext, useState, useEffect } from "react";
+import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import Notification from "@/services/Notification";
+import Noti from "@/utils/Noti";
 import { Constant } from "@/constants/Constant";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const API = Constant.API;
-    const [user, setUser] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [token, setToken] = useState(null);
 
     // Kiểm tra user khi mở app
     useEffect(() => {
         const loadUser = async () => {
             const storedToken = await AsyncStorage.getItem("token");
-            const storedUser = await AsyncStorage.getItem("user");
-            console.log(storedToken);
+            const storedUser = await AsyncStorage.getItem("userId");
 
             if (storedToken && storedUser) {
                 setToken(storedToken);
-                setUser(JSON.parse(storedUser));
+                setUserId(JSON.parse(storedUser));
             }
         };
         loadUser();
     }, []);
-
-    // Đăng nhập
-    const login = async (email, password) => {
-        if (!email || !password) {
-            Notification.info("Mời nhập email và mật khẩu");
-            return;
+    // Đăng nhập - 0: Thành công, 1: Thất bại, 2: Cần xác thực
+    const Login = async (email, password) => {
+        // Kiểm tra email và password
+        if (!email.trim() || !password.trim()) {
+            Noti.info("Mời nhập email và mật khẩu");
+            return 1;
         }
         try {
+            // Call API
             const res = await axios.post(`${API}/user/login`, {
                 email,
                 password,
             });
             // Lưu vào AsyncStorage
             await AsyncStorage.setItem("token", res.data.token);
-            await AsyncStorage.setItem("user", JSON.stringify(res.data.data));
-
+            await AsyncStorage.setItem("userId", JSON.stringify(res.data.data));
+            // Set State
             setToken(res.data.token);
-            setUser(res.data.data);
-
-            Notification.success("Đăng nhập thành công");
+            setUserId(res.data.data);
+            // Thông báo
+            Noti.success("Đăng nhập thành công");
+            return 0;
         } catch (err) {
-            if (err.status === 404)
-                Notification.info("Tài khoản không tồn tại");
-            else if (err.status === 401) Notification.info("Sai mật khẩu");
-            else if (err.status === 423) Notification.info("Tài khoản bị khóa");
-            else Notification.error("Lỗi đăng nhập");
+            // Tài khoản chưa xác thực
+            if (err.response && !err.response.data?.isVerify) {
+                return 2;
+            }
+            // Thông báo lỗi
+            else {
+                if (err.response && err.response.data?.message) {
+                    Noti.error(err.response.data.message);
+                } else {
+                    Noti.error("Lỗi hệ thống");
+                }
+                return 1;
+            }
         }
     };
-
-    // Đăng ký
-    const register = async (fullname, email, password) => {
+    // Đăng ký - 0: Thành công, 1: Thất bại, 2: Cần xác thực
+    const Register = async (fullname, email, password) => {
+        // Kiểm tra fullname, email và password
         if (!fullname || !email || !password) {
-            Notification.info("Mời điền đủ thông tin");
-            return;
+            Noti.info("Mời điền đủ thông tin");
+            return 1;
         }
         try {
+            // Call API
             await axios.post(`${API}/user/register`, {
                 fullname,
                 email,
                 password,
             });
-            Notification.success("OTP đã được gửi qua email");
-            return true;
+            return 0;
         } catch (err) {
-            if (err.status === 400) Notification.info("Email đã được sử dụng");
-            else if (err.status === 502)
-                Notification.info("Email không hợp lệ");
-            // tài khoản chưa xác thực
-            else if (err.status === 401) {
-                return "notVertify";
-            } else Notification.error("Lỗi đăng ký");
-        }
-
-        return false;
-    };
-
-    // Đăng xuất
-    const logout = async () => {
-        try {
-            await AsyncStorage.removeItem("token");
-            await AsyncStorage.removeItem("user");
-
-            setToken(null);
-            setUser(null);
-            Notification.success("Đăng xuất thành công");
-        } catch (err) {
-            Notification.error("Lỗi đăng xuất");
-        }
-    };
-
-    // Xác thực otp
-    const vertify = async (otp, input, email, type) => {
-        try {
-            if (otp === input) {
-                console.log(input);
-
-                const res = await axios.put(`${API}/user/unlock`, { email });
-                if (res.status === 200) {
-                    if (type === "forget") {
-                        await regeneratePassword(email);
-                        Notification.success(
-                            "Xác thực thành công, mật khẩu mới đã được gửi qua email"
-                        );
-                    } else Notification.success("Xác thực thành công");
-                    return true;
+            // Tài khoản chưa xác thực
+            if (err.response && !err.response.data?.isVerify) {
+                return 2;
+            }
+            // Thông báo lỗi
+            else {
+                if (err.response && err.response.data?.message) {
+                    Noti.error(err.response.data.message);
                 } else {
-                    Notification.info("Xác thực không thành công");
+                    Noti.error("Lỗi hệ thống");
                 }
-            } else {
-                Notification.info("OTP không đúng");
-            }
-        } catch (err) {
-            Notification.error("Lỗi xác thực");
-        }
-        return false;
-    };
-
-    // Khóa tài khoản
-    const lockForRegeneratePassword = async (email) => {
-        if (!email) {
-            Notification.info("Mời nhập email");
-            return;
-        }
-        try {
-            await axios.put(`${API}/user/lock`, { email });
-            Notification.success("OTP đã được gửi qua email");
-            return true;
-        } catch (err) {
-            if (err.status === 404) {
-                Notification.info("Email chưa được đăng ký");
-            } else {
-                Notification.error("Lỗi khóa tài khoản");
+                return 1;
             }
         }
-        return false;
     };
-
-    const regeneratePassword = async (email) => {
+    // Đăng xuất
+    const Logout = async () => {
         try {
-            await axios.put(`${API}/user/regenerate-password`, {
-                email,
-            });
-            Notification.success("Mật khẩu tài khoản đã được gửi qua email");
-            return true;
+            // Xóa dữ liệu trong storage
+            await AsyncStorage.removeItem("token");
+            await AsyncStorage.removeItem("userId");
+            // Xóa dữ liệu state
+            setToken(null);
+            setUserId(null);
+            // Thông báo
+            Noti.success("Đăng xuất thành công");
         } catch (err) {
-            if (err.status === 404)
-                Notification.info("Tài khoản không tồn tại");
-            else if (err.status === 502)
-                Notification.error("Gửi mail thất bại");
-            else Notification.error("Lỗi quên mật khẩu");
+            if (err.response && err.response.data?.message) {
+                Noti.error(err.response.data.message);
+            } else {
+                Noti.error("Lỗi hệ thống");
+            }
         }
-        return false;
     };
-
+    // Gửi mã OTP về email
+    const SendOtp = async (email) => {
+        try {
+            // Call API
+            const res = await axios.post(`${API}/user/send-otp`, { email });
+            // Thông báo
+            return res.data.data;
+        } catch (err) {
+            // Thông báo lỗi
+            if (err.response && err.response.data?.message) {
+                Noti.error(err.response.data.message);
+            } else {
+                Noti.error("Lỗi hệ thống");
+            }
+            return null;
+        }
+    };
+    // Kích hoạt tài khoản
+    const ActivateAccount = async (email) => {
+        try {
+            // Call API
+            await axios.put(`${API}/user/activate`, { email });
+        } catch (err) {
+            // Thông báo lỗi
+            if (err.response && err.response.data?.message) {
+                Noti.error(err.response.data.message);
+            } else {
+                Noti.error("Lỗi hệ thống");
+            }
+        }
+    };
+    // Gửi mật khẩu mới về mail
+    const SendPassword = async (email) => {
+        try {
+            // Call API
+            await axios.post(`${API}/user/send-password`, { email });
+        } catch (err) {
+            // Thông báo lỗi
+            if (err.response && err.response.data?.message) {
+                Noti.error(err.response.data.message);
+            } else {
+                Noti.error("Lỗi hệ thống");
+            }
+        }
+    };
     return (
         <AuthContext.Provider
             value={{
-                user,
+                userId,
                 token,
-                login,
-                logout,
-                register,
-                vertify,
-                regeneratePassword,
-                lockForRegeneratePassword,
+                Login,
+                Register,
+                Logout,
+                SendOtp,
+                ActivateAccount,
+                SendPassword,
             }}
         >
             {children}

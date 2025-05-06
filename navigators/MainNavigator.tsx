@@ -8,7 +8,7 @@ import {
     NotificationScreen,
     HistoryScreen,
     ExamScreen,
-    VertifyScreen,
+    VerifyScreen,
 } from "@/screens";
 import LessonTabNavigator from "./LessonTabNavigator";
 
@@ -32,7 +32,7 @@ const MainNavigator = () => {
             <Stack.Screen name='Notification' component={NotificationScreen} />
             <Stack.Screen name='Exam' component={ExamScreen} />
 
-            <Stack.Screen name='Vertify' component={VertifyScreen} />
+            <Stack.Screen name='Vertify' component={VerifyScreen} />
         </Stack.Navigator>
     );
 };

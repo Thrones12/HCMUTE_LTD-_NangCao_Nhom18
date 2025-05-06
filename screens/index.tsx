@@ -2,7 +2,7 @@ import HomeScreen from "./mainTab/HomeScreen";
 import LoginScreen from "./auth/LoginScreen";
 import RegisterScreen from "./auth/RegisterScreen";
 import ForgetPasswordScreen from "./auth/ForgetPasswordScreen";
-import VertifyScreen from "./auth/VertifyScreen";
+import VerifyScreen from "./auth/VerifyScreen";
 import ProfileScreen from "./mainTab/ProfileScreen";
 import CourseListScreen from "./mainTab/CourseListScreen";
 import PracticeScreen from "./mainTab/PracticeScreen";
@@ -22,7 +22,7 @@ export {
     LoginScreen,
     RegisterScreen,
     ForgetPasswordScreen,
-    VertifyScreen,
+    VerifyScreen,
     // Main tab
     HomeScreen,
     CourseListScreen,

@@ -6,10 +6,11 @@ import {
     LoginScreen,
     RegisterScreen,
     ForgetPasswordScreen,
-    VertifyScreen,
+    VerifyScreen,
 } from "@/screens";
+import { RootStackParamList } from "@/constants/Types";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AuthNavigator = () => {
     return (
@@ -23,7 +24,7 @@ const AuthNavigator = () => {
                 name='ForgetPassword'
                 component={ForgetPasswordScreen}
             />
-            <Stack.Screen name='Vertify' component={VertifyScreen} />
+            <Stack.Screen name='Verify' component={VerifyScreen} />
         </Stack.Navigator>
     );
 };

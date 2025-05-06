@@ -1,12 +1,28 @@
+const nodemailer = require("nodemailer");
 module.exports = {
-    SendMail(email) {
-        return email
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "") // xoá dấu
-            .replace(/đ/g, "d") // đ → d
-            .replace(/[^a-z0-9\s-]/g, "") // xoá ký tự đặc biệt
-            .trim()
-            .replace(/\s+/g, "-"); // thay khoảng trắng bằng dấu gạch
+    async SendMail(email, subject, text) {
+        // Cấu hình Nodemailer
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: "nguyenduy7003@gmail.com", // Thay bằng email của bạn
+                pass: "tesf daab xvbr fyqo", // Thay bằng mật khẩu email của bạn
+            },
+        });
+
+        // Nội dung email
+        const mailOptions = {
+            from: "nguyenduy7003@gmail.com",
+            to: email, // Email nhận
+            subject: subject,
+            text: text,
+        };
+        try {
+            // Gửi email
+            await transporter.sendMail(mailOptions);
+            return true;
+        } catch (error) {
+            return false;
+        }
     },
 };

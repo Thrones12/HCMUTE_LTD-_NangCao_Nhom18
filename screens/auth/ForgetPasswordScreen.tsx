@@ -9,26 +9,25 @@ import {
     Platform,
     ActivityIndicator,
 } from "react-native";
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import { Colors, GStyles } from "@/constants";
 import {
     ButtonComponent,
     CheckBoxComponent,
     InputTextComponent,
 } from "@/components";
-import axios from "axios";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/constants/Types";
 
-const ForgetPasswordScreen = ({ navigation }: any) => {
-    const { lockForRegeneratePassword } = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
+
+const ForgetPasswordScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
     const [email, setEmail] = useState("");
 
     const handleSubmit = async () => {
-        setLoading(true);
-        const res = await lockForRegeneratePassword(email);
-        setLoading(false);
-        if (res) navigation.navigate("Vertify", { email, type: "forget" });
+        navigation.navigate("Verify", { email, type: "Forget" });
     };
 
     return (
@@ -36,12 +35,6 @@ const ForgetPasswordScreen = ({ navigation }: any) => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                {/* Loading */}
-                {loading ? (
-                    <View style={styles.indicator}>
-                        <ActivityIndicator size='large' color='#0000ff' />
-                    </View>
-                ) : null}
                 {/* Back ground title */}
                 <View style={styles.backgroundView}>
                     <Image
