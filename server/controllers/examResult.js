@@ -1,123 +1,110 @@
-const ExamResult = require("../models/examResult");
+const ExamResult = require("../models/ExamResult");
+const User = require("../models/User");
 
-// Get toàn bộ dữ liệu
+// GET /exam-result
 const GetAll = async (req, res) => {
     try {
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        const {} = req.query;
+        let data; // Return data
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        {
-            data = await ExamResult.find({}).populate({
-                path: "exam",
-                model: "Exam",
-            });
-        }
+        // Get data
+        data = await ExamResult.find({});
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "ExamResult not found" });
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        console.log("Get ExamResult: \n" + data);
-        return res.status(200).json({ data, message: "Get all thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Get dữ liệu bằng query, ex: http:192.168.1.3:8080/api/ExamResult/getOne?id=.....
+// GET /exam-result/get-one?id=...
 const GetOne = async (req, res) => {
     try {
-        // Các query có thể có khi get data
         const { id } = req.query;
+        let data; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        // Get data
+        data = await ExamResult.findById(id);
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (id) {
-            data = await ExamResult.findById(id).populate({
-                path: "exam",
-                model: "Exam",
-            });
-        }
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "ExamResult not found" });
-
-        console.log("Get ExamResult: \n" + data);
-        return res.status(200).json({ data, message: "Get one thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Create, input: exam, score, answers
+// POST /exam-result
 const Create = async (req, res) => {
     try {
-        const { exam, score, answers } = req.body;
+        const { userId, exam, score, duration, answers } = req.body;
 
-        const newData = new ExamResult({ exam, score, answers });
-        newData.save();
+        // Create
+        const data = new ExamResult({ exam, score, duration, answers });
+        data.save();
 
-        return res
-            .status(200)
-            .json({ data: newData, message: "Create thành công" });
+        // Thêm exam result vào user
+        const user = await User.findById(userId);
+        user.examResults.push(data._id.toString());
+        await user.save();
+
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Update
-// _id: quan trọng, dùng để tìm doc update
-// input:  exam, score, answers
+// PUT /exam-result
 const Update = async (req, res) => {
     try {
-        const { _id, exam, score, answers } = req.body;
+        const { id, score, duration, answers } = req.body;
 
-        const existingData = await ExamResult.findById(_id);
+        // Get data
+        const data = await ExamResult.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!existingData)
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Update
+        if (score) data.score = score;
+        if (duration) data.duration = duration;
+        if (answers) data.answers = [...answers];
+        await data.save();
 
-        if (exam) existingData.exam = exam;
-        if (score) existingData.score = score;
-        if (answers) existingData.answers = [...answers];
-
-        await existingData.save();
-
-        return res
-            .status(200)
-            .json({ data: existingData, message: "Update thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Delete, truyền id vào query để xóa, ex: http:192.168.1.3:8080/api/ExamResult?id=.....
+// DELETE /exam-result
 const Delete = async (req, res) => {
     try {
         const { id } = req.query; // Lấy id từ query string
 
-        const deletedData = await ExamResult.findByIdAndDelete(id);
+        // Delete
+        const data = await ExamResult.findByIdAndDelete(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!deletedData) {
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
-        }
+        // Xóa result trong Exam Result của User
+        const user = (await User.find({})).find((user) =>
+            user.examResults.some((result) => result.toString() === id)
+        );
+        // 404 - Not Found
+        if (!user) return res.status(404).json({ message: "Data Not Found" });
+        let newData = user.examResults.filter(
+            (result) => result.toString() !== id
+        );
+        user.examResults = newData;
+        await user.save();
 
-        return res
-            .status(200)
-            .json({ data: deletedData, message: "Xóa thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
 

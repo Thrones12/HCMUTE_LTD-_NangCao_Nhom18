@@ -1,15 +1,15 @@
-const Lesson = require("../models/Lesson");
-const Comment = require("../models/Comment");
-const { GenerateTag } = require("../utils/Generator");
+const Activity = require("../models/Activity");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
 
-// GET /lesson
+// GET /notification
 const GetAll = async (req, res) => {
     try {
         const {} = req.query;
         let data; // Return data
 
         // Get data
-        data = await Lesson.find({});
+        data = await Notification.find({});
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
@@ -20,14 +20,14 @@ const GetAll = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-// GET /course/get-one?id=...
+// GET /activity/get-one?id=...
 const GetOne = async (req, res) => {
     try {
         const { id } = req.query;
         let data; // Return data
 
         // Get data
-        data = await Lesson.findById(id);
+        data = await Notification.findById(id);
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
@@ -38,32 +38,27 @@ const GetOne = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-// POST /lesson
+// POST /notification
 const Create = async (req, res) => {
     try {
-        const {
-            title,
-            courseTitle,
-            subjectTitle,
-            videoUrl,
-            document,
-            guide,
-            questions,
-        } = req.body;
+        const { userId, content } = req.body;
 
         // Create
-        let tag = GenerateTag(`${title} ${courseTitle} ${subjectTitle}`);
-        const data = new Lesson({
-            title,
-            courseTitle,
-            subjectTitle,
-            tag,
-            videoUrl,
-            document,
-            guide,
-            questions,
-        });
+        const data = new Notification({ content });
         data.save();
+
+        // Thêm notification vào notifications trong user, nếu có userId là thêm thông báo cho 1 user cụ thể
+        if (userId) {
+            const user = await User.findById(userId);
+            user.notifications.push(data._id.toString());
+            user.save();
+        } else {
+            const users = await User.find({});
+            for (let user of users) {
+                user.notifications.push(data._id.toString());
+                user.save();
+            }
+        }
 
         // 200 - Success
         return res.status(200).json({ data });
@@ -71,35 +66,19 @@ const Create = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-// PUT /lesson
+// PUT /notification
 const Update = async (req, res) => {
     try {
-        const {
-            id,
-            title,
-            courseTitle,
-            subjectTitle,
-            videoUrl,
-            document,
-            guide,
-            questions,
-            comments,
-        } = req.body;
+        const { id, content, isRead } = req.body;
 
         // Get data
-        const data = await Lesson.findById(id);
+        const data = await Notification.findById(id);
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data Not Found" });
 
         // Update
-        if (title) data.title = title;
-        if (courseTitle) data.courseTitle = courseTitle;
-        if (subjectTitle) data.subjectTitle = subjectTitle;
-        if (videoUrl) data.videoUrl = videoUrl;
-        if (document) data.document = document;
-        if (guide) data.guide = guide;
-        if (questions) data.questions = [...questions];
-        if (comments) data.comments = [...comments];
+        if (content) data.content = content;
+        if (isRead) data.isRead = isRead;
         await data.save();
 
         // 200 - Success
@@ -108,20 +87,24 @@ const Update = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-// DELETE /course?id=...
+// DELETE /notification?id=...
 const Delete = async (req, res) => {
     try {
         const { id } = req.query;
 
         // Delete
-        const data = await Lesson.findByIdAndDelete(id);
-
+        const data = await Notification.findByIdAndDelete(id);
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        // Xóa comment trong lesson
-        for (let commentId of data.comments) {
-            await Comment.findByIdAndDelete(commentId.toString());
+        // Xóa notification trong user
+        const users = await User.find({});
+        for (let item of users) {
+            let user = await User.findById(item._id);
+            user.notifications = user.notifications.filter(
+                (noti) => noti.toString() !== id
+            );
+            await user.save();
         }
 
         // 200 - Success

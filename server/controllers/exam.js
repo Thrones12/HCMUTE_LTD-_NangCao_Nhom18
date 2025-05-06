@@ -1,79 +1,44 @@
-const Exam = require("../models/exam");
+const Exam = require("../models/Exam");
+const ExamResult = require("../models/ExamResult");
+const User = require("../models/User");
 
-// Get toàn bộ dữ liệu
+// GET /exam
 const GetAll = async (req, res) => {
     try {
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        const {} = req.query;
+        let data; // Return data
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        {
-            data = await Exam.find({})
-                .populate({
-                    path: "questions",
-                    model: "Question",
-                })
-                .populate({
-                    path: "likes",
-                    model: "User",
-                })
-                .populate({
-                    path: "saves",
-                    model: "User",
-                });
-        }
+        // Get data
+        data = await Exam.find({});
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Exam not found" });
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        console.log("Get Exam: \n" + data);
-        return res.status(200).json({ data, message: "Get all thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Get dữ liệu bằng query, ex: http:192.168.1.3:8080/api/Exam/getOne?id=.....
+// GET /exam/get-one?id=...
 const GetOne = async (req, res) => {
     try {
-        // Các query có thể có khi get data
         const { id } = req.query;
+        let data; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        // Get data
+        data = await Exam.findById(id);
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (id) {
-            data = await Exam.findById(id)
-                .populate({
-                    path: "questions",
-                    model: "Question",
-                })
-                .populate({
-                    path: "likes",
-                    model: "User",
-                })
-                .populate({
-                    path: "saves",
-                    model: "User",
-                });
-        }
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Exam not found" });
-
-        console.log("Get Exam: \n" + data);
-        return res.status(200).json({ data, message: "Get one thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Get 10 bài kiểm tra tốt nhất
+// Get /exam/get-top
 const GetTop = async (req, res) => {
     try {
         let data; // Biến lưu trữ dữ liệu ban đầu khi get
@@ -115,70 +80,63 @@ const GetTop = async (req, res) => {
         return res.status(500).json({ data: [], message: "Lỗi server" });
     }
 };
-
-// Create, input: title, duration, questions
+// POST /exam
 const Create = async (req, res) => {
     try {
-        const { title, duration, questions } = req.body;
+        const { title, duration, questions, level } = req.body;
 
-        const newData = new Exam({ title, duration, questions });
-        newData.save();
+        // Create
+        const data = new Exam({ title, duration, questions, level });
+        data.save();
 
-        return res
-            .status(200)
-            .json({ data: newData, message: "Create thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Update
-// _id: quan trọng, dùng để tìm doc update
-// input: title, duration, questions
+// PUT /exam
 const Update = async (req, res) => {
     try {
-        const { _id, title, duration, questions } = req.body;
+        const { id, title, duration, questions, level } = req.body;
 
-        const existingData = await Exam.findById(_id);
+        // Get data
+        const data = await Exam.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!existingData)
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Update
+        if (title) data.title = title;
+        if (duration) data.duration = duration;
+        if (questions) data.questions = [...questions];
+        if (level) data.level = level;
+        await data.save();
 
-        if (title) existingData.title = title;
-        if (duration) existingData.duration = duration;
-        if (questions) existingData.questions = [...questions];
-
-        await existingData.save();
-
-        return res
-            .status(200)
-            .json({ data: existingData, message: "Update thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Delete, truyền id vào query để xóa, ex: http:192.168.1.3:8080/api/Exam?id=.....
+// DELETE /exam
 const Delete = async (req, res) => {
     try {
-        const { id } = req.query; // Lấy id từ query string
+        const { id } = req.query;
 
-        const deletedData = await Exam.findByIdAndDelete(id);
+        // Delete
+        const data = await Exam.findByIdAndDelete(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!deletedData) {
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
-        }
+        // Xóa Exam Result
+        await ExamResult.deleteMany({ exam: id });
 
-        return res
-            .status(200)
-            .json({ data: deletedData, message: "Xóa thành công" });
+        // Xóa result trong Exam Result của User
+
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
 

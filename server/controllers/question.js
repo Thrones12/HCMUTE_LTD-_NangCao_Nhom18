@@ -1,117 +1,174 @@
-const Question = require("../models/question");
+const Question = require("../models/Question");
+const Challenge = require("../models/Challenge");
+const Exam = require("../models/Exam");
+const Lesson = require("../models/Lesson");
 
-// Get toàn bộ dữ liệu
+// GET /question
 const GetAll = async (req, res) => {
     try {
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        const {} = req.query;
+        let data; // Return data
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        {
-            data = await Question.find({});
-        }
+        // Get data
+        data = await Question.find({});
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Question not found" });
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        console.log("Get Question: \n" + data);
-        return res.status(200).json({ data, message: "Get all thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Get dữ liệu bằng query, ex: http:192.168.1.3:8080/api/Question/getOne?id=.....
+// GET /question/get-one?id=...
 const GetOne = async (req, res) => {
     try {
-        // Các query có thể có khi get data
         const { id } = req.query;
+        let data; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        // Get data
+        data = await Question.findById(id);
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (id) {
-            data = await Question.findById(id);
-        }
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Question not found" });
-
-        console.log("Get Question: \n" + data);
-        return res.status(200).json({ data, message: "Get one thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Create, input: question, options, answer
+// POST /question
 const Create = async (req, res) => {
     try {
-        const { question, options, answer } = req.body;
+        const { question, options, answer, hint, explanation, level } =
+            req.body;
 
-        const newData = new Question({ question, options, answer });
-        newData.save();
+        // Create
+        const data = new Question({
+            question,
+            options,
+            answer,
+            hint,
+            explanation,
+            level,
+        });
+        data.save();
 
-        return res
-            .status(200)
-            .json({ data: newData, message: "Create thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Update
-// _id: quan trọng, dùng để tìm doc update
-// input: question, options, answer
+// PUT /question
 const Update = async (req, res) => {
     try {
-        const { _id, question, options, answer } = req.body;
+        const { id, question, options, answer, hint, explanation, level } =
+            req.body;
 
-        const existingData = await Question.findById(_id);
+        // Get data
+        const data = await Question.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!existingData)
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Update
+        if (question) data.question = question;
+        if (options) data.options = [...options];
+        if (answer) data.answer = answer;
+        if (hint) data.hint = hint;
+        if (explanation) data.explanation = explanation;
+        if (level) data.level = level;
+        await data.save();
 
-        if (question) existingData.question = question;
-        if (answer) existingData.answer = answer;
-        if (options) existingData.options = [...options];
-
-        await existingData.save();
-
-        return res
-            .status(200)
-            .json({ data: existingData, message: "Update thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Delete, truyền id vào query để xóa, ex: http:192.168.1.3:8080/api/Question?id=.....
+// DELETE /question?id=...
 const Delete = async (req, res) => {
     try {
-        const { id } = req.query; // Lấy id từ query string
+        const { id } = req.query;
 
-        const deletedData = await Question.findByIdAndDelete(id);
+        // Delete
+        const data = await Question.findByIdAndDelete(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!deletedData) {
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Xóa question trong challenge
+        {
+            const challenges = (await Challenge.find({})).filter((challenge) =>
+                challenge.groups.some((group) =>
+                    group.questions.some(
+                        (question) => question.toString() === id
+                    )
+                )
+            );
+
+            // // 404 - Not Found
+            if (!challenges)
+                return res.status(404).json({ message: "Data Not Found" });
+            for (let challenge of challenges) {
+                let updated = false;
+                // Duyệt từng group trong challenge
+                for (let group of challenge.groups) {
+                    const originalLength = group.questions.length;
+                    // Lọc lại mảng questions
+                    group.questions = group.questions.filter(
+                        (q) => q.toString() !== id
+                    );
+                    if (group.questions.length !== originalLength) {
+                        updated = true;
+                    }
+                }
+                // Lưu lại nếu có sự thay đổi
+                if (updated) {
+                    await challenge.save();
+                }
+            }
         }
 
-        return res
-            .status(200)
-            .json({ data: deletedData, message: "Xóa thành công" });
+        // Xóa question trong exam
+        {
+            const exams = (await Exam.find({})).filter((exam) =>
+                exam.questions.some((question) => question.toString() === id)
+            );
+            // 404 - Not Found
+            if (!exams)
+                return res.status(404).json({ message: "Data Not Found" });
+            for (let item of exams) {
+                let exam = await Exam.findById(item._id);
+                exam.questions = exam.questions.filter(
+                    (question) => question.toString() !== id
+                );
+                await exam.save();
+            }
+        }
+
+        // Xóa question trong lesson
+        {
+            const lessons = (await Lesson.find({})).filter((lesson) =>
+                lesson.questions.some((question) => question.toString() === id)
+            );
+            // 404 - Not Found
+            if (!lessons)
+                return res.status(404).json({ message: "Data Not Found" });
+            for (let item of lessons) {
+                let lesson = await Lesson.findById(item._id);
+                lesson.questions = lesson.questions.filter(
+                    (question) => question.toString() !== id
+                );
+                await lesson.save();
+            }
+        }
+
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
 

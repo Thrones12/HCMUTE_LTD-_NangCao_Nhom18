@@ -1,16 +1,24 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
+    email: { type: String },
+    password: { type: String },
     avatar: { type: String },
     fullname: { type: String },
     phone: { type: String },
-    email: { type: String },
-    password: { type: String },
-    status: { type: String, enum: ["active", "locked"], default: "locked" },
-    otp: { type: String },
-    histories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
-    storage: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
-    results: [{ type: mongoose.Schema.Types.ObjectId, ref: "ExamResult" }],
+    address: { type: String },
+    role: { type: String, enum: ["Student", "Admin"], default: "Student" },
+    status: { type: String, enum: ["Active", "Locked"], default: "Locked" },
+    histories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }], // Lịch sử hoạt động
+    learned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }], // Lesson đã hoàn thành
+    saves: [{ type: mongoose.Schema.Types.ObjectId, ref: "Exam" }], // Exam lưu trữ
+    examResults: [{ type: mongoose.Schema.Types.ObjectId, ref: "ExamResult" }],
+    challengeResults: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "ChallengeResult" },
+    ],
+    notifications: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
+    ],
 });
 
 const User = mongoose.model("User", schema);

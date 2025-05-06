@@ -1,144 +1,120 @@
-const Comment = require("../models/comment");
-const Lesson = require("../models/lesson");
-const User = require("../models/user");
+const Comment = require("../models/Comment");
+const Lesson = require("../models/Lesson");
 
-// Get toàn bộ dữ liệu, query
-// - userId: get toàn bộ coment trong comments của user
+// GET /comment
 const GetAll = async (req, res) => {
     try {
-        // Các query có thể có khi get data
-        const { userId } = req.query;
+        const {} = req.query;
+        let data = []; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
-
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (userId) {
-            data = await Comment.find({ user: userId }).populate({
-                path: "user",
-                model: "User",
-            });
-        } else {
-            data = await Comment.find({}).populate({
-                path: "user",
-                model: "User",
-            });
+        // Get data
+        let topLevelComments = await Comment.find({
+            replyTo: null, // chỉ lấy comment không phải là reply
+        });
+        // 404 - Not Found
+        if (!topLevelComments)
+            return res.status(404).json({ message: "Data not found" });
+        // Get reply của comment
+        for (const comment of topLevelComments) {
+            const replies = await Comment.find({ replyTo: comment._id });
+            data.push({ ...comment._doc, replies });
         }
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Comment not found" });
-
-        console.log("Get Comment: \n" + data);
-        return res.status(200).json({ data, message: "Get all success" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
+// GET /comment/get-one?id=...
 const GetOne = async (req, res) => {
     try {
-        // Các query có thể có khi get data
-        const { id, userId } = req.query;
+        const { id } = req.query;
+        let data; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        // Get data
+        data = await Comment.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (id) {
-            data = await Comment.findById(id).populate({
-                path: "user",
-                model: "User",
-            });
-        } else if (userId) {
-            data = await Comment.findOne({ user: userId }).populate({
-                path: "user",
-                model: "User",
-            });
-        }
+        // Get replies
+        const replies = await Comment.find({ replyTo: id });
+        data = { ...data._doc, replies };
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Comment not found" });
+        console.log(replies);
 
-        console.log("Get Comment: \n" + data);
-        res.json({ data, message: "Get all Comment" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Create, input:  content, userId, lessonId
+// POST /comment
 const Create = async (req, res) => {
     try {
-        const { content, userId, lessonId } = req.body;
+        const { lessonId, user, content, replyTo } = req.body;
 
-        const newData = new Comment({ content, user: userId });
-        newData.save();
+        // Create
+        const data = new Comment({ user, content, replyTo });
+        data.save();
 
-        const lesson = await Lesson.findOne({ _id: lessonId });
-        lesson.comments.push(newData._id.toString());
+        // Thêm comment vào lesson
+        const lesson = await Lesson.findById(lessonId);
+        lesson.comments.push(data._id.toString());
         lesson.save();
 
-        const user = await User.findOne({ _id: userId });
-
-        newData.user = user;
-
-        return res
-            .status(200)
-            .json({ data: newData, message: "Create thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Update
-// _id: quan trọng, dùng để tìm doc update
-// input: content
+// PUT /comment
 const Update = async (req, res) => {
     try {
-        const { _id, content } = req.body;
+        const { id, content } = req.body;
 
-        const existingData = await Comment.findById(_id);
+        // Get data
+        const data = await Comment.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!existingData)
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Update
+        if (content) data.content = content;
+        await data.save();
 
-        if (content) existingData.content = content;
-
-        await existingData.save();
-
-        return res
-            .status(200)
-            .json({ data: existingData, message: "Update thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Delete, truyền id vào query để xóa, ex: http:192.168.1.3:8080/api/course?id=.....
+// DELETE /comment?id=...
 const Delete = async (req, res) => {
     try {
-        const { id } = req.query; // Lấy id từ query string
+        const { id } = req.query;
 
-        const deletedData = await Comment.findByIdAndDelete(id);
+        // Delete
+        const data = await Comment.findByIdAndDelete(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!deletedData) {
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
-        }
+        // Xoá comment khỏi comments trong lesson
+        const lesson = (await Lesson.find({})).find((lesson) =>
+            lesson.comments.some((comment) => comment.toString() === id)
+        );
+        // 404 - Not Found
+        if (!lesson) return res.status(404).json({ message: "Data Not Found" });
+        let newData = lesson.comments.filter(
+            (comment) => comment.toString() !== id
+        );
+        lesson.comments = newData;
+        await lesson.save();
 
-        return res
-            .status(200)
-            .json({ data: deletedData, message: "Xóa thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
 

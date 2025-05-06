@@ -1,134 +1,92 @@
-const Subject = require("../models/subject");
+const Subject = require("../models/Subject");
 
-// Get toàn bộ dữ liệu
+// GET /subject
 const GetAll = async (req, res) => {
     try {
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        const {} = req.query;
+        let data; // Return data
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        {
-            data = await Subject.find({})
-                .populate({
-                    path: "lessons",
-                    model: "Lesson",
-                })
-                .populate({
-                    path: "exams",
-                    model: "Exam",
-                });
-        }
+        // Get data
+        data = await Subject.find({});
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Subject not found" });
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        console.log("Get Subject: \n" + data);
-        return res.status(200).json({ data, message: "Get all thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Get dữ liệu bằng query, ex: http:192.168.1.3:8080/api/subject/getOne?id=.....
+// GET /subject/get-one?id=...
 const GetOne = async (req, res) => {
     try {
-        // Các query có thể có khi get data
         const { id } = req.query;
+        let data; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        // Get data
+        data = await Subject.findById(id);
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (id) {
-            data = await Subject.findById(id)
-                .populate({
-                    path: "lessons",
-                    model: "Lesson",
-                })
-                .populate({
-                    path: "exams",
-                    model: "Exam",
-                });
-        }
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Subject not found" });
-
-        console.log("Get Subject: \n" + data);
-        return res.status(200).json({ data, message: "Get one thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Create, input: title
+// POST /subject
 const Create = async (req, res) => {
     try {
-        const { title } = req.body;
+        const { title, lessons, exams } = req.body;
 
-        const newData = new Subject({ title });
-        newData.save();
+        // Create
+        const data = new Subject({ title, lessons, exams });
+        data.save();
 
-        return res
-            .status(200)
-            .json({ data: newData, message: "Create thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Update
-// _id: quan trọng, dùng để tìm doc update
-// input: title, lessons, exams, views
+// PUT /subject
 const Update = async (req, res) => {
     try {
-        const { _id, title, lessons, exams, views } = req.body;
+        const { id, title, lessons, exams } = req.body;
 
-        const existingData = await Subject.findById(_id);
+        // Get data
+        const data = await Subject.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!existingData)
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Update
+        if (title) data.title = title;
+        if (lessons) data.lessons = [...lessons];
+        if (exams) data.exams = [...exams];
+        await data.save();
 
-        if (title) existingData.title = title;
-        if (lessons) existingData.lessons = [...lessons];
-        if (exams) existingData.exams = [...exams];
-        if (views) existingData.views = views;
-
-        await existingData.save();
-
-        return res
-            .status(200)
-            .json({ data: existingData, message: "Update thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Delete, truyền id vào query để xóa, ex: http:192.168.1.3:8080/api/subject?id=.....
+// DELETE /subject?id=...
 const Delete = async (req, res) => {
     try {
-        const { id } = req.query; // Lấy id từ query string
+        const { id } = req.query;
 
-        const deletedData = await Subject.findByIdAndDelete(id);
+        // Delete
+        const data = await Subject.findByIdAndDelete(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!deletedData) {
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
-        }
-
-        return res
-            .status(200)
-            .json({ data: deletedData, message: "Xóa thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
 

@@ -1,122 +1,91 @@
-const Course = require("../models/course");
+const Course = require("../models/Course");
 
-// Get toàn bộ dữ liệu
+// GET /course
 const GetAll = async (req, res) => {
     try {
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        const {} = req.query;
+        let data; // Return data
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        {
-            data = await Course.find({}).populate({
-                path: "subjects",
-                model: "Subject",
-            });
-        }
+        // Get data
+        data = await Course.find({});
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Course not found" });
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        console.log("Get Course: \n" + data);
-        return res.status(200).json({ data, message: "Get all thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Get dữ liệu bằng query, ex: http:192.168.1.3:8080/api/course/getOne?id=.....
+// GET /course/get-one?id=...
 const GetOne = async (req, res) => {
     try {
-        // Các query có thể có khi get data
         const { id } = req.query;
+        let data; // Return data
 
-        let data; // Biến lưu trữ dữ liệu ban đầu khi get
+        // Get data
+        data = await Course.findById(id);
 
-        // Nếu có 1 biến query phù hợp thì sẽ get còn không thì trả về toàn bộ dữ liệu trong csdl
-        if (id) {
-            data = await Course.findById(id).populate({
-                path: "subjects",
-                model: "Subject",
-            });
-        }
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
 
-        // Nếu không có dữ liệu nào thì báo lỗi 404 - Not Found
-        if (!data)
-            return res
-                .status(404)
-                .json({ data: [], message: "Course not found" });
-
-        console.log("Get Course: \n" + data);
-        return res.status(200).json({ data, message: "Get one thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Create, input: title
+// POST /course
 const Create = async (req, res) => {
     try {
         const { title } = req.body;
 
-        const newData = new Course({ title });
-        newData.save();
+        // Create
+        const data = new Course({ title });
+        data.save();
 
-        return res
-            .status(200)
-            .json({ data: newData, message: "Create thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Update
-// _id: quan trọng, dùng để tìm doc update
-// input: title, subjects
+// PUT /course
 const Update = async (req, res) => {
     try {
-        const { _id, title, subjects } = req.body;
+        const { id, title, subjects } = req.body;
 
-        const existingData = await Course.findById(_id);
+        // Get data
+        const data = await Course.findById(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!existingData)
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
+        // Update
+        if (title) data.title = title;
+        if (subjects) data.subjects = [...subjects];
+        await data.save();
 
-        if (title) existingData.title = title;
-        if (subjects) existingData.subjects = [...subjects];
-
-        await existingData.save();
-
-        return res
-            .status(200)
-            .json({ data: existingData, message: "Update thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-
-// Delete, truyền id vào query để xóa, ex: http:192.168.1.3:8080/api/course?id=.....
+// DELETE /course?id=...
 const Delete = async (req, res) => {
     try {
-        const { id } = req.query; // Lấy id từ query string
+        const { id } = req.query;
 
-        const deletedData = await Course.findByIdAndDelete(id);
+        // Delete
+        const data = await Course.findByIdAndDelete(id);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
 
-        if (!deletedData) {
-            return res
-                .status(404)
-                .json({ data: [], message: "Không tìm thấy dữ liệu" });
-        }
-
-        return res
-            .status(200)
-            .json({ data: deletedData, message: "Xóa thành công" });
+        // 200 - Success
+        return res.status(200).json({ data });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ data: [], message: "Lỗi server" });
+        return res.status(500).json({ message: "Server Error: ", err });
     }
 };
 

@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-    date: { type: Date, default: Date.now() },
-    type: { type: String, enum: ["comment", "like", "exam"] },
-    message: { type: String },
+    action: { type: String }, // tên hành động
+    timestamp: { type: Date, default: Date.now }, // Ngày thực hiện
 });
 
 const Activity = mongoose.model("Activity", schema);
