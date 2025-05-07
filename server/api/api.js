@@ -4,6 +4,9 @@ let router = express.Router();
 // Activity
 let Activity = require("../routers/Activity");
 router.use("/api/activity", Activity);
+// Banner
+let Banner = require("../routers/Banner");
+router.use("/api/banner", Banner);
 // Challenge
 let Challenge = require("../routers/Challenge");
 router.use("/api/challenge", Challenge);
