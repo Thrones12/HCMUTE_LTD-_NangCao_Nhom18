@@ -30,6 +30,25 @@ const GetAll = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
+// GET /course/get-top
+const GetTop = async (req, res) => {
+    try {
+        // Lấy top 10 bài học, sắp xếp giảm dần theo attemptCount
+        const data = await Lesson.find({})
+            .sort({ attemptCount: -1 }) // Sắp xếp giảm dần
+            .limit(10); // Giới hạn 10 bài học
+
+        // 404 - Not Found
+        if (!data || data.length === 0)
+            return res.status(404).json({ message: "No data found" });
+
+        // 200 - Success
+        return res.status(200).json({ data });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server Error", err });
+    }
+};
 // GET /course/get-one?id=...
 const GetOne = async (req, res) => {
     try {
@@ -154,6 +173,7 @@ const Delete = async (req, res) => {
 
 module.exports = {
     GetAll,
+    GetTop,
     GetOne,
     Create,
     Update,

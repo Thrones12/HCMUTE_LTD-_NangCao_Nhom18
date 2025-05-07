@@ -3,11 +3,15 @@ const Banner = require("../models/Banner");
 // GET /banner
 const GetAll = async (req, res) => {
     try {
-        const {} = req.query;
+        const { isActive } = req.query;
         let data; // Return data
 
         // Get data
-        data = await Banner.find({ isActive: true });
+        if (isActive) {
+            data = await Banner.find({ isActive: true });
+        } else {
+            data = await Banner.find({});
+        }
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
 

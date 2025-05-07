@@ -4,19 +4,22 @@ import CheckBoxComponent from "./CheckBoxComponent";
 import InputTextComponent from "./InputTextComponent";
 import VideoComponent from "./VideoComponent";
 import DocumentComponent from "./DocumentComponent";
-import CourseComponent from "./CourseComponent";
-import SlideShow from "./SlideShow";
+import BannerSlideShow from "./BannerSlideShow";
 import TopExam from "./TopExam";
 import PracticeList from "./PracticeList";
 import LessonItem from "./LessonItem";
 import CardExam from "./CardExam";
 
 // New
+import HomeSectionHeader from "./HomeSectionHeader";
 import CourseCard from "./CourseCard";
 import SubjectCard from "./SubjectCard";
 import LessonCard from "./LessonCard";
 import ExamCard from "./ExamCard";
 import ChallengeCard from "./ChallengeCard";
+// Home Section
+import HomeSectionCourse from "./HomeSectionCourse";
+import HomeSectionLesson from "./HomeSectionLesson";
 export {
     TextComponent,
     ButtonComponent,
@@ -24,8 +27,7 @@ export {
     InputTextComponent,
     VideoComponent,
     DocumentComponent,
-    CourseComponent,
-    SlideShow,
+    BannerSlideShow,
     TopExam,
     PracticeList,
     LessonItem,
@@ -36,4 +38,8 @@ export {
     LessonCard,
     ExamCard,
     ChallengeCard,
+    // Home Section
+    HomeSectionHeader,
+    HomeSectionCourse,
+    HomeSectionLesson,
 };

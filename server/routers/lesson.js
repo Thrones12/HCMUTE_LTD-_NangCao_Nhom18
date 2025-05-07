@@ -4,6 +4,7 @@ let controller = require("../controllers/Lesson");
 
 // GET
 router.get("/", controller.GetAll);
+router.get("/get-top", controller.GetTop);
 router.get("/get-one", controller.GetOne);
 // POST
 router.post("/", controller.Create);

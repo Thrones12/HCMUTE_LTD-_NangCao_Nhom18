@@ -17,6 +17,7 @@ import ExamScreen from "./ExamScreen";
 import StorageExamScreen from "./profile/StorageExamScreen";
 import NotificationScreen from "./NotificationScreen";
 import HistoryScreen from "./profile/HistoryScreen";
+import SearchScreen from "./SearchScreen";
 
 export {
     // Authentication
@@ -43,4 +44,5 @@ export {
     NotificationScreen,
     ExamScreen,
     ChallengeScreen,
+    SearchScreen,
 };

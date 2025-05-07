@@ -11,4 +11,6 @@ export type RootStackParamList = {
     Exam: { examId: String };
     ChallengeList: undefined;
     Challenge: { challengeId: String };
+    Search: undefined;
+    Notification: undefined;
 };

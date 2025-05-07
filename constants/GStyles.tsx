@@ -4,6 +4,7 @@ export const GStyles = {
     container: {
         flexGrow: 1,
         backgroundColor: Colors.Gray200,
+        paddingTop: 30,
     },
     flatlistContainer: {
         flexGrow: 1,

@@ -10,6 +10,7 @@ import {
     ExamScreen,
     VerifyScreen,
     ChallengeScreen,
+    SearchScreen,
 } from "@/screens";
 import LessonTabNavigator from "./LessonTabNavigator";
 
@@ -18,8 +19,11 @@ const Stack = createNativeStackNavigator();
 const MainNavigator = () => {
     return (
         <Stack.Navigator
-            screenOptions={{ headerShown: false }}
             initialRouteName='Main'
+            screenOptions={{
+                headerShown: false,
+                animation: "fade",
+            }}
         >
             {/* Tab navigator */}
             <Stack.Screen name='Main' component={MainTabNavigator} />
@@ -31,6 +35,7 @@ const MainNavigator = () => {
             <Stack.Screen name='SubjectList' component={SubjectListScreen} />
             <Stack.Screen name='LessonList' component={LessonListScreen} />
             <Stack.Screen name='Notification' component={NotificationScreen} />
+            <Stack.Screen name='Search' component={SearchScreen} />
             <Stack.Screen name='Exam' component={ExamScreen} />
             <Stack.Screen name='Challenge' component={ChallengeScreen} />
 

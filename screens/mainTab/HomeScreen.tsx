@@ -1,76 +1,47 @@
 import {
-    ScrollView,
     View,
     Text,
-    TouchableOpacity,
     StyleSheet,
     FlatList,
     ActivityIndicator,
-    Pressable,
 } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
+import React, { useEffect, useState } from "react";
 import { Colors, GStyles } from "@/constants";
-import { CardExam, CourseComponent, SlideShow, TopExam } from "@/components";
+import {
+    BannerSlideShow,
+    HomeSectionHeader,
+    HomeSectionCourse,
+    HomeSectionLesson,
+    ExamCard,
+} from "@/components";
 import axios from "axios";
 import { Constant } from "@/constants/Constant";
 import Notification from "@/services/Notification";
+import { Banner } from "@/services";
 
 const PAGE_SIZE = 10;
 const HomeScreen = ({ navigation }: any) => {
     const API = Constant.API;
-    const [courses, setCourses] = useState([]);
-    const [topExams, setTopExams] = useState([]);
+    const [banners, setBanners] = useState([]);
     const [exams, setExams] = useState([]);
     const [data, setData] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [allLoaded, setAllLoaded] = useState(false);
 
-    const loadData = () => {
-        if (loading || allLoaded || exams.length === 0) return;
-
-        setLoading(true);
-        setTimeout(() => {
-            const start = (page - 1) * PAGE_SIZE;
-            const end = start + PAGE_SIZE;
-            const newData = exams.slice(start, end);
-
-            setData((prev) => [...prev, ...newData]);
-            setPage((prev) => prev + 1);
-            setLoading(false);
-
-            if (end >= exams.length) {
-                setAllLoaded(true);
-            }
-        }, 1000);
-    };
-    // fetch course
+    // Fetch danh sách banner được kích hoạt
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`${API}/course`);
-                let data = res.data.data;
-                setCourses(data);
-            } catch (err: any) {
-                if (err.status === 404) Notification.error(err.data.message);
-                else Notification.error(err.data.message);
+                const data = await Banner.GetAllActive();
+                setBanners(data);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách bài học:", error);
+            } finally {
+                setLoading(false);
             }
         };
-        fetchData();
-    }, []);
-    // fetch top exam
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get(`${API}/exam/top`);
-                let data = res.data.data;
-                setTopExams(data);
-            } catch (err: any) {
-                if (err.status === 404) Notification.error(err.data.message);
-                else Notification.error(err.data.message);
-            }
-        };
+
         fetchData();
     }, []);
     // fetch exams
@@ -89,12 +60,28 @@ const HomeScreen = ({ navigation }: any) => {
         fetchData();
         loadData();
     }, []);
-
-    // load data
+    // Load data
     useEffect(() => {
         loadData();
     }, [exams]);
+    const loadData = () => {
+        if (loading || allLoaded || exams.length === 0) return;
 
+        setLoading(true);
+        setTimeout(() => {
+            const start = (page - 1) * PAGE_SIZE;
+            const end = start + PAGE_SIZE;
+            const newData = exams.slice(start, end);
+
+            setData((prev) => [...prev, ...newData]);
+            setPage((prev) => prev + 1);
+            setLoading(false);
+
+            if (end >= exams.length) {
+                setAllLoaded(true);
+            }
+        }, 1000);
+    };
     return (
         <View style={[GStyles.container]}>
             <FlatList
@@ -102,44 +89,32 @@ const HomeScreen = ({ navigation }: any) => {
                 renderItem={null}
                 ListHeaderComponent={
                     <View>
-                        {/* Slide show */}
-                        <View style={{ marginVertical: 0 }}>
-                            <SlideShow />
-                        </View>
-
+                        {/* HomeSectionHeader */}
+                        <HomeSectionHeader />
+                        {/* Banner Slide Show */}
+                        <BannerSlideShow data={banners} />
                         {/* Course */}
-                        <View style={[styles.container]}>
-                            <Text style={styles.title}>Khóa học</Text>
-                            <CourseComponent
-                                courses={courses}
-                                navigation={navigation}
-                            />
-                        </View>
-
-                        {/* Top view */}
-                        <View style={[styles.container]}>
-                            <Text style={styles.title}>Nổi bật</Text>
-                            <TopExam exams={topExams} navigation={navigation} />
-                        </View>
+                        <HomeSectionCourse />
+                        {/* Top Lesson */}
+                        <HomeSectionLesson />
 
                         {/* Practice wrapper */}
-                        <View style={[styles.container]}>
+                        <View style={{ padding: 15 }}>
                             <Text style={styles.title}>Luyện tập</Text>
-                            <View style={{ gap: 10 }}>
+                            <View style={{ gap: 10, marginVertical: 10 }}>
                                 {data.map((item, index) => (
-                                    <CardExam
+                                    <ExamCard
                                         key={index}
                                         item={item}
-                                        navigation={navigation}
+                                        onPress={() =>
+                                            navigation.navigate("Exam")
+                                        }
                                     />
                                 ))}
                             </View>
                         </View>
                     </View>
                 }
-                contentContainerStyle={{
-                    paddingBottom: 40,
-                }}
                 showsVerticalScrollIndicator={false}
                 onEndReached={loadData}
                 onEndReachedThreshold={0.5}
@@ -156,28 +131,23 @@ const HomeScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: Colors.white,
-        padding: 8,
-        borderRadius: 10,
-        marginVertical: 10,
+    container: {},
+    flexRow: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
     title: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 600,
-        height: 30,
     },
-    item: {
-        backgroundColor: "#fff",
-        padding: 16,
-        marginVertical: 6,
-        marginHorizontal: 10,
-        borderRadius: 10,
-        elevation: 2,
-    },
-    course: {
-        fontSize: 14,
-        color: "#666",
+    link: {
+        fontSize: 12,
+        fontWeight: 500,
+        textDecorationLine: "underline",
+        fontStyle: "italic",
+        color: Colors.Sky,
     },
 });
 

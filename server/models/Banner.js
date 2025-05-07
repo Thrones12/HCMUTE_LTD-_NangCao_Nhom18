@@ -5,6 +5,6 @@ const schema = new mongoose.Schema({
     isActive: { type: Boolean, default: true },
 });
 
-const Activity = mongoose.model("Activity", schema);
+const Banner = mongoose.model("Banner", schema);
 
-module.exports = Activity;
+module.exports = Banner;
