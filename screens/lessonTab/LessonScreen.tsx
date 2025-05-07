@@ -17,7 +17,6 @@ const LessonScreen = ({ lesson }: any) => {
             <View style={styles.documentContainer}>
                 <DocumentComponent htmlContent={lesson.document} />
                 {/* Nút yêu thích nổi */}
-                <LikeButton lessonId={lesson._id} />
             </View>
             {/* End: Document */}
         </View>

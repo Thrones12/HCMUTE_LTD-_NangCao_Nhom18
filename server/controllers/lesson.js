@@ -1,15 +1,25 @@
 const Lesson = require("../models/Lesson");
 const Comment = require("../models/Comment");
+const Course = require("../models/Course");
+const Subject = require("../models/Subject");
 const { GenerateTag } = require("../utils/Generator");
 
 // GET /lesson
 const GetAll = async (req, res) => {
     try {
-        const {} = req.query;
+        const { subjectId } = req.query;
         let data; // Return data
 
         // Get data
-        data = await Lesson.find({});
+        if (subjectId) {
+            let subject = await Subject.findById(subjectId).populate({
+                path: "lessons",
+                model: "Lesson",
+            });
+            data = subject.lessons;
+        } else {
+            data = await Lesson.find({});
+        }
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
@@ -43,20 +53,24 @@ const Create = async (req, res) => {
     try {
         const {
             title,
-            courseTitle,
-            subjectTitle,
+            courseId,
+            subjectId,
             videoUrl,
             document,
             guide,
             questions,
         } = req.body;
 
+        // Get course và subject để lấy title
+        let course = await Course.findById(courseId);
+        let subject = await Subject.findById(subjectId);
+
         // Create
-        let tag = GenerateTag(`${title} ${courseTitle} ${subjectTitle}`);
+        let tag = GenerateTag(`${title} ${course.title} ${subject.title}`);
         const data = new Lesson({
             title,
-            courseTitle,
-            subjectTitle,
+            courseTitle: course.title,
+            subjectTitle: subject.title,
             tag,
             videoUrl,
             document,
@@ -64,6 +78,13 @@ const Create = async (req, res) => {
             questions,
         });
         data.save();
+
+        // Thêm lesson vào subject
+        if (subjectId) {
+            let subject = await Subject.findById(subjectId);
+            subject.lessons.push(data._id);
+            await subject.save();
+        }
 
         // 200 - Success
         return res.status(200).json({ data });

@@ -5,8 +5,9 @@ import ForgetPasswordScreen from "./auth/ForgetPasswordScreen";
 import VerifyScreen from "./auth/VerifyScreen";
 import ProfileScreen from "./mainTab/ProfileScreen";
 import CourseListScreen from "./mainTab/CourseListScreen";
-import PracticeScreen from "./mainTab/PracticeScreen";
-import CameraScreen from "./mainTab/CameraScreen";
+import ChallengeListScreen from "./mainTab/ChallengeListScreen";
+import ChallengeScreen from "./ChallengeScreen";
+import ExamListScreen from "./mainTab/ExamListScreen";
 import SubjectListScreen from "./SubjectListScreen";
 import LessonListScreen from "./LessonListScreen";
 import LessonScreen from "./lessonTab/LessonScreen";
@@ -26,9 +27,9 @@ export {
     // Main tab
     HomeScreen,
     CourseListScreen,
-    PracticeScreen,
+    ChallengeListScreen,
     ProfileScreen,
-    CameraScreen,
+    ExamListScreen,
     // Lesson tab
     LessonScreen,
     CommentScreen,
@@ -41,4 +42,5 @@ export {
     LessonListScreen,
     NotificationScreen,
     ExamScreen,
+    ChallengeScreen,
 };

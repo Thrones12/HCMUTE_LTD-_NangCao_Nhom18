@@ -1,6 +1,9 @@
 const Exam = require("../models/Exam");
 const ExamResult = require("../models/ExamResult");
 const User = require("../models/User");
+const Course = require("../models/Course");
+const Subject = require("../models/Subject");
+const { GenerateTag } = require("../utils/Generator");
 
 // GET /exam
 const GetAll = async (req, res) => {
@@ -83,11 +86,32 @@ const GetTop = async (req, res) => {
 // POST /exam
 const Create = async (req, res) => {
     try {
-        const { title, duration, questions, level } = req.body;
+        const { courseId, subjectId, title, duration, questions, level } =
+            req.body;
+
+        // Get course và subject để lấy title
+        let course = await Course.findById(courseId);
+        let subject = await Subject.findById(subjectId);
 
         // Create
-        const data = new Exam({ title, duration, questions, level });
+        let tag = GenerateTag(`${title} ${course.title} ${subject.title}`);
+        const data = new Exam({
+            title,
+            courseTitle: course.title,
+            subjectTitle: subject.title,
+            tag,
+            duration,
+            questions,
+            level,
+        });
         data.save();
+
+        // Thêm exam vào subject
+        if (subjectId) {
+            let subject = await Subject.findById(subjectId);
+            subject.exams.push(data._id);
+            await subject.save();
+        }
 
         // 200 - Success
         return res.status(200).json({ data });
@@ -106,7 +130,13 @@ const Update = async (req, res) => {
         if (!data) return res.status(404).json({ message: "Data Not Found" });
 
         // Update
-        if (title) data.title = title;
+        if (title) {
+            data.title = title;
+            let tag = GenerateTag(
+                `${title} ${data.courseTitle} ${data.subjectTitle}`
+            );
+            data.tag = tag;
+        }
         if (duration) data.duration = duration;
         if (questions) data.questions = [...questions];
         if (level) data.level = level;
@@ -132,6 +162,8 @@ const Delete = async (req, res) => {
         await ExamResult.deleteMany({ exam: id });
 
         // Xóa result trong Exam Result của User
+
+        // Xóa exam trong subject
 
         // 200 - Success
         return res.status(200).json({ data });

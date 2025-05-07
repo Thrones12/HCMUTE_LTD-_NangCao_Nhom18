@@ -1,69 +1,31 @@
 // navigators/BottomTabNavigator.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Pressable } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { LessonScreen, ExerciseScreen, CommentScreen } from "@/screens";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Lesson } from "@/services";
 
 const Tab = createBottomTabNavigator();
 
 const LessonTabNavigator = ({ route }: any) => {
-    const { lesson } = route.params;
-    return (
-        <Tab.Navigator
-            backBehavior='history'
-            screenOptions={({ route }: any) => ({
-                headerShown: false,
-                animation: "shift",
-                tabBarItemStyle: {
-                    backgroundColor: "#fff",
-                },
-                tabBarIcon: ({ color, size }) => {
-                    let iconName;
-                    if (route.name === "Home") {
-                        iconName = "home-outline";
-                    } else if (route.name === "Course") {
-                        iconName = "book-outline";
-                    } else if (route.name === "Practice") {
-                        iconName = "create-outline";
-                    } else if (route.name === "Profile") {
-                        iconName = "person-outline";
-                    } else {
-                        iconName = "camera-outline";
-                    }
+    const { lessonId } = route.params;
+    const [lesson, setLesson] = useState<any>([]);
+    // Fetch bài học bằng lessonId
+    useEffect(() => {
+        const fetchData = async (lessonId: string) => {
+            try {
+                const data = await Lesson.GetOne(lessonId);
+                setLesson(data);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách bài học:", error);
+            }
+        };
 
-                    // 👉 Custom riêng icon Camera
-                    if (route.name === "Camera") {
-                        return (
-                            <View
-                                style={{
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 50,
-                                    backgroundColor: "#1b84ff",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    shadowColor: "#000",
-                                    shadowOffset: { width: 0, height: 2 },
-                                    shadowOpacity: 0.3,
-                                    shadowRadius: 3.84,
-                                    elevation: 5,
-                                }}
-                            >
-                                <Ionicons
-                                    name={iconName}
-                                    size={28}
-                                    color='#fff'
-                                />
-                            </View>
-                        );
-                    }
-                    return (
-                        <Ionicons name={iconName} size={size} color={color} />
-                    );
-                },
-            })}
-        >
+        if (lessonId) fetchData(lessonId);
+    }, [lessonId]);
+    return (
+        <Tab.Navigator backBehavior='history' initialRouteName='Lesson'>
             <Tab.Screen
                 name='Lesson'
                 children={() => <LessonScreen lesson={lesson} />}

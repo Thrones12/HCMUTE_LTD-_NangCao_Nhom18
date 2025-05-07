@@ -1,47 +1,46 @@
 import {
     View,
     Text,
+    FlatList,
     StyleSheet,
     ActivityIndicator,
-    FlatList,
+    Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { GStyles, Colors, Data } from "@/constants";
-import { Subject } from "@/services";
-import { SubjectCard } from "@/components";
+import { GStyles, Colors } from "@/constants";
+import { ChallengeCard } from "@/components";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
+import { Challenge } from "@/services";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
-const SubjectListScreen = ({ route }: any) => {
+const ChallengeListScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { courseId } = route.params;
-    const [subjects, setSubjects] = useState<any>([]);
+    const [challenges, setChallenges] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    // Fetch danh sách môn học bằng courseId
+    // Fetch danh sách thử thách
     useEffect(() => {
-        const fetchData = async (courseId: string) => {
+        const fetchData = async () => {
             try {
-                const data = await Subject.GetAllByCourse(courseId);
-                setSubjects(data);
+                const data = await Challenge.GetAll();
+                setChallenges(data);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách môn học:", error);
             } finally {
                 setLoading(false);
             }
         };
-
-        if (courseId) fetchData(courseId);
-    }, [courseId]);
+        fetchData();
+    }, []);
     // Render item của flatlist
     const renderItem = ({ item }: { item: any }) => (
-        <SubjectCard
+        <ChallengeCard
             item={item}
             onPress={() =>
-                navigation.navigate("LessonList", {
-                    subjectId: item._id,
+                navigation.navigate("Challenge", {
+                    challengeId: item._id,
                 })
             }
         />
@@ -51,15 +50,15 @@ const SubjectListScreen = ({ route }: any) => {
             <View style={GStyles.flatlistContainer}>
                 {loading ? (
                     <ActivityIndicator size='large' color={Colors.Sky} />
-                ) : subjects && subjects.length > 0 ? (
+                ) : challenges && challenges.length > 0 ? (
                     <FlatList
-                        data={subjects}
+                        data={challenges}
                         renderItem={renderItem}
                         keyExtractor={(item) => item._id.toString()}
                     />
                 ) : (
                     <Text style={{ textAlign: "center", marginTop: 20 }}>
-                        Không có môn học nào.
+                        Không có thử thách nào.
                     </Text>
                 )}
             </View>
@@ -67,6 +66,4 @@ const SubjectListScreen = ({ route }: any) => {
     );
 };
 
-const styles = StyleSheet.create({});
-
-export default SubjectListScreen;
+export default ChallengeListScreen;

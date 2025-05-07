@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
     title: { type: String },
+    courseTitle: { type: String }, // Thông tin phụ
+    subjectTitle: { type: String }, // Thông tin phụ
     tag: { type: String }, // Nhãn, dùng cho search
     questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
     duration: { type: Number, default: 0 }, // Giây

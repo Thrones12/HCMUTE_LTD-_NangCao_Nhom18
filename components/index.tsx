@@ -11,6 +11,12 @@ import PracticeList from "./PracticeList";
 import LessonItem from "./LessonItem";
 import CardExam from "./CardExam";
 
+// New
+import CourseCard from "./CourseCard";
+import SubjectCard from "./SubjectCard";
+import LessonCard from "./LessonCard";
+import ExamCard from "./ExamCard";
+import ChallengeCard from "./ChallengeCard";
 export {
     TextComponent,
     ButtonComponent,
@@ -24,4 +30,10 @@ export {
     PracticeList,
     LessonItem,
     CardExam,
+    // New
+    CourseCard,
+    SubjectCard,
+    LessonCard,
+    ExamCard,
+    ChallengeCard,
 };

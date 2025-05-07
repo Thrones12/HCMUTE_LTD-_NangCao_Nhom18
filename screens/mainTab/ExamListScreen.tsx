@@ -1,47 +1,39 @@
-import {
-    View,
-    Text,
-    StyleSheet,
-    ActivityIndicator,
-    FlatList,
-} from "react-native";
+import { View, Text, ActivityIndicator, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import { GStyles, Colors, Data } from "@/constants";
-import { Subject } from "@/services";
-import { SubjectCard } from "@/components";
+import { Exam } from "@/services";
+import { ExamCard } from "@/components";
+import { Colors, GStyles } from "@/constants";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
-const SubjectListScreen = ({ route }: any) => {
+const ExamListScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { courseId } = route.params;
-    const [subjects, setSubjects] = useState<any>([]);
+    const [exams, setExams] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    // Fetch danh sách môn học bằng courseId
+    // Fetch danh sách bài kiểm tra
     useEffect(() => {
-        const fetchData = async (courseId: string) => {
+        const fetchData = async () => {
             try {
-                const data = await Subject.GetAllByCourse(courseId);
-                setSubjects(data);
+                const data = await Exam.GetAll();
+                setExams(data);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách môn học:", error);
             } finally {
                 setLoading(false);
             }
         };
-
-        if (courseId) fetchData(courseId);
-    }, [courseId]);
+        fetchData();
+    }, []);
     // Render item của flatlist
     const renderItem = ({ item }: { item: any }) => (
-        <SubjectCard
+        <ExamCard
             item={item}
             onPress={() =>
-                navigation.navigate("LessonList", {
-                    subjectId: item._id,
+                navigation.navigate("Exam", {
+                    examId: item._id,
                 })
             }
         />
@@ -51,15 +43,15 @@ const SubjectListScreen = ({ route }: any) => {
             <View style={GStyles.flatlistContainer}>
                 {loading ? (
                     <ActivityIndicator size='large' color={Colors.Sky} />
-                ) : subjects && subjects.length > 0 ? (
+                ) : exams && exams.length > 0 ? (
                     <FlatList
-                        data={subjects}
+                        data={exams}
                         renderItem={renderItem}
                         keyExtractor={(item) => item._id.toString()}
                     />
                 ) : (
                     <Text style={{ textAlign: "center", marginTop: 20 }}>
-                        Không có môn học nào.
+                        Không có bài kiểm tra nào.
                     </Text>
                 )}
             </View>
@@ -67,6 +59,4 @@ const SubjectListScreen = ({ route }: any) => {
     );
 };
 
-const styles = StyleSheet.create({});
-
-export default SubjectListScreen;
+export default ExamListScreen;

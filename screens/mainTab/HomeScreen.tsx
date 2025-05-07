@@ -16,15 +16,6 @@ import axios from "axios";
 import { Constant } from "@/constants/Constant";
 import Notification from "@/services/Notification";
 
-let categories = [
-    { _id: "1", name: "Frontend", icon: "home-outline" },
-    { _id: "2", name: "Backend", icon: "home-outline" },
-    { _id: "3", name: "DevOps", icon: "home-outline" },
-    { _id: "4", name: "FullStack", icon: "home-outline" },
-    { _id: "5", name: "Android", icon: "home-outline" },
-    { _id: "6", name: "DataAnalyst", icon: "home-outline" },
-];
-
 const PAGE_SIZE = 10;
 const HomeScreen = ({ navigation }: any) => {
     const API = Constant.API;

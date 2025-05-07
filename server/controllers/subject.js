@@ -1,13 +1,22 @@
 const Subject = require("../models/Subject");
+const Course = require("../models/Course");
 
 // GET /subject
 const GetAll = async (req, res) => {
     try {
-        const {} = req.query;
+        const { courseId } = req.query;
         let data; // Return data
 
         // Get data
-        data = await Subject.find({});
+        if (courseId) {
+            let course = await Course.findById(courseId).populate({
+                path: "subjects",
+                model: "Subject",
+            });
+            data = course.subjects;
+        } else {
+            data = await Subject.find({});
+        }
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
@@ -39,11 +48,18 @@ const GetOne = async (req, res) => {
 // POST /subject
 const Create = async (req, res) => {
     try {
-        const { title, lessons, exams } = req.body;
+        const { courseId, title, lessons, exams } = req.body;
 
         // Create
         const data = new Subject({ title, lessons, exams });
         data.save();
+
+        // Thêm subject vào course
+        if (courseId) {
+            let course = await Course.findById(courseId);
+            course.subjects.push(data._id);
+            await course.save();
+        }
 
         // 200 - Success
         return res.status(200).json({ data });

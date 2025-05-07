@@ -29,21 +29,8 @@ const CommentScreen = ({ lesson }: any) => {
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        const fetchLesson = async () => {
-            try {
-                const res = await axios.get(
-                    `${API}/lesson/getOne?id=${lesson._id}`
-                );
-                let data = res.data.data;
-                const sorted = sortCommentsByTime(data.comments);
-
-                setData({ ...data, comments: sorted });
-            } catch (err: any) {
-                Notification.error(err.data.message);
-            }
-        };
-        fetchLesson();
-    }, []);
+        console.log(lesson);
+    }, [lesson]);
 
     const sortCommentsByTime = (comments: any[]) => {
         return comments.sort(
