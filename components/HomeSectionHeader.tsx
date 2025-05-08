@@ -1,16 +1,37 @@
 import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Colors } from "@/constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
+import { AuthContext } from "@/contexts/AuthContext";
+import Notification from "@/services/Notification";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 const HomeSectionHeader = () => {
+    const { userId } = useContext(AuthContext);
     const navigation = useNavigation<NavigationProp>();
     const [hasNotification, setHasNotification] = useState(false);
+    const [reload, setReload] = useState(false);
+    useEffect(() => {
+        const fetchData = async (userId: string) => {
+            try {
+                const data = await Notification.GetAllByUser(userId);
+                setHasNotification(
+                    data.some((noti: any) => noti.isRead === "false")
+                );
+            } catch (error) {
+                console.error("Lỗi khi lấy môn học:", error);
+            }
+        };
+
+        if (userId) fetchData(userId);
+    }, [userId]);
+    useEffect(() => {
+        setHasNotification(false);
+    }, [reload]);
     return (
         <View style={[styles.container]}>
             {/* Xin chào và Notification */}
@@ -23,7 +44,10 @@ const HomeSectionHeader = () => {
                 </View>
                 <Pressable
                     style={styles.notification}
-                    onPress={() => navigation.navigate("Notification")}
+                    onPress={() => {
+                        setReload(!reload);
+                        navigation.navigate("Notification");
+                    }}
                 >
                     <Ionicons
                         name='notifications-outline'
@@ -75,6 +99,7 @@ const styles = StyleSheet.create({
         padding: 8,
         backgroundColor: Colors.White,
         borderRadius: 15,
+        elevation: 2,
     },
     badge: {
         position: "absolute",
@@ -93,6 +118,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 10,
         marginVertical: 10,
+        elevation: 2,
     },
     icon: {
         marginRight: 7,

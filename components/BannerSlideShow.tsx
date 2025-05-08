@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         overflow: "hidden",
         resizeMode: "stretch",
-        elevation: 1,
+        elevation: 2,
     },
 });
 

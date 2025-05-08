@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
 import { Lesson } from "@/services";
+import LessonCard from "./LessonCard";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
@@ -29,9 +30,13 @@ const HomeSectionLesson = () => {
 
     // Render item của flatlist
     const renderItem = ({ item }: { item: any }) => (
-        <Pressable style={[styles.itemWrapper]}>
-            <Text style={styles.itemTitle}>{item.title}</Text>
-        </Pressable>
+        <LessonCard
+            customWidth={270}
+            item={item}
+            onPress={() =>
+                navigation.navigate("LessonTab", { lessonId: item._id })
+            }
+        />
     );
     return (
         <View style={styles.container}>
@@ -60,7 +65,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 600,
     },
     link: {

@@ -2,7 +2,7 @@ import { Colors } from "./Colors";
 
 export const GStyles = {
     container: {
-        flexGrow: 1,
+        flex: 1,
         backgroundColor: Colors.Gray200,
         paddingTop: 30,
     },

@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Challenge = require("../models/Challenge");
+const ChallengeResult = require("../models/ChallengeResult");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -137,6 +139,7 @@ const Register = async (req, res) => {
 
         // Kiểm tra email đã đăng ký chưa
         const existingUser = await User.findOne({ email });
+
         if (existingUser) {
             if (existingUser.status === "NotVerify") {
                 return res.status(401).json({
@@ -158,10 +161,26 @@ const Register = async (req, res) => {
             password: hashedPassword,
         });
         await data.save();
+        // Tạo challenge
+        const challenges = await Challenge.find({});
+        let challengeResults = [];
+        for (let challenge of challenges) {
+            let result = new ChallengeResult({
+                userId: data._id,
+                challenge: challenge._id,
+                progress: challenge.groups.flatMap((group) =>
+                    group.questions.map(() => false)
+                ),
+            });
+            await result.save();
+            challengeResults = [...challengeResults, result._id];
+        }
+        data.challengeResults = challengeResults;
+        await data.save();
 
         // 200 - Success
         return res.status(200).json({ data });
-    } catch (error) {
+    } catch (err) {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };

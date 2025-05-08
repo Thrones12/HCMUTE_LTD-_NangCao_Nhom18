@@ -17,5 +17,20 @@ const GetAll = async () => {
         return null;
     }
 };
+const GetOne = async (courseId: any) => {
+    try {
+        // Call API
+        const res = await axios.get(`${API}/course/get-one?id=${courseId}`);
+        return res.data.data;
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
 
-export default { GetAll };
+export default { GetAll, GetOne };

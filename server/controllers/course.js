@@ -7,7 +7,10 @@ const GetAll = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await Course.find({});
+        data = await Course.find({}).populate({
+            path: "subjects",
+            model: "Subject",
+        });
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
@@ -25,7 +28,10 @@ const GetOne = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await Course.findById(id);
+        data = await Course.findById(id).populate({
+            path: "subjects",
+            model: "Subject",
+        });
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });

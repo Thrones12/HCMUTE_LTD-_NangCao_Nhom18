@@ -40,21 +40,19 @@ const ExamListScreen = () => {
     );
     return (
         <View style={GStyles.container}>
-            <View style={GStyles.flatlistContainer}>
-                {loading ? (
-                    <ActivityIndicator size='large' color={Colors.Sky} />
-                ) : exams && exams.length > 0 ? (
-                    <FlatList
-                        data={exams}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item._id.toString()}
-                    />
-                ) : (
-                    <Text style={{ textAlign: "center", marginTop: 20 }}>
-                        Không có bài kiểm tra nào.
-                    </Text>
-                )}
-            </View>
+            {loading ? (
+                <ActivityIndicator size='large' color={Colors.Sky} />
+            ) : exams && exams.length > 0 ? (
+                <FlatList
+                    data={exams}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item._id.toString()}
+                />
+            ) : (
+                <Text style={{ textAlign: "center", marginTop: 20 }}>
+                    Không có bài kiểm tra nào.
+                </Text>
+            )}
         </View>
     );
 };

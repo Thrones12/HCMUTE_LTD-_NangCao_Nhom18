@@ -1,23 +1,57 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 import React from "react";
 import { Colors } from "@/constants";
 
-const CourseCard = ({ item, onPress }: any) => {
+const { width: screenWidth } = Dimensions.get("window");
+const Color = [
+    "#E0FCD6",
+    "#FFF5CF",
+    "#FBE5D8",
+    "#FFE3ED",
+    "#D5F2FF",
+    "#DDF5D1",
+    "#E8E6FA",
+    "#D6EAF8",
+    "#FFE7C7",
+    "#FDDCDC",
+];
+const CourseCard = ({ index, item, onPress }: any) => {
+    const backgroundColor = Color[index % Color.length];
     return (
-        <Pressable style={styles.container} onPress={onPress}>
-            <Text>{item.title}</Text>
-        </Pressable>
+        <View style={styles.container}>
+            <Pressable style={styles.item} onPress={onPress}>
+                <View style={[styles.main, { backgroundColor }]}>
+                    <Text style={styles.mainTitle}>{item.title}</Text>
+                    <Text style={styles.subTitle}>
+                        {item.subjects.length} môn học -{" "}
+                        {item.subjects.reduce(
+                            (total: number, subject: any) =>
+                                total + subject.lessons.length,
+                            0
+                        )}{" "}
+                        bài học
+                    </Text>
+                </View>
+            </Pressable>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 10,
-        backgroundColor: Colors.White,
-        marginBottom: 10,
-        paddingHorizontal: 14,
+        width: screenWidth,
         paddingVertical: 8,
+        paddingHorizontal: 15,
     },
+    item: {
+        backgroundColor: Colors.White,
+        padding: 5,
+        borderRadius: 10,
+        elevation: 2,
+    },
+    main: { padding: 15, borderRadius: 5 },
+    mainTitle: { fontSize: 20, fontWeight: 600, color: Colors.Gray800 },
+    subTitle: { fontSize: 14, fontWeight: 500, color: Colors.Gray500 },
 });
 
 export default CourseCard;

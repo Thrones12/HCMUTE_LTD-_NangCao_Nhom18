@@ -5,7 +5,7 @@ const API = Constant.API;
 const GetAll = async () => {
     try {
         // Call API
-        const res = await axios.get(`${API}/challenge`);
+        const res = await axios.get(`${API}/challenge-result`);
         return res.data.data;
     } catch (err: any) {
         // Thông báo lỗi

@@ -37,8 +37,9 @@ const CourseListScreen = () => {
         fetchData();
     }, []);
     // Render item của flatlist
-    const renderItem = ({ item }: { item: any }) => (
+    const renderItem = ({ item, index }: { item: any; index: any }) => (
         <CourseCard
+            index={index}
             item={item}
             onPress={() =>
                 navigation.navigate("SubjectList", {
@@ -49,21 +50,19 @@ const CourseListScreen = () => {
     );
     return (
         <View style={GStyles.container}>
-            <View style={GStyles.flatlistContainer}>
-                {loading ? (
-                    <ActivityIndicator size='large' color={Colors.Sky} />
-                ) : courses && courses.length > 0 ? (
-                    <FlatList
-                        data={courses}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item._id.toString()}
-                    />
-                ) : (
-                    <Text style={{ textAlign: "center", marginTop: 20 }}>
-                        Không có khóa học nào.
-                    </Text>
-                )}
-            </View>
+            {loading ? (
+                <ActivityIndicator size='large' color={Colors.Sky} />
+            ) : courses && courses.length > 0 ? (
+                <FlatList
+                    data={courses}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item._id.toString()}
+                />
+            ) : (
+                <Text style={{ textAlign: "center", marginTop: 20 }}>
+                    Không có khóa học nào.
+                </Text>
+            )}
 
             <ButtonComponent text='Logout' onPress={Logout} type='primary' />
         </View>

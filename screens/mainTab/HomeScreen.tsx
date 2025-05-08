@@ -4,6 +4,7 @@ import {
     StyleSheet,
     FlatList,
     ActivityIndicator,
+    Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors, GStyles } from "@/constants";
@@ -99,9 +100,27 @@ const HomeScreen = ({ navigation }: any) => {
                         <HomeSectionLesson />
 
                         {/* Practice wrapper */}
-                        <View style={{ padding: 15 }}>
-                            <Text style={styles.title}>Luyện tập</Text>
-                            <View style={{ gap: 10, marginVertical: 10 }}>
+                        <View>
+                            <View
+                                style={[
+                                    styles.flexRow,
+                                    {
+                                        paddingHorizontal: 15,
+                                    },
+                                ]}
+                            >
+                                <Text style={styles.title}>
+                                    Bài kiểm tra mới nhất
+                                </Text>
+                                <Pressable
+                                    onPress={() =>
+                                        navigation.navigate("ExamList")
+                                    }
+                                >
+                                    <Text style={styles.link}>Tất cả</Text>
+                                </Pressable>
+                            </View>
+                            <View style={{}}>
                                 {data.map((item, index) => (
                                     <ExamCard
                                         key={index}
@@ -139,7 +158,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 600,
     },
     link: {

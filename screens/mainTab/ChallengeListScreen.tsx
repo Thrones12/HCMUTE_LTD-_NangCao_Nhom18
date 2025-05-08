@@ -12,20 +12,20 @@ import { ChallengeCard } from "@/components";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
-import { Challenge } from "@/services";
+import { ChallengeResult } from "@/services";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 const ChallengeListScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const [challenges, setChallenges] = useState<any>([]);
+    const [challengeResults, setChallengeResultss] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true);
     // Fetch danh sách thử thách
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await Challenge.GetAll();
-                setChallenges(data);
+                const data = await ChallengeResult.GetAll();
+                setChallengeResultss(data);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách môn học:", error);
             } finally {
@@ -47,21 +47,19 @@ const ChallengeListScreen = () => {
     );
     return (
         <View style={GStyles.container}>
-            <View style={GStyles.flatlistContainer}>
-                {loading ? (
-                    <ActivityIndicator size='large' color={Colors.Sky} />
-                ) : challenges && challenges.length > 0 ? (
-                    <FlatList
-                        data={challenges}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item._id.toString()}
-                    />
-                ) : (
-                    <Text style={{ textAlign: "center", marginTop: 20 }}>
-                        Không có thử thách nào.
-                    </Text>
-                )}
-            </View>
+            {loading ? (
+                <ActivityIndicator size='large' color={Colors.Sky} />
+            ) : challengeResults && challengeResults.length > 0 ? (
+                <FlatList
+                    data={challengeResults}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item._id.toString()}
+                />
+            ) : (
+                <Text style={{ textAlign: "center", marginTop: 20 }}>
+                    Không có thử thách nào.
+                </Text>
+            )}
         </View>
     );
 };

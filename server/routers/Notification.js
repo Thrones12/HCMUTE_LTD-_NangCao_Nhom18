@@ -9,6 +9,7 @@ router.get("/get-one", controller.GetOne);
 router.post("/", controller.Create);
 // PUT
 router.put("/", controller.Update);
+router.put("/set-read", controller.SetReadedByUser);
 // DELETE
 router.delete("/", controller.Delete);
 

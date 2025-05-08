@@ -35,7 +35,9 @@ const HomeSectionCourse = () => {
                 style={[
                     styles.itemWrapper,
                     {
-                        backgroundColor: isEven ? Colors.Sky : Colors.SkyPress,
+                        backgroundColor: isEven
+                            ? Colors.Blue500
+                            : Colors.Blue500,
                     },
                 ]}
                 onPress={() =>
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 600,
     },
     link: {
@@ -95,10 +97,12 @@ const styles = StyleSheet.create({
     itemWrapper: {
         borderRadius: 5,
         padding: 12,
-        marginRight: 5,
+        marginRight: 10,
+        elevation: 2,
     },
     itemTitle: {
         fontSize: 16,
+        fontWeight: 600,
         color: Colors.White,
     },
 });
