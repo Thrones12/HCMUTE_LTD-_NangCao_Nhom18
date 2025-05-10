@@ -10,6 +10,10 @@ router.get("/top", controller.GetTop);
 router.post("/", controller.Create);
 // PUT
 router.put("/", controller.Update);
+router.put("/like", controller.Like);
+router.put("/unlike", controller.Unlike);
+router.put("/save", controller.Save);
+router.put("/unsave", controller.Unsave);
 // DELETE
 router.delete("/", controller.Delete);
 

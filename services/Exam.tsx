@@ -17,7 +17,6 @@ const GetAll = async () => {
         return null;
     }
 };
-
 const GetOne = async (examId: string) => {
     try {
         // Call API
@@ -33,4 +32,60 @@ const GetOne = async (examId: string) => {
         return null;
     }
 };
-export default { GetAll, GetOne };
+const Like = async (examId: string, userId: string) => {
+    try {
+        // Call API
+        await axios.put(`${API}/exam/like`, { examId, userId });
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+const Unlike = async (examId: string, userId: string) => {
+    try {
+        // Call API
+        await axios.put(`${API}/exam/unlike`, { examId, userId });
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+const Save = async (examId: string, userId: string) => {
+    try {
+        // Call API
+        await axios.put(`${API}/exam/save`, { examId, userId });
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+const Unsave = async (examId: string, userId: string) => {
+    try {
+        // Call API
+        await axios.put(`${API}/exam/unsave`, { examId, userId });
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+export default { GetAll, GetOne, Like, Unlike, Save, Unsave };

@@ -19,12 +19,15 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
 import { AuthContext } from "@/contexts/AuthContext";
+import Noti from "@/utils/Noti";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const { width: screenWidth } = Dimensions.get("window");
 const ExamScreen = ({ route }: any) => {
     const navigation = useNavigation<NavigationProp>();
     const { examId } = route.params;
+    const [isLiked, setIsLiked] = useState<any>(false);
+    const [isSaved, setIsSaved] = useState<any>(false);
     const { userId } = useContext(AuthContext);
     const [exam, setExam] = useState<any>();
     const [timer, setTimer] = useState<any>(0);
@@ -43,11 +46,14 @@ const ExamScreen = ({ route }: any) => {
     };
     // Fetch bài kiểm tra
     useEffect(() => {
-        const fetchData = async (courseId: string) => {
+        const fetchData = async (examId: string) => {
             try {
-                const data = await Exam.GetOne(courseId);
+                const data = await Exam.GetOne(examId);
                 setExam(data);
                 setAnswers(data.questions.map((q: any) => ""));
+                // Kiểm tra người dùng có like / save bài kiểm tra chưa
+                setIsLiked(data.likes.find((like: any) => like === userId));
+                setIsSaved(data.saves.find((save: any) => save === userId));
             } catch (error) {
                 console.error("Lỗi khi tải bài kiểm tra:", error);
             }
@@ -80,7 +86,11 @@ const ExamScreen = ({ route }: any) => {
     // Xác nhận người dùng muốn rời khỏi kiểm tra
     useEffect(() => {
         const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-            // Ngăn hành động rời khỏi màn hình
+            if (showStartModal) {
+                // Nếu modal start đang hiển thị, cho phép rời đi mà không hỏi
+                return;
+            }
+
             e.preventDefault();
 
             Alert.alert(
@@ -98,7 +108,7 @@ const ExamScreen = ({ route }: any) => {
         });
 
         return unsubscribe;
-    }, [navigation]);
+    }, [navigation, showStartModal]);
     const convertLevel = (level: string) => {
         return level === "Easy"
             ? "Nhận biết"
@@ -215,6 +225,26 @@ const ExamScreen = ({ route }: any) => {
         setShowResult(false);
         scrollToTop();
     };
+    const handleLike = async () => {
+        if (isLiked) {
+            await Exam.Unlike(examId, userId);
+        } else {
+            await Exam.Like(examId, userId);
+        }
+        const data = await Exam.GetOne(examId);
+        setExam(data);
+        setIsLiked(data.likes.find((like: any) => like === userId));
+    };
+    const handleSave = async () => {
+        if (isSaved) {
+            await Exam.Unsave(examId, userId);
+        } else {
+            await Exam.Save(examId, userId);
+        }
+        const data = await Exam.GetOne(examId);
+        setExam(data);
+        setIsSaved(data.saves.find((save: any) => save === userId));
+    };
     return (
         <View style={GStyles.container}>
             {/* Header */}
@@ -275,6 +305,10 @@ const ExamScreen = ({ route }: any) => {
                     visible={showStartModal}
                     animationType='slide'
                     transparent={true}
+                    onRequestClose={() => {
+                        // Xử lý khi nhấn nút back trên Android
+                        navigation.goBack();
+                    }}
                 >
                     <View style={styles.modalOverlay}>
                         <View style={styles.modalBox}>
@@ -303,18 +337,62 @@ const ExamScreen = ({ route }: any) => {
                                     {convertExamLevel(exam.level)}
                                 </Text>
                             </View>
-                            <Pressable
-                                style={[styles.button, { marginTop: 15 }]}
-                                onPress={() => setShowStartModal(false)}
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    gap: 15,
+                                    marginTop: 15,
+                                }}
                             >
-                                <Text style={styles.buttonText}>Bắt đầu</Text>
-                            </Pressable>
+                                <Pressable
+                                    style={[styles.iconButton]}
+                                    onPress={() => handleLike()}
+                                >
+                                    <Ionicons
+                                        name={
+                                            isLiked ? "heart" : "heart-outline"
+                                        }
+                                        size={24}
+                                        color={Colors.Blue500}
+                                    />
+                                </Pressable>
+                                <Pressable
+                                    style={[styles.button]}
+                                    onPress={() => setShowStartModal(false)}
+                                >
+                                    <Text style={styles.buttonText}>
+                                        Bắt đầu
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[styles.iconButton]}
+                                    onPress={() => handleSave()}
+                                >
+                                    <Ionicons
+                                        name={
+                                            isSaved
+                                                ? "bookmark"
+                                                : "bookmark-outline"
+                                        }
+                                        size={24}
+                                        color={Colors.Blue500}
+                                    />
+                                </Pressable>
+                            </View>
                         </View>
                     </View>
                 </Modal>
             )}
             {/* Modal result */}
-            <Modal visible={showResult} animationType='fade' transparent={true}>
+            <Modal
+                visible={showResult}
+                animationType='fade'
+                transparent={true}
+                onRequestClose={() => {
+                    // Xử lý khi nhấn nút back trên Android
+                    navigation.goBack();
+                }}
+            >
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalBox}>
                         <Text style={styles.modalTitle}>Kết quả bài thi</Text>
@@ -336,12 +414,44 @@ const ExamScreen = ({ route }: any) => {
                             <Text style={styles.modalText}>Điểm:</Text>
                             <Text style={styles.modalText}>{score}/10</Text>
                         </View>
-                        <Pressable
-                            onPress={() => handleReset()}
-                            style={[styles.button, { marginTop: 15 }]}
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                gap: 15,
+                                marginTop: 15,
+                            }}
                         >
-                            <Text style={styles.buttonText}>Làm lại</Text>
-                        </Pressable>
+                            <Pressable
+                                style={[styles.iconButton]}
+                                onPress={() => handleLike()}
+                            >
+                                <Ionicons
+                                    name={isLiked ? "heart" : "heart-outline"}
+                                    size={24}
+                                    color={Colors.Blue500}
+                                />
+                            </Pressable>
+                            <Pressable
+                                onPress={() => handleReset()}
+                                style={[styles.button]}
+                            >
+                                <Text style={styles.buttonText}>Làm lại</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.iconButton]}
+                                onPress={() => handleSave()}
+                            >
+                                <Ionicons
+                                    name={
+                                        isSaved
+                                            ? "bookmark"
+                                            : "bookmark-outline"
+                                    }
+                                    size={24}
+                                    color={Colors.Blue500}
+                                />
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -423,13 +533,14 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         backgroundColor: Colors.Blue500,
+        elevation: 2,
     },
     buttonText: {
         color: Colors.White,
         fontSize: 18,
         fontWeight: 600,
     },
-    // Modal result
+    // Modal
     modalOverlay: {
         flex: 1,
         backgroundColor: "rgba(0,0,0,0.5)",
@@ -456,6 +567,17 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: 16,
         marginVertical: 4,
+    },
+    iconButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+        backgroundColor: Colors.White,
+        elevation: 2,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: Colors.Blue500,
     },
 });
 
