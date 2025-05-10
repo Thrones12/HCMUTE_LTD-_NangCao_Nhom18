@@ -41,9 +41,8 @@ const GetOne = async (req, res) => {
 const Create = async (req, res) => {
     try {
         const { userId, exam, score, duration, answers } = req.body;
-
         // Create
-        const data = new ExamResult({ exam, score, duration, answers });
+        const data = new ExamResult({ userId, exam, score, duration, answers });
         data.save();
 
         // Thêm exam result vào user
@@ -53,6 +52,51 @@ const Create = async (req, res) => {
 
         // 200 - Success
         return res.status(200).json({ data });
+    } catch (err) {
+        return res.status(500).json({ message: "Server Error: ", err });
+    }
+};
+
+// POST /exam-result/submit
+const Submit = async (req, res) => {
+    try {
+        const { userId, exam, score, duration, answers } = req.body;
+        // Kiểm tra result của exam đã có chưa
+        const existingData = await ExamResult.findOne({ userId, exam });
+
+        if (!existingData) {
+            // Create
+            const data = new ExamResult({
+                userId,
+                exam,
+                score,
+                duration,
+                answers,
+            });
+            await data.save();
+
+            // Thêm exam result vào user
+            const user = await User.findById(userId);
+            user.examResults.push(data._id.toString());
+            await user.save();
+        } else {
+            // Update
+            if (existingData.score < score) {
+                existingData.score = score;
+                existingData.duration = duration;
+                existingData.answers = [...answers];
+            } else if (
+                existingData.score === score &&
+                existingData.duration > duration
+            ) {
+                existingData.duration = duration;
+                existingData.answers = [...answers];
+            }
+            await existingData.save();
+        }
+
+        // 200 - Success
+        return res.status(200).json({ data: existingData });
     } catch (err) {
         return res.status(500).json({ message: "Server Error: ", err });
     }
@@ -112,6 +156,7 @@ module.exports = {
     GetAll,
     GetOne,
     Create,
+    Submit,
     Update,
     Delete,
 };

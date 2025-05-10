@@ -7,6 +7,7 @@ router.get("/", controller.GetAll);
 router.get("/get-one", controller.GetOne);
 // POST
 router.post("/", controller.Create);
+router.post("/submit", controller.Submit);
 // PUT
 router.put("/", controller.Update);
 // DELETE

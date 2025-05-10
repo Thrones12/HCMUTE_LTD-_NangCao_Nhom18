@@ -35,6 +35,8 @@ const GetTop = async (req, res) => {
     try {
         // Lấy top 10 bài học, sắp xếp giảm dần theo attemptCount
         const data = await Lesson.find({})
+            .populate({ path: "questions", model: "Question" })
+            .populate({ path: "comments", model: "Comment" })
             .sort({ attemptCount: -1 }) // Sắp xếp giảm dần
             .limit(10); // Giới hạn 10 bài học
 
@@ -56,7 +58,9 @@ const GetOne = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await Lesson.findById(id);
+        data = await Lesson.findById(id)
+            .populate({ path: "questions", model: "Question" })
+            .populate({ path: "comments", model: "Comment" });
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });

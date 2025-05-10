@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
+    userId: { type: String },
     exam: { type: mongoose.Schema.Types.ObjectId, ref: "Exam" }, // Ref để lấy thông tin exam
     score: { type: Number },
     duration: { type: Number }, // Thời gian làm bài

@@ -4,13 +4,25 @@ const Lesson = require("../models/Lesson");
 // GET /comment
 const GetAll = async (req, res) => {
     try {
-        const {} = req.query;
+        const { lessonId } = req.query;
         let data = []; // Return data
 
         // Get data
-        let topLevelComments = await Comment.find({
-            replyTo: null, // chỉ lấy comment không phải là reply
-        });
+        let topLevelComments;
+        if (lessonId) {
+            let lesson = await Lesson.findById(lessonId).populate({
+                path: "comments",
+                model: "Comment",
+                populate: { path: "user", model: "User" },
+            });
+            topLevelComments = lesson.comments.filter(
+                (comment) => comment.replyTo === null
+            );
+        } else {
+            topLevelComments = await Comment.find({
+                replyTo: null,
+            });
+        }
         // 404 - Not Found
         if (!topLevelComments)
             return res.status(404).json({ message: "Data not found" });
@@ -41,8 +53,6 @@ const GetOne = async (req, res) => {
         const replies = await Comment.find({ replyTo: id });
         data = { ...data._doc, replies };
 
-        console.log(replies);
-
         // 200 - Success
         return res.status(200).json({ data });
     } catch (err) {
@@ -53,18 +63,28 @@ const GetOne = async (req, res) => {
 const Create = async (req, res) => {
     try {
         const { lessonId, user, content, replyTo } = req.body;
+        console.log(lessonId, user, content, replyTo);
 
         // Create
-        const data = new Comment({ user, content, replyTo });
-        data.save();
+        let data = new Comment({
+            user,
+            content,
+            replyTo,
+        });
+        await data.save();
 
         // Thêm comment vào lesson
         const lesson = await Lesson.findById(lessonId);
         lesson.comments.push(data._id.toString());
-        lesson.save();
+        await lesson.save();
+
+        let returnData = await Comment.findById(data._id).populate({
+            path: "user",
+            model: "User",
+        });
 
         // 200 - Success
-        return res.status(200).json({ data });
+        return res.status(200).json({ data: returnData });
     } catch (err) {
         return res.status(500).json({ message: "Server Error: ", err });
     }

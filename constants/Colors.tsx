@@ -4,6 +4,7 @@ export const Colors = {
     Sky: "#2DA2DE",
     SkyPress: "#3ABCF7",
     Red: "#E85A70",
+    Green: "#2FBF87",
     // Gray
     Gray100: "#f9f9f9",
     Gray200: "#f1f1f4",

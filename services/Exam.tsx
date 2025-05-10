@@ -18,4 +18,19 @@ const GetAll = async () => {
     }
 };
 
-export default { GetAll };
+const GetOne = async (examId: string) => {
+    try {
+        // Call API
+        const res = await axios.get(`${API}/exam/get-one?id=${examId}`);
+        return res.data.data;
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+export default { GetAll, GetOne };

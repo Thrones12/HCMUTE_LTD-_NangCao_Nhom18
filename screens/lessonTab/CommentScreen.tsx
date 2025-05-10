@@ -12,36 +12,64 @@ import {
 import React, { useEffect, useState, useContext } from "react";
 import { Constant } from "@/constants/Constant";
 import axios from "axios";
-import Notification from "@/services/Notification";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi";
 import { AuthContext } from "@/contexts/AuthContext";
+import Noti from "@/utils/Noti";
+import { Comment, Lesson } from "@/services";
+import { Header } from "@/components";
+import { GStyles } from "@/constants";
 
 dayjs.extend(relativeTime);
 dayjs.locale("vi");
 
-const CommentScreen = ({ lesson }: any) => {
+const CommentScreen = ({ lessonId }: any) => {
     const API = Constant.API;
-    const { user, logout } = useContext(AuthContext);
-    const [data, setData] = useState<any>({});
+    const { userId, logout } = useContext(AuthContext);
+    const [lesson, setLesson] = useState<any>();
+    const [comments, setComments] = useState<any>({});
     const [commentText, setCommentText] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
+    // Fetch bình luận bằng lessonId
     useEffect(() => {
-        console.log(lesson);
-    }, [lesson]);
+        const fetchData = async (lessonId: string) => {
+            try {
+                const data = await Comment.GetAllByLesson(lessonId);
+                setComments(sortCommentsByTime(data));
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách bình luận:", error);
+            }
+        };
+
+        if (lessonId) fetchData(lessonId);
+    }, [lessonId]);
+    // Fetch bài học
+    useEffect(() => {
+        const fetchData = async (lessonId: string) => {
+            try {
+                const data = await Lesson.GetOne(lessonId);
+                setLesson(data);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách bình luận:", error);
+            }
+        };
+
+        if (lessonId) fetchData(lessonId);
+    }, [lessonId]);
 
     const sortCommentsByTime = (comments: any[]) => {
         return comments.sort(
             (a, b) =>
-                new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
+                new Date(b.timestamp).getTime() -
+                new Date(a.timestamp).getTime()
         );
     };
 
     const handleSubmitComment = async () => {
         if (!commentText.trim()) {
-            Notification.info("Bạn cần nhập nội dung bình luận");
+            Noti.info("Bạn cần nhập nội dung bình luận");
             return;
         }
 
@@ -49,21 +77,21 @@ const CommentScreen = ({ lesson }: any) => {
         try {
             const res = await axios.post(`${API}/comment`, {
                 lessonId: lesson._id,
-                userId: user._id,
+                user: userId,
                 content: commentText,
+                replyTo: null,
             });
 
             const newComment = res.data.data;
 
-            setData((prev: any) => ({
-                ...prev,
-                comments: sortCommentsByTime([...prev.comments, newComment]),
-            }));
+            setComments((prev: any) =>
+                sortCommentsByTime([...comments, newComment])
+            );
 
             setCommentText("");
-            Notification.success("Bình luận thành công");
+            Noti.success("Bình luận thành công");
         } catch (err: any) {
-            Notification.error("Không thể gửi bình luận");
+            Noti.error("Không thể gửi bình luận");
         } finally {
             setSubmitting(false);
         }
@@ -71,12 +99,19 @@ const CommentScreen = ({ lesson }: any) => {
 
     const renderItem = ({ item }: any) => (
         <View style={styles.commentItem}>
-            <Image source={{ uri: item.user.avatar }} style={styles.avatar} />
+            <Image
+                source={
+                    item.user.avatar && item.user.avatar.trim() !== ""
+                        ? { uri: item.user.avatar }
+                        : require("../../assets/images/react-logo.png")
+                }
+                style={styles.avatar}
+            />
             <View style={styles.commentContent}>
                 <Text style={styles.userName}>{item.user.fullname}</Text>
                 <Text style={styles.commentText}>{item.content}</Text>
                 <Text style={styles.time}>
-                    {dayjs(item.createAt).fromNow()}
+                    {dayjs(item.timestamp).fromNow()}
                 </Text>
             </View>
         </View>
@@ -88,9 +123,10 @@ const CommentScreen = ({ lesson }: any) => {
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
         >
-            <View style={styles.container}>
+            <View style={GStyles.container}>
+                {lesson && <Header title={lesson.title} />}
                 <FlatList
-                    data={data.comments}
+                    data={comments}
                     renderItem={renderItem}
                     keyExtractor={(item) => item._id}
                     contentContainerStyle={{ padding: 16, paddingBottom: 80 }}

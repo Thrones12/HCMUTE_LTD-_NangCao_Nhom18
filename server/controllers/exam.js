@@ -12,7 +12,10 @@ const GetAll = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await Exam.find({});
+        data = await Exam.find({}).populate({
+            path: "questions",
+            model: "Question",
+        });
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
@@ -30,7 +33,10 @@ const GetOne = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await Exam.findById(id);
+        data = await Exam.findById(id).populate({
+            path: "questions",
+            model: "Question",
+        });
 
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });

@@ -2,7 +2,6 @@ import TextComponent from "./TextComponent";
 import ButtonComponent from "./ButtonComponent";
 import CheckBoxComponent from "./CheckBoxComponent";
 import InputTextComponent from "./InputTextComponent";
-import VideoComponent from "./VideoComponent";
 import DocumentComponent from "./DocumentComponent";
 import BannerSlideShow from "./BannerSlideShow";
 import TopExam from "./TopExam";
@@ -19,6 +18,9 @@ import LessonCard from "./LessonCard";
 import ExamCard from "./ExamCard";
 import ChallengeCard from "./ChallengeCard";
 import SearchCard from "./SearchCard";
+import QuestionCard from "./QuestionCard";
+import VideoComponent from "./VideoComponent";
+import VideoChapterItem from "./VideoChapterItem";
 // Home Section
 import HomeSectionCourse from "./HomeSectionCourse";
 import HomeSectionLesson from "./HomeSectionLesson";
@@ -27,7 +29,6 @@ export {
     ButtonComponent,
     CheckBoxComponent,
     InputTextComponent,
-    VideoComponent,
     DocumentComponent,
     BannerSlideShow,
     TopExam,
@@ -42,6 +43,9 @@ export {
     ExamCard,
     ChallengeCard,
     SearchCard,
+    QuestionCard,
+    VideoComponent,
+    VideoChapterItem,
     // Home Section
     HomeSectionHeader,
     HomeSectionCourse,

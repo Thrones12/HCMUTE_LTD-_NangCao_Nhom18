@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
     document: { type: String }, // Tài liệu lý thuyết
     questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }], // Bài tập
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }], // Bình luận
+    rating: { type: Number, default: 0, max: 5, min: 0 },
 });
 
 const Lesson = mongoose.model("Lesson", schema);

@@ -7,6 +7,7 @@ export type RootStackParamList = {
     SubjectList: { courseId: String };
     LessonList: { subjectId: String };
     LessonTab: { lessonId: String };
+    Exercise: { lessonId: String };
     ExamList: undefined;
     Exam: { examId: String };
     ChallengeList: undefined;
