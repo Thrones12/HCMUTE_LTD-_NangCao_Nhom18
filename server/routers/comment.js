@@ -9,6 +9,8 @@ router.get("/get-one", controller.GetOne);
 router.post("/", controller.Create);
 // PUT
 router.put("/", controller.Update);
+router.put("/like", controller.Like);
+router.put("/unlike", controller.Unlike);
 // DELETE
 router.delete("/", controller.Delete);
 

@@ -116,7 +116,15 @@ const LessonCard = ({ customWidth, item, onPress }: any) => {
                             <Text
                                 style={{ fontSize: 14, color: Colors.Gray600 }}
                             >
-                                {item.rating}
+                                {item.rating.length > 0
+                                    ? (
+                                          item.rating.reduce(
+                                              (total: number, item: any) =>
+                                                  total + item.rate,
+                                              0
+                                          ) / item.rating.length
+                                      ).toFixed(1) // Làm tròn 1 chữ số thập phân
+                                    : "Chưa có đánh giá"}
                             </Text>
                         </View>
                     </View>

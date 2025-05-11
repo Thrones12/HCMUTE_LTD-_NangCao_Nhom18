@@ -7,8 +7,9 @@ import {
     FlatList,
     Pressable,
     Animated,
+    Modal,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Header, VideoChapterItem, VideoComponent } from "@/components";
 import { Colors, GStyles } from "@/constants";
 import { Lesson } from "@/services";
@@ -16,10 +17,15 @@ import { WebView } from "react-native-webview";
 import { Ionicons } from "@expo/vector-icons";
 import { useEvent } from "expo";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { AuthContext } from "@/contexts/AuthContext";
 
 const { width: screenWidth } = Dimensions.get("window");
 const LessonScreen = ({ lessonId }: any) => {
+    const { userId } = useContext(AuthContext);
     const [lesson, setLesson] = useState<any>();
+    const [rating, setRating] = useState<any>(0);
+    const [userRating, setUserRating] = useState<any>(0);
+    const [isVisible, setIsVisible] = useState<any>(false);
     const [play, setPlay] = useState<any>();
     const [time, setTime] = useState<any>(0);
     const [times, setTimes] = useState<any>([]);
@@ -37,7 +43,21 @@ const LessonScreen = ({ lessonId }: any) => {
 
         if (lessonId) fetchData(lessonId);
     }, [lessonId]);
-
+    // Xử lý rating
+    useEffect(() => {
+        if (lesson) {
+            setRating(
+                lesson.rating.reduce(
+                    (total: number, item: any) => total + item.rate,
+                    0
+                ) / lesson.rating.length
+            );
+            const foundRating = lesson.rating.find(
+                (item: any) => item.userId === userId
+            );
+            setUserRating(foundRating ? foundRating.rate : 0); // hoặc null tùy bạn
+        }
+    }, [lesson]);
     function formatNumberVN(number: number): string {
         if (number >= 1_000_000_000)
             return (
@@ -64,6 +84,15 @@ const LessonScreen = ({ lessonId }: any) => {
             setTime(times[play]);
         }
     }, [play]);
+    const handleRating = async (value: any) => {
+        const data = await Lesson.Rating(lessonId, userId, value);
+        setUserRating(value);
+        setLesson(data);
+        setRating(
+            data.rating.reduce((total: any, item: any) => total + item.rate, 0)
+        );
+        setIsVisible(false);
+    };
     return (
         <View style={GStyles.container}>
             {lesson && <Header title={lesson.title} />}
@@ -86,17 +115,17 @@ const LessonScreen = ({ lessonId }: any) => {
                                 {formatNumberVN(lesson.attempCount)} lượt học
                             </Text>
                             {/* Rating */}
-                            <View style={styles.icon}>
-                                <Ionicons
-                                    name='star'
-                                    size={17}
-                                    color='#FFBE1A'
-                                    style={{ marginRight: 2 }}
-                                />
-                                <Text style={styles.subText}>
-                                    {lesson.rating}
-                                </Text>
-                            </View>
+                            <Pressable onPress={() => setIsVisible(true)}>
+                                <View style={styles.icon}>
+                                    <Ionicons
+                                        name='star'
+                                        size={17}
+                                        color='#FFBE1A'
+                                        style={{ marginRight: 2 }}
+                                    />
+                                    <Text style={styles.subText}>{rating}</Text>
+                                </View>
+                            </Pressable>
                         </View>
                     </View>
                     <FlatList
@@ -107,6 +136,40 @@ const LessonScreen = ({ lessonId }: any) => {
                     />
                 </View>
             )}
+            <Modal
+                visible={isVisible}
+                transparent
+                animationType='fade'
+                onRequestClose={() => setIsVisible(false)}
+            >
+                <Pressable
+                    style={styles.overlay}
+                    onPress={() => setIsVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.title}>Đánh giá bài học</Text>
+
+                        <View style={styles.starContainer}>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <Pressable
+                                    key={star}
+                                    onPress={() => handleRating(star)}
+                                >
+                                    <Ionicons
+                                        name={
+                                            star <= userRating
+                                                ? "star"
+                                                : "star-outline"
+                                        }
+                                        size={36}
+                                        color='#f5a623'
+                                    />
+                                </Pressable>
+                            ))}
+                        </View>
+                    </View>
+                </Pressable>
+            </Modal>
         </View>
     );
 };
@@ -153,6 +216,28 @@ const styles = StyleSheet.create({
     chapterInfo: { flexDirection: "column", justifyContent: "center" },
     chapterTitle: { fontSize: 16, fontWeight: 600, color: Colors.Gray800 },
     chapterTime: { fontSize: 14, color: Colors.Gray500 },
+    overlay: {
+        flex: 1,
+        backgroundColor: "#00000099",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContainer: {
+        backgroundColor: "white",
+        borderRadius: 16,
+        padding: 20,
+        width: "75%",
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 16,
+    },
+    starContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+    },
 });
 
 export default LessonScreen;

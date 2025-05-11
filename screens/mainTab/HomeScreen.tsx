@@ -17,8 +17,8 @@ import {
 } from "@/components";
 import axios from "axios";
 import { Constant } from "@/constants/Constant";
-import Notification from "@/services/Notification";
 import { Banner } from "@/services";
+import Noti from "@/utils/Noti";
 
 const PAGE_SIZE = 10;
 const HomeScreen = ({ navigation }: any) => {
@@ -54,8 +54,8 @@ const HomeScreen = ({ navigation }: any) => {
                 data = data.sort((a: any, b: any) => b.views - a.views);
                 setExams(data);
             } catch (err: any) {
-                if (err.status === 404) Notification.error(err.data.message);
-                else Notification.error(err.data.message);
+                if (err.status === 404) Noti.error(err.data.message);
+                else Noti.error(err.data.message);
             }
         };
         fetchData();

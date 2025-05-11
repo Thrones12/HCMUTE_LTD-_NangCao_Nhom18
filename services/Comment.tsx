@@ -32,4 +32,53 @@ const GetAllByLesson = async (lessonId: string) => {
         return null;
     }
 };
-export default { GetAll, GetAllByLesson };
+const Like = async (commentId: string, userId: string) => {
+    try {
+        // Call API
+        await axios.put(`${API}/comment/like`, { commentId, userId });
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+const Unlike = async (commentId: string, userId: string) => {
+    try {
+        // Call API
+        await axios.put(`${API}/comment/unlike`, { commentId, userId });
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+const Create = async ({ lessonId, user, content, replyTo }: any) => {
+    try {
+        // Call API
+        const res = await axios.post(`${API}/comment`, {
+            lessonId,
+            user,
+            content,
+            replyTo,
+        });
+        return res.data.data;
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+
+export default { GetAll, GetAllByLesson, Like, Unlike, Create };

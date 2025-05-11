@@ -62,5 +62,23 @@ const GetOne = async (lessonId: string) => {
         return null;
     }
 };
-
-export default { GetAll, GetAllBySubject, GetTopLesson, GetOne };
+const Rating = async (lessonId: string, userId: string, rating: number) => {
+    try {
+        // Call API
+        const res = await axios.post(`${API}/lesson/rating`, {
+            lessonId,
+            userId,
+            rating,
+        });
+        return res.data.data;
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+export default { GetAll, GetAllBySubject, GetTopLesson, GetOne, Rating };

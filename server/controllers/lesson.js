@@ -71,6 +71,36 @@ const GetOne = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
+// POST /lesson/rating
+const Rating = async (req, res) => {
+    try {
+        const { lessonId, userId, rating } = req.body;
+
+        // Get data
+        let data = await Lesson.findById(lessonId);
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
+
+        // Tìm index đánh giá của user
+        const index = data.rating.findIndex(
+            (r) => r.userId.toString() === userId
+        );
+        if (index !== -1) {
+            // Nếu đã tồn tại đánh giá → cập nhật
+            data.rating[index].rate = rating;
+        } else {
+            // Nếu chưa có → thêm mới
+            data.rating.push({ userId, rate: rating });
+        }
+
+        // Lưu lại lesson
+        await data.save();
+
+        // 200 - Success
+        return res.status(200).json({ data });
+    } catch (err) {
+        return res.status(500).json({ message: "Server Error: ", err });
+    }
+};
 // POST /lesson
 const Create = async (req, res) => {
     try {
@@ -179,6 +209,7 @@ module.exports = {
     GetAll,
     GetTop,
     GetOne,
+    Rating,
     Create,
     Update,
     Delete,

@@ -28,7 +28,9 @@ const GetAll = async (req, res) => {
             return res.status(404).json({ message: "Data not found" });
         // Get reply của comment
         for (const comment of topLevelComments) {
-            const replies = await Comment.find({ replyTo: comment._id });
+            const replies = await Comment.find({
+                replyTo: comment._id,
+            }).populate({ path: "user", model: "User" });
             data.push({ ...comment._doc, replies });
         }
 
@@ -109,6 +111,47 @@ const Update = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
+// PUT /comment/like
+const Like = async (req, res) => {
+    try {
+        const { commentId, userId } = req.body;
+
+        // Get data
+        const data = await Comment.findById(commentId);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
+
+        // Like
+        data.likes.push(userId);
+        await data.save();
+
+        // 200 - Success
+        return res.status(200).json({ data });
+    } catch (err) {
+        return res.status(500).json({ message: "Server Error: ", err });
+    }
+};
+// PUT /comment/unlike
+const Unlike = async (req, res) => {
+    try {
+        const { commentId, userId } = req.body;
+
+        // Get data
+        const data = await Comment.findById(commentId);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data Not Found" });
+
+        // Like
+        let likes = data.likes.filter((like) => like.toString() !== userId);
+        data.likes = [...likes];
+        await data.save();
+
+        // 200 - Success
+        return res.status(200).json({ data });
+    } catch (err) {
+        return res.status(500).json({ message: "Server Error: ", err });
+    }
+};
 // DELETE /comment?id=...
 const Delete = async (req, res) => {
     try {
@@ -143,5 +186,7 @@ module.exports = {
     GetOne,
     Create,
     Update,
+    Like,
+    Unlike,
     Delete,
 };
