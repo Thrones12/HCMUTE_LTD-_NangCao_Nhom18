@@ -10,8 +10,6 @@ export type RootStackParamList = {
     Exercise: { lessonId: String };
     ExamList: undefined;
     Exam: { examId: String };
-    ChallengeList: undefined;
-    Challenge: { challengeId: String };
     Search: undefined;
     Notification: undefined;
 };

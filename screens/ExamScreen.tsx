@@ -19,7 +19,6 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
 import { AuthContext } from "@/contexts/AuthContext";
-import Noti from "@/utils/Noti";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const { width: screenWidth } = Dimensions.get("window");

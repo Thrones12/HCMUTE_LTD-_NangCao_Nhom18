@@ -5,7 +5,7 @@ const API = Constant.API;
 const GetAll = async () => {
     try {
         // Call API
-        const res = await axios.get(`${API}/challenge-result`);
+        const res = await axios.get(`${API}/challenge`);
         return res.data.data;
     } catch (err: any) {
         // Thông báo lỗi
@@ -17,10 +17,12 @@ const GetAll = async () => {
         return null;
     }
 };
-const GetOne = async (id: string) => {
+const GetOne = async (challengeId: string) => {
     try {
         // Call API
-        const res = await axios.get(`${API}/challenge-result/get-one?id=${id}`);
+        const res = await axios.get(
+            `${API}/challenge/get-one?id=${challengeId}`
+        );
         return res.data.data;
     } catch (err: any) {
         // Thông báo lỗi

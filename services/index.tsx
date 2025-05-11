@@ -3,6 +3,7 @@ import Subject from "./Subject";
 import Lesson from "./Lesson";
 import Exam from "./Exam";
 import ExamResult from "./ExamResult";
+import Challenge from "./Challenge";
 import ChallengeResult from "./ChallengeResult";
 import Banner from "./Banner";
 import Comment from "./Comment";
@@ -13,6 +14,7 @@ export {
     Lesson,
     Exam,
     ExamResult,
+    Challenge,
     ChallengeResult,
     Banner,
     Comment,
