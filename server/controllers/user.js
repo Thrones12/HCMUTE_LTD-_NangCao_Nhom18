@@ -1,6 +1,4 @@
 const User = require("../models/User");
-const Challenge = require("../models/Challenge");
-const ChallengeResult = require("../models/ChallengeResult");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -33,7 +31,7 @@ const GetOne = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await Subject.findById(id);
+        data = await User.findById(id);
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
 
@@ -45,10 +43,10 @@ const GetOne = async (req, res) => {
 };
 // POST /user
 // PUT /user
-// DELETE /user
 const Update = async (req, res) => {
     try {
         const { _id, fullname, phone, email, password } = req.body;
+        console.log(_id);
         const file = req.file;
 
         const existingData = await User.findById(_id);
@@ -160,22 +158,6 @@ const Register = async (req, res) => {
             email,
             password: hashedPassword,
         });
-        await data.save();
-        // Tạo challenge
-        const challenges = await Challenge.find({});
-        let challengeResults = [];
-        for (let challenge of challenges) {
-            let result = new ChallengeResult({
-                userId: data._id,
-                challenge: challenge._id,
-                progress: challenge.groups.flatMap((group) =>
-                    group.questions.map(() => false)
-                ),
-            });
-            await result.save();
-            challengeResults = [...challengeResults, result._id];
-        }
-        data.challengeResults = challengeResults;
         await data.save();
 
         // 200 - Success

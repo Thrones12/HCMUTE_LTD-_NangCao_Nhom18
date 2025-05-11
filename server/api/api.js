@@ -7,12 +7,6 @@ router.use("/api/activity", Activity);
 // Banner
 let Banner = require("../routers/Banner");
 router.use("/api/banner", Banner);
-// Challenge
-let Challenge = require("../routers/Challenge");
-router.use("/api/challenge", Challenge);
-// ChallengeResult
-let ChallengeResult = require("../routers/ChallengeResult");
-router.use("/api/challenge-result", ChallengeResult);
 // Comment
 let Comment = require("../routers/Comment");
 router.use("/api/comment", Comment);

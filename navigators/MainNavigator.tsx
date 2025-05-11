@@ -9,9 +9,7 @@ import {
     HistoryScreen,
     ExamScreen,
     VerifyScreen,
-    ChallengeScreen,
     SearchScreen,
-    ChallengeQuestionScreen,
 } from "@/screens";
 import LessonTabNavigator from "./LessonTabNavigator";
 
@@ -38,11 +36,6 @@ const MainNavigator = () => {
             <Stack.Screen name='Notification' component={NotificationScreen} />
             <Stack.Screen name='Search' component={SearchScreen} />
             <Stack.Screen name='Exam' component={ExamScreen} />
-            <Stack.Screen name='Challenge' component={ChallengeScreen} />
-            <Stack.Screen
-                name='ChallengeQuestion'
-                component={ChallengeQuestionScreen}
-            />
 
             <Stack.Screen name='Vertify' component={VerifyScreen} />
         </Stack.Navigator>

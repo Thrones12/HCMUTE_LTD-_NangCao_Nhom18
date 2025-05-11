@@ -1,5 +1,4 @@
 const Question = require("../models/Question");
-const Challenge = require("../models/Challenge");
 const Exam = require("../models/Exam");
 const Lesson = require("../models/Lesson");
 
@@ -97,39 +96,6 @@ const Delete = async (req, res) => {
         const data = await Question.findByIdAndDelete(id);
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data Not Found" });
-
-        // Xóa question trong challenge
-        {
-            const challenges = (await Challenge.find({})).filter((challenge) =>
-                challenge.groups.some((group) =>
-                    group.questions.some(
-                        (question) => question.toString() === id
-                    )
-                )
-            );
-
-            // // 404 - Not Found
-            if (!challenges)
-                return res.status(404).json({ message: "Data Not Found" });
-            for (let challenge of challenges) {
-                let updated = false;
-                // Duyệt từng group trong challenge
-                for (let group of challenge.groups) {
-                    const originalLength = group.questions.length;
-                    // Lọc lại mảng questions
-                    group.questions = group.questions.filter(
-                        (q) => q.toString() !== id
-                    );
-                    if (group.questions.length !== originalLength) {
-                        updated = true;
-                    }
-                }
-                // Lưu lại nếu có sự thay đổi
-                if (updated) {
-                    await challenge.save();
-                }
-            }
-        }
 
         // Xóa question trong exam
         {

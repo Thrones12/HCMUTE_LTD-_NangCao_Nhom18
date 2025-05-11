@@ -27,7 +27,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 const VertifyScreen = ({ route }: any) => {
     const navigation = useNavigation<NavigationProp>();
     const { SendOtp, ActivateAccount, SendPassword } = useContext(AuthContext);
-    const { email, type } = route.params || {};
+    const { onVerified, email, type } = route.params || {};
     // State
     const [loading, setLoading] = useState(false);
     const [OTP, setOTP] = useState<any>();
@@ -78,14 +78,15 @@ const VertifyScreen = ({ route }: any) => {
             if (type === "Activate") {
                 Noti.success("Xác thực thành công");
                 ActivateAccount(email);
+                navigation.navigate("Login");
             } else if (type === "Forget") {
                 Noti.success("Mật khẩu mới đã được gửi về mail");
                 SendPassword(email);
+                navigation.navigate("Login");
             } else if (type === "Update") {
-                Noti.success("Cập nhập thành công");
-                //SendPassword(email);
+                if (onVerified) onVerified(); // Gọi callback
+                navigation.goBack(); // Quay về màn trước
             }
-            navigation.navigate("Login");
         } else {
             Noti.info("OTP không đúng");
         }
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         position: "absolute",
-        color: Colors.white,
+        color: Colors.White,
         fontSize: 40,
         fontWeight: "bold",
         textAlign: "center",
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
         gap: 25,
     },
     inputText: {
-        backgroundColor: Colors.LightGray2,
+        backgroundColor: Colors.Gray200,
         paddingVertical: 16,
         paddingLeft: 20,
         borderRadius: 15,

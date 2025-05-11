@@ -17,9 +17,6 @@ const schema = new mongoose.Schema({
     learned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }], // Lesson đã hoàn thành
     saves: [{ type: mongoose.Schema.Types.ObjectId, ref: "Exam" }], // Exam lưu trữ
     examResults: [{ type: mongoose.Schema.Types.ObjectId, ref: "ExamResult" }],
-    challengeResults: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "ChallengeResult" },
-    ],
     notifications: [
         { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],

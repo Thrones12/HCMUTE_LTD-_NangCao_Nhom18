@@ -34,10 +34,13 @@ export const AuthProvider = ({ children }) => {
         }
         try {
             // Call API
+            console.log(email, password);
+
             const res = await axios.post(`${API}/user/login`, {
                 email,
                 password,
             });
+
             // Lưu vào AsyncStorage
             await AsyncStorage.setItem("token", res.data.token);
             await AsyncStorage.setItem("userId", JSON.stringify(res.data.data));

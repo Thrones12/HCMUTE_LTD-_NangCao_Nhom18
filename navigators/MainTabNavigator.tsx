@@ -6,10 +6,10 @@ import {
     HomeScreen,
     ProfileScreen,
     CourseListScreen,
-    ChallengeListScreen,
     ExamListScreen,
 } from "@/screens";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Colors } from "@/constants";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,18 +24,20 @@ const MainTabNavigator = () => {
                     let iconName;
                     if (route.name === "Home") {
                         iconName = "home-outline";
-                    } else if (route.name === "Course") {
+                    } else if (route.name === "CourseList") {
                         iconName = "book-outline";
-                    } else if (route.name === "Challenge") {
-                        iconName = "create-outline";
-                    } else if (route.name === "Profile") {
-                        iconName = "person-outline";
+                    } else if (route.name === "ExamList") {
+                        iconName = "clipboard-outline";
                     } else {
-                        iconName = "camera-outline";
+                        iconName = "person-outline";
                     }
 
                     return (
-                        <Ionicons name={iconName} size={size} color={color} />
+                        <Ionicons
+                            name={iconName}
+                            size={size}
+                            color={Colors.Blue500}
+                        />
                     );
                 },
             })}
@@ -43,7 +45,6 @@ const MainTabNavigator = () => {
             <Tab.Screen name='Home' component={HomeScreen} />
             <Tab.Screen name='CourseList' component={CourseListScreen} />
             <Tab.Screen name='ExamList' component={ExamListScreen} />
-            <Tab.Screen name='ChallengeList' component={ChallengeListScreen} />
             <Tab.Screen name='Profile' component={ProfileScreen} />
         </Tab.Navigator>
     );

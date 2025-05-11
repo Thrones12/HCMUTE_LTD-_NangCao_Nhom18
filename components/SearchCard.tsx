@@ -13,7 +13,7 @@ const SearchCard = ({ item }: any) => {
                 const { uri } = await VideoThumbnails.getThumbnailAsync(
                     item.videoUrl,
                     {
-                        time: 1000, // Lấy thumbnail tại giây thứ 1
+                        time: 2000, // Lấy thumbnail tại giây thứ 1
                     }
                 );
                 setThumbnail(uri);
@@ -77,7 +77,15 @@ const SearchCard = ({ item }: any) => {
                                         color: Colors.Gray600,
                                     }}
                                 >
-                                    {item.rating}
+                                    {item.rating.length > 0
+                                        ? (
+                                              item.rating.reduce(
+                                                  (total: number, item: any) =>
+                                                      total + item.rate,
+                                                  0
+                                              ) / item.rating.length
+                                          ).toFixed(1) // Làm tròn 1 chữ số thập phân
+                                        : "Chưa có đánh giá"}
                                 </Text>
                             </View>
                             {/* Lượt học */}

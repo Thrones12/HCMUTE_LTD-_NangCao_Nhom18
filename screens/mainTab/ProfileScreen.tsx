@@ -10,16 +10,17 @@ import {
     ScrollView,
     Alert,
     ActivityIndicator,
+    Pressable,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { AuthContext } from "@/contexts/AuthContext";
-import { Constant } from "@/constants";
-import Notification from "@/services/Notification";
+import { Colors, Constant, GStyles } from "@/constants";
+import Noti from "@/utils/Noti";
 
 const ProfileScreen = ({ navigation }: any) => {
     const API = Constant.API;
-    const { user } = useContext(AuthContext);
+    const { Logout, userId } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [backup, setBackup] = useState({ email: "", phone: "" }); // để kiểm tra xem email hoặc phone có bị thay đổi không
     const [avatar, setAvatar] = useState("");
@@ -30,7 +31,7 @@ const ProfileScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get(`${API}/user/getOne?id=${user._id}`);
+            const res = await axios.get(`${API}/user/get-one?id=${userId}`);
             let data = res.data.data;
             setBackup({ email: data.email, phone: data.phone });
             setAvatar(data.avatar);
@@ -39,7 +40,7 @@ const ProfileScreen = ({ navigation }: any) => {
             setPhone(data.phone);
         };
         fetchData();
-    }, []);
+    }, [userId]);
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -57,62 +58,68 @@ const ProfileScreen = ({ navigation }: any) => {
 
     const handleSave = async () => {
         if (email !== backup.email || phone !== backup.phone) {
-            setLoading(true);
-            const res = await axios.post(`${API}/user/set-otp`, {
-                email: backup.email,
-            });
-            setLoading(false);
-            Notification.info("OTP đã được gửi về email");
-
             navigation.navigate("Vertify", {
                 email: backup.email,
-                type: "profile",
-                data: {
-                    _id: user._id,
-                    fullname: fullname,
-                    phone: phone,
-                    email: email,
-                    password: password,
-                    avatar: avatar,
+                type: "Update",
+                onVerified: async () => {
+                    await update({
+                        userId,
+                        fullname,
+                        phone,
+                        email,
+                        password,
+                        avatar,
+                    });
                 },
             });
         } else {
-            try {
-                const formData = new FormData();
-                formData.append("_id", user._id);
-                formData.append("fullname", fullname);
-                formData.append("phone", phone);
-                formData.append("email", email);
-                formData.append("password", password);
-
-                if (avatar && !avatar.includes("cloudinary")) {
-                    formData.append("image", {
-                        uri: avatar,
-                        type: "image/jpeg",
-                        name: "avatar.jpg",
-                    } as any);
-                }
-
-                setLoading(true);
-                const res = await axios.put(`${API}/user`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
-                setPassword("********");
-                setLoading(false);
-                Alert.alert(
-                    "Cập nhật thành công",
-                    "Thông tin người dùng đã được lưu."
-                );
-            } catch (err: any) {
-                Notification.error(err.data.message);
-            }
+            await update({ userId, fullname, phone, email, password, avatar });
         }
     };
+    const update = async ({
+        userId,
+        fullname,
+        phone,
+        email,
+        password,
+        avatar,
+    }: any) => {
+        try {
+            const formData = new FormData();
+            formData.append("_id", userId);
+            formData.append("fullname", fullname);
+            formData.append("phone", phone);
+            formData.append("email", email);
+            if (password !== "********") {
+                formData.append("password", password);
+            }
 
+            if (avatar && !avatar.includes("cloudinary")) {
+                formData.append("image", {
+                    uri: avatar,
+                    type: "image/jpeg",
+                    name: "avatar.jpg",
+                } as any);
+            }
+
+            setLoading(true);
+            const res = await axios.put(`${API}/user`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            setPassword("********");
+            setLoading(false);
+            Alert.alert(
+                "Cập nhật thành công",
+                "Thông tin người dùng đã được lưu."
+            );
+        } catch (err: any) {
+            Noti.error(err.data.message);
+        }
+    };
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={[GStyles.container, { padding: 15 }]}>
             {/* Loading */}
             {loading === true ? (
                 <View style={styles.indicator}>
@@ -159,7 +166,17 @@ const ProfileScreen = ({ navigation }: any) => {
                 onChangeText={setPassword}
             />
 
-            <Button title='Lưu thông tin' onPress={handleSave} />
+            <Pressable style={styles.button} onPress={handleSave}>
+                <Text style={styles.buttonText}>Lưu thông tin</Text>
+            </Pressable>
+            <Pressable
+                style={[styles.button, { backgroundColor: Colors.Gray400 }]}
+                onPress={Logout}
+            >
+                <Text style={[styles.buttonText, { color: Colors.Gray800 }]}>
+                    Đăng xuất
+                </Text>
+            </Pressable>
         </ScrollView>
     );
 };
@@ -186,11 +203,13 @@ const styles = StyleSheet.create({
     },
     input: {
         height: 45,
-        borderColor: "#ccc",
         borderWidth: 1,
-        borderRadius: 8,
+        borderColor: Colors.Gray600,
+        borderRadius: 10,
         paddingHorizontal: 10,
         marginBottom: 15,
+        backgroundColor: Colors.White,
+        elevation: 2,
     },
     indicator: {
         position: "absolute",
@@ -198,6 +217,20 @@ const styles = StyleSheet.create({
         left: "50%",
         transform: [{ translateX: -25 }, { translateY: -25 }],
         zIndex: 999,
+    },
+    button: {
+        padding: 8,
+        backgroundColor: Colors.Blue500,
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 10,
+        elevation: 2,
+    },
+    buttonText: {
+        color: Colors.White,
+        fontSize: 18,
+        fontWeight: 600,
     },
 });
 

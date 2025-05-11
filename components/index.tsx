@@ -16,7 +16,6 @@ import CourseCard from "./CourseCard";
 import SubjectCard from "./SubjectCard";
 import LessonCard from "./LessonCard";
 import ExamCard from "./ExamCard";
-import ChallengeCard from "./ChallengeCard";
 import SearchCard from "./SearchCard";
 import QuestionCard from "./QuestionCard";
 import VideoComponent from "./VideoComponent";
@@ -41,7 +40,6 @@ export {
     SubjectCard,
     LessonCard,
     ExamCard,
-    ChallengeCard,
     SearchCard,
     QuestionCard,
     VideoComponent,

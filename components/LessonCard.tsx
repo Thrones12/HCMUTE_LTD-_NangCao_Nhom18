@@ -21,7 +21,7 @@ const LessonCard = ({ customWidth, item, onPress }: any) => {
                 const { uri } = await VideoThumbnails.getThumbnailAsync(
                     item.videoUrl,
                     {
-                        time: 0, // Lấy thumbnail tại giây thứ 1
+                        time: 2000, // Lấy thumbnail tại giây thứ 1
                     }
                 );
                 setThumbnail(uri);
