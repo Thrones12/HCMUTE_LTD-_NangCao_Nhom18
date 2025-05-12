@@ -126,7 +126,9 @@ const HomeScreen = ({ navigation }: any) => {
                                         key={index}
                                         item={item}
                                         onPress={() =>
-                                            navigation.navigate("Exam")
+                                            navigation.navigate("Exam", {
+                                                examId: item._id,
+                                            })
                                         }
                                     />
                                 ))}

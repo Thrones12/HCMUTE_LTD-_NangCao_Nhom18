@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         position: "absolute",
-        color: Colors.white,
+        color: Colors.White,
         fontSize: 40,
         fontWeight: "bold",
         textAlign: "center",
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     inputText: {
-        backgroundColor: Colors.LightGray2,
+        backgroundColor: Colors.Gray200,
         paddingVertical: 16,
         paddingLeft: 20,
         borderRadius: 15,

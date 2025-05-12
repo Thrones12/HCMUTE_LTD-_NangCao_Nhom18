@@ -19,7 +19,6 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 const CourseListScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { Logout } = useContext(AuthContext);
     const [courses, setCourses] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     // Fetch danh sách khóa học
@@ -63,8 +62,6 @@ const CourseListScreen = () => {
                     Không có khóa học nào.
                 </Text>
             )}
-
-            <ButtonComponent text='Logout' onPress={Logout} type='primary' />
         </View>
     );
 };

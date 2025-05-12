@@ -2,6 +2,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { LessonScreen, ExerciseScreen, CommentScreen } from "@/screens";
+import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -11,10 +12,25 @@ const LessonTabNavigator = ({ route }: any) => {
         <Tab.Navigator
             backBehavior='history'
             initialRouteName='Lesson'
-            screenOptions={{
+            screenOptions={({ route }: any) => ({
                 headerShown: false,
-                animation: "fade",
-            }}
+                animation: "shift",
+                tabBarIcon: ({ color, size }) => {
+                    return (
+                        <Ionicons
+                            name={
+                                route.name === "Lesson"
+                                    ? "play-circle-outline"
+                                    : route.name === "Exercise"
+                                    ? "create-outline"
+                                    : "chatbubble-outline"
+                            }
+                            size={size}
+                            color={color}
+                        />
+                    );
+                },
+            })}
         >
             <Tab.Screen
                 name='Lesson'

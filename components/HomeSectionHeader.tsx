@@ -1,18 +1,28 @@
-import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    TextInput,
+    Image,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Colors } from "@/constants";
+import { Colors, Constant } from "@/constants";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/constants/Types";
 import { AuthContext } from "@/contexts/AuthContext";
 import Notification from "@/services/Notification";
+import axios from "axios";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 const HomeSectionHeader = () => {
+    const API = Constant.API;
     const { userId } = useContext(AuthContext);
     const navigation = useNavigation<NavigationProp>();
+    const [avatar, setAvatar] = useState("");
     const [hasNotification, setHasNotification] = useState(false);
     const [reload, setReload] = useState(false);
     useEffect(() => {
@@ -22,6 +32,11 @@ const HomeSectionHeader = () => {
                 setHasNotification(
                     data.some((noti: any) => noti.isRead === "false")
                 );
+                const userRes = await axios.get(
+                    `${API}/user/get-one?id=${userId}`
+                );
+                let user = userRes.data.data;
+                setAvatar(user.avatar);
             } catch (error) {
                 console.error("Lỗi khi lấy môn học:", error);
             }
@@ -36,7 +51,7 @@ const HomeSectionHeader = () => {
         <View style={[styles.container]}>
             {/* Xin chào và Notification */}
             <View style={styles.flexRow}>
-                <View>
+                <View style={{ flex: 1 }}>
                     <Text style={styles.textPrimary}>Chào Phong!</Text>
                     <Text style={styles.textSecondary}>
                         Hôm nay bạn muốn học gì nào?
@@ -55,6 +70,18 @@ const HomeSectionHeader = () => {
                         color='black'
                     />
                     {hasNotification && <View style={styles.badge} />}
+                </Pressable>
+                <Pressable
+                    onPress={() => {
+                        navigation.navigate("Profile");
+                    }}
+                >
+                    {avatar && (
+                        <Image
+                            source={{ uri: avatar }}
+                            style={{ width: 44, height: 44, borderRadius: 15 }}
+                        />
+                    )}
                 </Pressable>
             </View>
             {/* Search */}
@@ -84,6 +111,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        gap: 10,
     },
     textPrimary: {
         fontSize: 22,

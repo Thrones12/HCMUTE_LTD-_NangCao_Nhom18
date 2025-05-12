@@ -33,11 +33,7 @@ const MainTabNavigator = () => {
                     }
 
                     return (
-                        <Ionicons
-                            name={iconName}
-                            size={size}
-                            color={Colors.Blue500}
-                        />
+                        <Ionicons name={iconName} size={size} color={color} />
                     );
                 },
             })}
