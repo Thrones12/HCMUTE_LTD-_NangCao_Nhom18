@@ -20,7 +20,7 @@ import { Constant } from "@/constants/Constant";
 import { Banner } from "@/services";
 import Noti from "@/utils/Noti";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 2;
 const HomeScreen = ({ navigation }: any) => {
     const API = Constant.API;
     const [banners, setBanners] = useState([]);
@@ -62,9 +62,6 @@ const HomeScreen = ({ navigation }: any) => {
         loadData();
     }, []);
     // Load data
-    useEffect(() => {
-        loadData();
-    }, [exams]);
     const loadData = () => {
         if (loading || allLoaded || exams.length === 0) return;
 

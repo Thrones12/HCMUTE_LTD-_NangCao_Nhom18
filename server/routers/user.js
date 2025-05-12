@@ -13,6 +13,7 @@ router.post("/send-otp", controller.SendOTP);
 router.post("/send-password", controller.SendPassword);
 // PUT
 router.put("/activate", controller.Activate);
+router.put("/minus-point", controller.MinusPoint);
 router.put("/", upload.single("image"), controller.Update);
 // DELETE
 router.delete("/", controller.GetAll);

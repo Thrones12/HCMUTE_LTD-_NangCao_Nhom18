@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
     notifications: [
         { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],
+    point: { type: Number, default: 0 },
 });
 
 const User = mongoose.model("User", schema);

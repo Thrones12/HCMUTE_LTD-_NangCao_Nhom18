@@ -1,3 +1,4 @@
+const Activity = require("../models/Activity");
 const Comment = require("../models/Comment");
 const Lesson = require("../models/Lesson");
 
@@ -65,7 +66,6 @@ const GetOne = async (req, res) => {
 const Create = async (req, res) => {
     try {
         const { lessonId, user, content, replyTo } = req.body;
-        console.log(lessonId, user, content, replyTo);
 
         // Create
         let data = new Comment({
@@ -79,6 +79,15 @@ const Create = async (req, res) => {
         const lesson = await Lesson.findById(lessonId);
         lesson.comments.push(data._id.toString());
         await lesson.save();
+
+        // Thêm hành động vào lịch sử hoạt động của user
+        let activity = new Activity({
+            action: `Bạn đã bình luận bài ${lesson.title}`,
+        });
+        await activity.save();
+        let updateUser = await User.findById(user);
+        updateUser.histories.push(activity._id.toString());
+        await updateUser.save();
 
         let returnData = await Comment.findById(data._id).populate({
             path: "user",

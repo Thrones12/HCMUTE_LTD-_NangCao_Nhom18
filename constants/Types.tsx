@@ -13,4 +13,6 @@ export type RootStackParamList = {
     Search: undefined;
     Notification: undefined;
     Profile: undefined;
+    Storage: undefined;
+    History: undefined;
 };

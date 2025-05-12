@@ -1,5 +1,7 @@
 const ExamResult = require("../models/ExamResult");
 const User = require("../models/User");
+const Exam = require("../models/Exam");
+const Activity = require("../models/Activity");
 
 // GET /exam-result
 const GetAll = async (req, res) => {
@@ -64,6 +66,7 @@ const Submit = async (req, res) => {
         // Kiểm tra result của exam đã có chưa
         const existingData = await ExamResult.findOne({ userId, exam });
 
+        const user = await User.findById(userId);
         if (!existingData) {
             // Create
             const data = new ExamResult({
@@ -76,8 +79,8 @@ const Submit = async (req, res) => {
             await data.save();
 
             // Thêm exam result vào user
-            const user = await User.findById(userId);
             user.examResults.push(data._id.toString());
+            user.point = user.point + 50;
             await user.save();
         } else {
             // Update
@@ -92,8 +95,27 @@ const Submit = async (req, res) => {
                 existingData.duration = duration;
                 existingData.answers = [...answers];
             }
+            if (score >= 5) {
+                user.point += 50;
+                await user.save();
+            }
             await existingData.save();
         }
+
+        // Cập nhập attemp count của exam
+        let existingExam = await Exam.findById(exam);
+        let attempResult = await ExamResult.find({ exam });
+        existingExam.attempCount = attempResult.length;
+        await existingExam.save();
+
+        // Thêm hành động vào lịch sử hoạt động của user
+        let activity = new Activity({
+            action: `Bạn đã làm bài kiểm tra ${existingExam.title}`,
+        });
+        await activity.save();
+        let updateUser = await User.findById(user);
+        updateUser.histories.push(activity._id.toString());
+        await updateUser.save();
 
         // 200 - Success
         return res.status(200).json({ data: existingData });

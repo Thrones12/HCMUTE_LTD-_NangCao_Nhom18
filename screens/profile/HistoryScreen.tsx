@@ -1,89 +1,68 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Data } from "@/constants";
+import { Data, GStyles } from "@/constants";
+import { AuthContext } from "@/contexts/AuthContext";
+import { User } from "@/services";
+import TimeFormat from "@/utils/TimeFormat";
+import { Header } from "@/components";
 
-const { width: screenWidth } = Dimensions.get("window");
 const iconMap: any = {
     comment: "chatbubble-ellipses-outline",
     test: "document-text-outline",
     favorite: "heart-outline",
 };
 const HistoryScreen = () => {
-    const renderItem = ({ item }: any) => (
-        <View style={styles.row}>
-            <View style={styles.timeColumn}>
-                <Text style={styles.date}>{item.date}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-            </View>
-            <View style={styles.contentColumn}>
-                <View style={styles.activityBox}>
-                    <Ionicons
-                        name={iconMap[item.type]}
-                        size={20}
-                        color='#4a90e2'
-                        style={{ marginRight: 8 }}
-                    />
-                    <Text style={styles.content}>{item.content}</Text>
-                </View>
-            </View>
-        </View>
-    );
+    const { userId } = useContext(AuthContext);
 
+    const [activities, setActivities] = useState<any>([]);
+    useEffect(() => {
+        const fetchData = async (userId: string) => {
+            const user = await User.GetOne(userId);
+            setActivities(
+                [...user.histories].sort(
+                    (a: any, b: any) =>
+                        new Date(b.timestamp).getTime() -
+                        new Date(a.timestamp).getTime()
+                )
+            );
+        };
+        if (userId) fetchData(userId);
+    }, [userId]);
     return (
-        <FlatList
-            data={Data.activities}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.container}
-        />
+        <View style={GStyles.container}>
+            <Header title='Lịch sử hoạt động' />
+            {activities.length === 0 ? (
+                <Text>Chưa có hoạt động nào.</Text>
+            ) : (
+                <FlatList
+                    data={activities}
+                    keyExtractor={(_, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <View style={styles.item}>
+                            <Text style={styles.action}>{item.action}</Text>
+                            <Text style={styles.timestamp}>
+                                {TimeFormat.formatTimeAgo(item.timestamp)}
+                            </Text>
+                        </View>
+                    )}
+                    contentContainerStyle={{ padding: 15 }}
+                />
+            )}
+        </View>
     );
 };
 const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 10,
-        backgroundColor: "#f7f7f7",
-        flex: 1,
-    },
-    row: {
-        flexDirection: "row",
-        marginBottom: 16,
-        paddingHorizontal: 12,
-    },
-    timeColumn: {
-        width: screenWidth / 6,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    date: {
-        fontSize: 12,
-        color: "#888",
-    },
-    time: {
-        fontSize: 14,
-        fontWeight: "bold",
-        color: "#444",
-    },
-    contentColumn: {
-        flex: 1,
-        justifyContent: "center",
-    },
-    activityBox: {
-        backgroundColor: "#fff",
+    title: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
+    item: {
         padding: 12,
+        borderWidth: 1,
+        borderColor: "#ddd",
         borderRadius: 8,
-        flexDirection: "row",
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOpacity: 0.05,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 4,
-        elevation: 2,
+        marginBottom: 8,
+        backgroundColor: "#fff",
     },
-    content: {
-        fontSize: 14,
-        color: "#333",
-        flexShrink: 1,
-    },
+    action: { fontSize: 16 },
+    timestamp: { fontSize: 12, color: "#888" },
 });
 export default HistoryScreen;

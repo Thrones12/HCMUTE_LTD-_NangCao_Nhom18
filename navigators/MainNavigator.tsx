@@ -4,7 +4,7 @@ import MainTabNavigator from "./MainTabNavigator";
 import {
     SubjectListScreen,
     LessonListScreen,
-    StorageExamScreen,
+    StorageScreen,
     NotificationScreen,
     HistoryScreen,
     ExamScreen,
@@ -28,7 +28,7 @@ const MainNavigator = () => {
             <Stack.Screen name='Main' component={MainTabNavigator} />
             <Stack.Screen name='LessonTab' component={LessonTabNavigator} />
             {/* Profile screen */}
-            <Stack.Screen name='StorageExam' component={StorageExamScreen} />
+            <Stack.Screen name='Storage' component={StorageScreen} />
             <Stack.Screen name='History' component={HistoryScreen} />
 
             <Stack.Screen name='SubjectList' component={SubjectListScreen} />

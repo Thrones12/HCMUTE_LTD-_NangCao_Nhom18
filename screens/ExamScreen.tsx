@@ -9,7 +9,7 @@ import {
     Modal,
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Exam, ExamResult } from "@/services";
+import { Exam, ExamResult, User } from "@/services";
 import { Colors, GStyles } from "@/constants";
 import { ButtonComponent, Header, QuestionCard } from "@/components";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,6 +32,8 @@ const ExamScreen = ({ route }: any) => {
     const [timer, setTimer] = useState<any>(0);
     const [answers, setAnswers] = useState<any>([]);
     const answersRef = useRef(answers); // Để luôn cập nhập lại answer tránh tình trạng setInterval giữ lại giá trị answer init
+    const [showHint, setShowHint] = useState(false);
+    const [hint, setHint] = useState("");
     // Modal start
     const [showStartModal, setShowStartModal] = useState(true);
     // Modal result
@@ -170,9 +172,36 @@ const ExamScreen = ({ route }: any) => {
                         </Pressable>
                     ))}
                 </View>
+                <Pressable
+                    style={styles.icon}
+                    onPress={() => handleShowHint(item)}
+                >
+                    <Ionicons name='bulb-outline' size={22} color={"#F4C430"} />
+                </Pressable>
             </View>
         </View>
     );
+    const handleShowHint = async (question: any) => {
+        Alert.alert(
+            "Xác nhận",
+            "Bạn có chắc muốn trừ 10 điểm để xem gợi ý không?",
+            [
+                {
+                    text: "Hủy",
+                    style: "cancel",
+                },
+                {
+                    text: "Xác nhận",
+                    onPress: async () => {
+                        await User.MinusPoint(userId, 10);
+                        setHint(question.hint);
+                        setShowHint(true);
+                    },
+                },
+            ],
+            { cancelable: true }
+        );
+    };
     // Phát âm thanh khi người dùng chọn option
     const playSound = async () => {
         const { sound } = await Audio.Sound.createAsync(
@@ -454,6 +483,25 @@ const ExamScreen = ({ route }: any) => {
                     </View>
                 </View>
             </Modal>
+            {/* Modal gợi ý */}
+            <Modal
+                visible={showHint}
+                transparent
+                animationType='slide'
+                onRequestClose={() => setShowHint(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.hintText}>{hint}</Text>
+                        <Pressable
+                            onPress={() => setShowHint(false)}
+                            style={styles.closeButton}
+                        >
+                            <Text style={styles.closeText}>Đóng</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -482,6 +530,7 @@ const styles = StyleSheet.create({
     },
     // Question
     question: {
+        position: "relative",
         padding: 15,
         backgroundColor: "#fff",
         borderRadius: 10,
@@ -578,6 +627,30 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.Blue500,
     },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContent: {
+        backgroundColor: "#fff",
+        padding: 20,
+        borderRadius: 12,
+        width: "80%",
+    },
+    hintText: {
+        fontSize: 16,
+        marginBottom: 20,
+    },
+    closeButton: {
+        alignSelf: "flex-end",
+    },
+    closeText: {
+        color: "#007AFF",
+        fontWeight: "bold",
+    },
+    icon: { position: "absolute", top: 20, right: 5 },
 });
 
 export default ExamScreen;

@@ -17,6 +17,11 @@ import axios from "axios";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Colors, Constant, GStyles } from "@/constants";
 import Noti from "@/utils/Noti";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/constants/Types";
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 const ProfileScreen = ({ navigation }: any) => {
     const API = Constant.API;
@@ -168,6 +173,18 @@ const ProfileScreen = ({ navigation }: any) => {
 
             <Pressable style={styles.button} onPress={handleSave}>
                 <Text style={styles.buttonText}>Lưu thông tin</Text>
+            </Pressable>
+            <Pressable
+                style={[styles.button]}
+                onPress={() => navigation.navigate("Storage")}
+            >
+                <Text style={[styles.buttonText]}>Lưu trữ</Text>
+            </Pressable>
+            <Pressable
+                style={[styles.button]}
+                onPress={() => navigation.navigate("History")}
+            >
+                <Text style={[styles.buttonText]}>Lịch sử hoạt động</Text>
             </Pressable>
             <Pressable
                 style={[styles.button, { backgroundColor: Colors.Gray400 }]}

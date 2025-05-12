@@ -209,6 +209,13 @@ const Save = async (req, res) => {
         data.saves.push(userId);
         await data.save();
 
+        // Lưu exam vào storage của user
+        let user = await User.findById(userId);
+        user.saves.push(data._id.toString());
+
+        await user.save();
+        console.log(user);
+
         // 200 - Success
         return res.status(200).json({ data });
     } catch (err) {
@@ -229,6 +236,14 @@ const Unsave = async (req, res) => {
         let saves = data.saves.filter((save) => save.toString() !== userId);
         data.saves = [...saves];
         await data.save();
+
+        // Xóa exam khỏi storage của user
+        let user = await User.findById(userId);
+        let storage = user.saves.filter(
+            (save) => save._id.toString() !== examId
+        );
+        user.saves = [...storage];
+        await user.save();
 
         // 200 - Success
         return res.status(200).json({ data });

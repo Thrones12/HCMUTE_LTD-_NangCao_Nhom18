@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -11,14 +11,14 @@ import {
     Alert,
     KeyboardAvoidingView,
     Platform,
-} from 'react-native';
-import { Colors, GStyles } from '@/constants';
-import axios from 'axios';
-import { Constant } from '@/constants/Constant';
+} from "react-native";
+import { Colors, GStyles } from "@/constants";
+import axios from "axios";
+import { Constant } from "@/constants/Constant";
 
 interface Activity {
     _id: string;
-    type: 'comment' | 'like' | 'exam';
+    type: "comment" | "like" | "exam";
     message: string;
     date: string;
 }
@@ -28,9 +28,13 @@ const ActivityScreen = () => {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
-    const [editedMessage, setEditedMessage] = useState('');
-    const [editedType, setEditedType] = useState<'comment' | 'like' | 'exam' | '' >('');
+    const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+        null
+    );
+    const [editedMessage, setEditedMessage] = useState("");
+    const [editedType, setEditedType] = useState<
+        "comment" | "like" | "exam" | ""
+    >("");
 
     useEffect(() => {
         fetchActivities();
@@ -39,17 +43,28 @@ const ActivityScreen = () => {
     const fetchActivities = async () => {
         setLoading(true);
         try {
-            const res = await axios.get<{ data: Activity[]; message: string }>(`${API}/activity`);
+            const res = await axios.get<{ data: Activity[]; message: string }>(
+                `${API}/activity`
+            );
             console.log(res.data);
             if (res.data && res.data.data) {
-                setActivities(res.data.data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+                setActivities(
+                    res.data.data.sort(
+                        (a, b) =>
+                            new Date(b.date).getTime() -
+                            new Date(a.date).getTime()
+                    )
+                );
             } else {
-                console.warn('No activities data found in response:', res.data);
+                console.warn("No activities data found in response:", res.data);
                 setActivities([]);
             }
         } catch (error) {
             console.error("Failed to fetch activities:", error);
-            Alert.alert("Error", "Could not fetch activities. Please try again.");
+            Alert.alert(
+                "Error",
+                "Could not fetch activities. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -66,12 +81,24 @@ const ActivityScreen = () => {
                     style: "destructive",
                     onPress: async () => {
                         try {
-                            await axios.delete(`${API}/activity?id=${activityId}`);
-                            setActivities(prevActivities => prevActivities.filter(act => act._id !== activityId));
-                            Alert.alert("Success", "Activity deleted successfully.");
+                            await axios.delete(
+                                `${API}/activity?id=${activityId}`
+                            );
+                            setActivities((prevActivities) =>
+                                prevActivities.filter(
+                                    (act) => act._id !== activityId
+                                )
+                            );
+                            Alert.alert(
+                                "Success",
+                                "Activity deleted successfully."
+                            );
                         } catch (error) {
                             console.error("Failed to delete activity:", error);
-                            Alert.alert("Error", "Failed to delete activity. Please try again.");
+                            Alert.alert(
+                                "Error",
+                                "Failed to delete activity. Please try again."
+                            );
                         }
                     },
                 },
@@ -88,8 +115,11 @@ const ActivityScreen = () => {
 
     const handleUpdate = async () => {
         if (!selectedActivity) return;
-        if (!editedType || !['comment', 'like', 'exam'].includes(editedType)){
-            Alert.alert("Invalid Type", "Activity type must be one of: 'comment', 'like', or 'exam'.");
+        if (!editedType || !["comment", "like", "exam"].includes(editedType)) {
+            Alert.alert(
+                "Invalid Type",
+                "Activity type must be one of: 'comment', 'like', or 'exam'."
+            );
             return;
         }
         if (!editedMessage.trim()) {
@@ -105,31 +135,48 @@ const ActivityScreen = () => {
                 message: editedMessage,
             });
             if (response.data && response.data.data) {
-                setActivities(prevActivities =>
-                    prevActivities.map(act =>
-                        act._id === selectedActivity._id ? response.data.data : act
-                    ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                setActivities((prevActivities) =>
+                    prevActivities
+                        .map((act) =>
+                            act._id === selectedActivity._id
+                                ? response.data.data
+                                : act
+                        )
+                        .sort(
+                            (a, b) =>
+                                new Date(b.date).getTime() -
+                                new Date(a.date).getTime()
+                        )
                 );
                 setIsEditModalVisible(false);
                 setSelectedActivity(null);
                 Alert.alert("Success", "Activity updated successfully.");
             } else {
-                 Alert.alert("Error", "Failed to update activity. Invalid response from server.");
+                Alert.alert(
+                    "Error",
+                    "Failed to update activity. Invalid response from server."
+                );
             }
         } catch (error) {
             console.error("Failed to update activity:", error);
-            Alert.alert("Error", "Failed to update activity. Please try again.");
+            Alert.alert(
+                "Error",
+                "Failed to update activity. Please try again."
+            );
         } finally {
             setLoading(false);
         }
     };
-    
+
     const handleAddActivity = () => {
         setSelectedActivity(null);
-        setEditedMessage('');
-        setEditedType('');
+        setEditedMessage("");
+        setEditedType("");
         setIsEditModalVisible(true);
-        Alert.alert("Add Activity", "Opening modal to add new activity. Ensure 'Save Changes' handles new entries or use a dedicated create function.");
+        Alert.alert(
+            "Add Activity",
+            "Opening modal to add new activity. Ensure 'Save Changes' handles new entries or use a dedicated create function."
+        );
     };
 
     const renderItem = ({ item }: { item: Activity }) => (
@@ -137,15 +184,28 @@ const ActivityScreen = () => {
             <View style={styles.itemHeader}>
                 <Text style={styles.itemType}>Type: {item.type}</Text>
                 <Text style={styles.itemDate}>
-                    {new Date(item.date).toLocaleDateString()} - {new Date(item.date).toLocaleTimeString()}
+                    {new Date(item.date).toLocaleDateString()} -{" "}
+                    {new Date(item.date).toLocaleTimeString()}
                 </Text>
             </View>
-            <Text style={styles.itemMessage} numberOfLines={3} ellipsizeMode="tail">{item.message}</Text>
+            <Text
+                style={styles.itemMessage}
+                numberOfLines={3}
+                ellipsizeMode='tail'
+            >
+                {item.message}
+            </Text>
             <View style={styles.actionsContainer}>
-                <Pressable style={[styles.actionButton, styles.editButton]} onPress={() => openEditModal(item)}>
+                <Pressable
+                    style={[styles.actionButton, styles.editButton]}
+                    onPress={() => openEditModal(item)}
+                >
                     <Text style={styles.actionButtonText}>Edit</Text>
                 </Pressable>
-                <Pressable style={[styles.actionButton, styles.deleteButton]} onPress={() => handleDelete(item._id)}>
+                <Pressable
+                    style={[styles.actionButton, styles.deleteButton]}
+                    onPress={() => handleDelete(item._id)}
+                >
                     <Text style={styles.actionButtonText}>Delete</Text>
                 </Pressable>
             </View>
@@ -155,7 +215,7 @@ const ActivityScreen = () => {
     if (loading && activities.length === 0) {
         return (
             <View style={[GStyles.container, styles.centered]}>
-                <ActivityIndicator size="large" color={Colors.Sky} />
+                <ActivityIndicator size='large' color={Colors.Sky} />
             </View>
         );
     }
@@ -165,12 +225,19 @@ const ActivityScreen = () => {
             <View style={styles.headerContainer}>
                 <Text style={styles.header}>Admin Activity Log</Text>
             </View>
-            
+
             {activities.length === 0 && !loading ? (
                 <View style={styles.centered}>
-                    <Text style={styles.noActivitiesText}>No activities found.</Text>
-                    <Pressable style={styles.refreshButton} onPress={fetchActivities}>
-                         <Text style={styles.refreshButtonText}>Tap to Refresh</Text>
+                    <Text style={styles.noActivitiesText}>
+                        No activities found.
+                    </Text>
+                    <Pressable
+                        style={styles.refreshButton}
+                        onPress={fetchActivities}
+                    >
+                        <Text style={styles.refreshButtonText}>
+                            Tap to Refresh
+                        </Text>
                     </Pressable>
                 </View>
             ) : (
@@ -185,7 +252,7 @@ const ActivityScreen = () => {
             )}
 
             <Modal
-                animationType="slide"
+                animationType='slide'
                 transparent={true}
                 visible={isEditModalVisible}
                 onRequestClose={() => {
@@ -193,23 +260,27 @@ const ActivityScreen = () => {
                     setSelectedActivity(null);
                 }}
             >
-                <KeyboardAvoidingView 
+                <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     style={styles.centeredViewModal}
                 >
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>{selectedActivity ? "Edit Activity" : "Add New Activity"}</Text>
+                        <Text style={styles.modalText}>
+                            {selectedActivity
+                                ? "Edit Activity"
+                                : "Add New Activity"}
+                        </Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Type: comment, like, or exam"
+                            placeholder='Type: comment, like, or exam'
                             value={editedType}
                             onChangeText={setEditedType as any}
                             placeholderTextColor={Colors.Gray500}
-                            autoCapitalize="none"
+                            autoCapitalize='none'
                         />
                         <TextInput
                             style={[styles.input, styles.messageInput]}
-                            placeholder="Activity Message"
+                            placeholder='Activity Message'
                             value={editedMessage}
                             onChangeText={setEditedMessage}
                             multiline
@@ -218,19 +289,36 @@ const ActivityScreen = () => {
                         />
                         <View style={styles.modalActionsContainer}>
                             <Pressable
-                                style={[styles.modalButton, styles.cancelButton]}
+                                style={[
+                                    styles.modalButton,
+                                    styles.cancelButton,
+                                ]}
                                 onPress={() => {
                                     setIsEditModalVisible(false);
                                     setSelectedActivity(null);
                                 }}
                             >
-                                <Text style={styles.modalButtonText}>Cancel</Text>
+                                <Text style={styles.modalButtonText}>
+                                    Cancel
+                                </Text>
                             </Pressable>
                             <Pressable
                                 style={[styles.modalButton, styles.saveButton]}
-                                onPress={selectedActivity ? handleUpdate : () => Alert.alert("Info", "Add functionality for new activity needs a separate handler or adjustment to handleUpdate.")}
+                                onPress={
+                                    selectedActivity
+                                        ? handleUpdate
+                                        : () =>
+                                              Alert.alert(
+                                                  "Info",
+                                                  "Add functionality for new activity needs a separate handler or adjustment to handleUpdate."
+                                              )
+                                }
                             >
-                                <Text style={styles.modalButtonText}>{selectedActivity ? "Save Changes" : "Add Activity"}</Text>
+                                <Text style={styles.modalButtonText}>
+                                    {selectedActivity
+                                        ? "Save Changes"
+                                        : "Add Activity"}
+                                </Text>
                             </Pressable>
                         </View>
                     </View>
@@ -242,25 +330,25 @@ const ActivityScreen = () => {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         paddingHorizontal: 16,
         paddingVertical: 10,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.White,
         borderBottomWidth: 1,
         borderBottomColor: Colors.Gray200,
     },
     header: {
         fontSize: 22,
-        fontWeight: 'bold',
-        color: Colors.black,
+        fontWeight: "bold",
+        color: Colors.Black,
     },
     centered: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Colors.LightGray1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: Colors.Gray100,
     },
     noActivitiesText: {
         fontSize: 16,
@@ -274,12 +362,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     refreshButtonText: {
-        color: Colors.white,
+        color: Colors.White,
         fontSize: 14,
-        fontWeight: '500',
+        fontWeight: "500",
     },
     itemContainer: {
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.White,
         padding: 15,
         marginVertical: 8,
         marginHorizontal: 16,
@@ -289,14 +377,14 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     itemHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        justifyContent: "space-between",
         marginBottom: 8,
     },
     itemType: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: Colors.Sky, 
+        fontWeight: "bold",
+        color: Colors.Sky,
     },
     itemMessage: {
         fontSize: 14,
@@ -308,8 +396,8 @@ const styles = StyleSheet.create({
         color: Colors.Gray500,
     },
     actionsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
+        flexDirection: "row",
+        justifyContent: "flex-end",
         marginTop: 10,
         borderTopWidth: 1,
         borderTopColor: Colors.Gray100,
@@ -320,18 +408,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 5,
         marginLeft: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
     },
     editButton: {
-        backgroundColor: Colors.Sky, 
+        backgroundColor: Colors.Sky,
     },
     deleteButton: {
-        backgroundColor: Colors.Gray600, 
+        backgroundColor: Colors.Gray600,
     },
     actionButtonText: {
-        color: Colors.white,
-        fontWeight: '500',
+        color: Colors.White,
+        fontWeight: "500",
         fontSize: 14,
     },
     listContentContainer: {
@@ -341,11 +429,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: "rgba(0,0,0,0.5)",
     },
     modalView: {
         margin: 20,
-        backgroundColor: "white",
+        backgroundColor: "White",
         borderRadius: 20,
         padding: 25,
         alignItems: "center",
@@ -354,13 +442,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: '90%',
+        width: "90%",
     },
     modalText: {
         marginBottom: 20,
         textAlign: "center",
         fontSize: 20,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
     input: {
         height: 50,
@@ -369,41 +457,41 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 15,
         paddingHorizontal: 15,
-        width: '100%',
+        width: "100%",
         fontSize: 16,
-        backgroundColor: Colors.LightGray1,
+        backgroundColor: Colors.Gray100,
     },
     messageInput: {
         height: 100,
-        textAlignVertical: 'top',
+        textAlignVertical: "top",
     },
     modalActionsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
         marginTop: 15,
     },
     modalButton: {
-        borderRadius: 10, 
+        borderRadius: 10,
         paddingVertical: 12,
         paddingHorizontal: 20,
         elevation: 2,
         flex: 1,
         marginHorizontal: 5,
-        alignItems: 'center',
+        alignItems: "center",
     },
     cancelButton: {
         backgroundColor: Colors.Gray500,
     },
     saveButton: {
-        backgroundColor: Colors.Sky, 
+        backgroundColor: Colors.Sky,
     },
     modalButtonText: {
-        color: "white",
+        color: "White",
         fontWeight: "bold",
         textAlign: "center",
         fontSize: 16,
-    }
+    },
 });
 
 export default ActivityScreen;

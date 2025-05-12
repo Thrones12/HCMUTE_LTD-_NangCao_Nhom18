@@ -31,7 +31,12 @@ const GetOne = async (req, res) => {
         let data; // Return data
 
         // Get data
-        data = await User.findById(id);
+        data = await User.findById(id)
+            .populate({
+                path: "saves",
+                model: "Exam",
+            })
+            .populate({ path: "histories", model: "Activity" });
         // 404 - Not Found
         if (!data) return res.status(404).json({ message: "Data not found" });
 
@@ -41,12 +46,10 @@ const GetOne = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
-// POST /user
 // PUT /user
 const Update = async (req, res) => {
     try {
         const { _id, fullname, phone, email, password } = req.body;
-        console.log(_id);
         const file = req.file;
 
         const existingData = await User.findById(_id);
@@ -253,6 +256,26 @@ const Activate = async (req, res) => {
         return res.status(500).json({ message: "Server Error: ", err });
     }
 };
+// PUT /user/minus-point
+const MinusPoint = async (req, res) => {
+    try {
+        const { userId, point } = req.body;
+
+        // Get user
+        let data = await User.findById(userId);
+        // 404 - Not Found
+        if (!data) return res.status(404).json({ message: "Data not found" });
+
+        // Kích hoạt tài khoản
+        data.point = data.point - point;
+        await data.save();
+
+        // 200 - Success
+        return res.status(200).json({ data });
+    } catch (err) {
+        return res.status(500).json({ message: "Server Error: ", err });
+    }
+};
 
 module.exports = {
     GetAll,
@@ -263,4 +286,5 @@ module.exports = {
     SendPassword,
     Activate,
     Update,
+    MinusPoint,
 };

@@ -75,11 +75,23 @@ const HomeSectionHeader = () => {
                     onPress={() => {
                         navigation.navigate("Profile");
                     }}
+                    style={{ elevation: 2 }}
                 >
-                    {avatar && (
+                    {avatar.trim() !== "" ? (
                         <Image
-                            source={{ uri: avatar }}
+                            source={{
+                                uri: avatar,
+                            }}
                             style={{ width: 44, height: 44, borderRadius: 15 }}
+                        />
+                    ) : (
+                        <Image
+                            source={require("../assets/images/react-logo.png")}
+                            style={{
+                                width: 44,
+                                height: 44,
+                                borderRadius: 15,
+                            }}
                         />
                     )}
                 </Pressable>

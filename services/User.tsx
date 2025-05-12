@@ -17,5 +17,22 @@ const GetOne = async (userId: any) => {
         return null;
     }
 };
-
-export default { GetOne };
+const MinusPoint = async (userId: any, point: any) => {
+    try {
+        // Call API
+        const res = await axios.put(`${API}/user/minus-point`, {
+            userId,
+            point,
+        });
+        return res.data.data;
+    } catch (err: any) {
+        // Thông báo lỗi
+        if (err.response && err.response.data?.message) {
+            Noti.error(err.response.data.message);
+        } else {
+            Noti.error("Lỗi hệ thống");
+        }
+        return null;
+    }
+};
+export default { GetOne, MinusPoint };
