@@ -90,7 +90,7 @@ const CommentScreen = ({ lessonId }: any) => {
                 lessonId,
                 user: userId,
                 content: commentText,
-                replyTo: replyTo.comment._id,
+                replyTo: replyTo ? replyTo.comment._id : null,
             });
             setReload(!reload);
             setReplyTo(null);
